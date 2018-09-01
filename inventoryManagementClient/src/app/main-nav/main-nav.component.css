@@ -1,0 +1,33 @@
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+  /* align-self: center;  */
+}
+
+.active {
+  background: rgb(145, 185, 201);
+}
+
+mat-form-field.datePicker {
+  width: 130px;
+}
+
+input.datePicker {
+  color: rgb(0, 0, 0);
+}
+
+input.datePickerDiff {
+  color: rgb(228, 0, 0);
+}

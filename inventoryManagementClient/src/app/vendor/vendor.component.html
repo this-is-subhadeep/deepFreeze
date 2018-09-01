@@ -1,0 +1,335 @@
+<div>
+  <div @fadeIn *ngIf="showVenTable; else addNewVenForm">
+    <div class="vendors-table-div mat-elevation-z10">
+      <mat-table [dataSource]="dataSource" class="vendors-table mat-elevation-z6">
+        <!-- Vendor Id -->
+        <ng-container matColumnDef="vendorId">
+          <mat-header-cell *matHeaderCellDef>Vendor Id</mat-header-cell>
+          <mat-cell *matCellDef="let completeVendor"> {{ completeVendor.id }}</mat-cell>
+        </ng-container>
+        <!-- Vendor Name -->
+        <ng-container matColumnDef="vendorName">
+          <mat-header-cell *matHeaderCellDef>Vendor Name</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor);log(editableVendorName)">
+            <div *ngIf="!isThisVendorSelected(completeVendor); else editableVendorName">
+              {{ completeVendor.name }}
+            </div>
+            <ng-template #editableVendorName>
+              <mat-form-field>
+                <input
+                  matInput
+                  required
+                  maxlength="20"
+                  [(ngModel)]="selectedCompleteVendor.name"
+                  name="updateVendorName"
+                  #updateVendorName="ngModel"
+                  id="updateVendorName">
+                <mat-error *ngIf="updateVendorName.invalid && updateVendorName.errors.required">
+                  Please enter a Vendor Name !!
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Vendor Total Loan -->
+        <ng-container matColumnDef="totalLoan">
+          <mat-header-cell *matHeaderCellDef>Total Loan</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor)">
+            <div>
+              {{ completeVendor.totalLoan }}
+            </div>
+          </mat-cell>
+        </ng-container>
+        <!-- Loan Added -->
+        <ng-container matColumnDef="loanAdded">
+          <mat-header-cell *matHeaderCellDef>Loan Added</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor)">
+            <div *ngIf="!isThisVendorSelected(completeVendor); else editableLoanAdded">
+              {{ completeVendor.loanAdded }}
+            </div>
+            <ng-template #editableLoanAdded>
+              <mat-form-field>
+                <input
+                  matInput
+                  type="number"
+                  pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                  [(ngModel)]="selectedCompleteVendor.loanAdded"
+                  name="updateLoanAdded"
+                  #updateLoanAdded="ngModel"
+                  id="updateLoanAdded">
+                <mat-error *ngIf="updateLoanAdded.invalid && updateLoanAdded.errors.pattern">
+                  Loan Amount is not of currency format
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Loan Payed -->
+        <ng-container matColumnDef="loanPayed">
+          <mat-header-cell *matHeaderCellDef>Loan Payed</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor)">
+            <div *ngIf="!isThisVendorSelected(completeVendor); else editableLoanPayed">
+                {{ completeVendor.loanPayed }}
+            </div>
+            <ng-template #editableLoanPayed>
+              <mat-form-field>
+                <input
+                  matInput
+                  type="number"
+                  pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                  [(ngModel)]="selectedCompleteVendor.loanPayed"
+                  name="updateLoanPayed"
+                  #updateLoanPayed="ngModel"
+                  id="updateLoanPayed">
+                <mat-error *ngIf="updateLoanPayed.invalid && updateLoanPayed.errors.pattern">
+                  Payed Amount is not of currency format
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Opening Dps -->
+        <ng-container matColumnDef="openingDps">
+          <mat-header-cell *matHeaderCellDef>Opening DP</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor)">
+            <div *ngIf="!isThisVendorSelected(completeVendor); else editableOpeningDp">
+                {{ completeVendor.openingDp }}
+            </div>
+            <ng-template #editableOpeningDp>
+              <mat-form-field>
+                <input
+                  matInput
+                  type="number"
+                  pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                  [(ngModel)]="selectedCompleteVendor.openingDp"
+                  name="updateOpeningDp"
+                  #updateOpeningDp="ngModel"
+                  id="updateOpeningDp">
+                <mat-error *ngIf="updateOpeningDp.invalid && updateOpeningDp.errors.pattern">
+                  Opening DP is not of currency format
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Deposit -->
+        <ng-container matColumnDef="deposit">
+          <mat-header-cell *matHeaderCellDef>Deposit</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor)">
+            <div *ngIf="!isThisVendorSelected(completeVendor); else editableDeposit">
+                {{ completeVendor.deposit }}
+            </div>
+            <ng-template #editableDeposit>
+              <mat-form-field>
+                <input
+                  matInput
+                  type="number"
+                  pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                  [(ngModel)]="selectedCompleteVendor.deposit"
+                  name="updateDeposit"
+                  #updateDeposit="ngModel"
+                  id="updateDeposit">
+                <mat-error *ngIf="updateDeposit.invalid && updateDeposit.errors.pattern">
+                  Deposit is not of currency format
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Remarks -->
+        <ng-container matColumnDef="remarks">
+          <mat-header-cell *matHeaderCellDef>Remarks</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeVendor"
+            [ngClass]="getSelectRowClass(completeVendor)"
+            (click)="setVendorSelected(completeVendor)">
+            <div *ngIf="!isThisVendorSelected(completeVendor); else editableRemarks">
+                {{ completeVendor.remarks }}
+            </div>
+            <ng-template #editableRemarks>
+              <mat-form-field>
+                <input
+                  matInput
+                  type="text"
+                  [(ngModel)]="selectedCompleteVendor.remarks"
+                  name="updateRemarks"
+                  #updateRemarks="ngModel"
+                  id="updateRemarks">
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+      </mat-table>
+    </div>
+    <mat-paginator
+      [length]="dataSource.totalNoOfItems"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="pageEvent = handlePageEvent($event)">
+    </mat-paginator>
+    <div @fadeIn @dropDown *ngIf="showAddButton; else updateButton">
+      <button mat-raised-button type="button" class="add-button" (click)="addVenButtonPressed()">
+        Add Vendor
+      </button>
+    </div>
+    <ng-template #updateButton>
+      <div @fadeIn @dropDown>
+        <button
+          mat-raised-button
+          type="button"
+          class="update-vendor-button"
+          (click)="updateVenButtonPressed()"
+          [disabled]="!isUpdateEnabled()">
+          Update Vendor
+        </button>
+        <button
+          mat-raised-button
+          type="button"
+          class="cancel-vendor-button"
+          (click)="cancelButtonPressed()">
+          Cancel
+        </button>
+      </div>
+    </ng-template>
+  </div>
+  <ng-template #addNewVenForm>
+    <div @fadeIn>
+      <br><br><br>
+      <mat-card class="mat-elevation-z10 add-vendor-card">
+        <form action="">
+          <mat-form-field>
+            <input
+              matInput
+              required
+              maxlength="20"
+              [(ngModel)]="newVendorName"
+              name="vendorName"
+              #vendorName="ngModel"
+              id="vendorName"
+              placeholder="Vendor Name">
+            <mat-hint>Name of the Vendor</mat-hint>
+            <mat-error *ngIf="vendorName.invalid && vendorName.errors.required">
+              Please enter a vendor Name !!
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input
+              matInput
+              pattern="^[0-9]+(\.[0-9]{1,2})?$"
+              [(ngModel)]="newLoanAdded"
+              name="loanAdded"
+              #loanAdded="ngModel"
+              id="loanAdded"
+              type="number"
+              placeholder="Loan +">
+            <mat-hint>New Loan Amount</mat-hint>
+            <mat-error *ngIf="loanAdded.invalid && loanAdded.errors.pattern">
+              Loan Amount is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              pattern="^[0-9]+(\.[0-9]{1,2})?$"
+              [(ngModel)]="newLoanPayed"
+              name="loanPayed"
+              #loanPayed="ngModel"
+              id="loanPayed"
+              type="number"
+              placeholder="Loan -">
+            <mat-hint>Loan Amount Payed Back</mat-hint>
+            <mat-error *ngIf="loanPayed.invalid && loanPayed.errors.pattern">
+              Amount is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input
+              matInput
+              pattern="^[0-9]+(\.[0-9]{1,2})?$"
+              [(ngModel)]="newOpeningDP"
+              name="openingDP"
+              #openingDP="ngModel"
+              id="openingDP"
+              type="number"
+              placeholder="Opening Dp">
+            <mat-hint>Vendors Opening Dp</mat-hint>
+            <mat-error *ngIf="openingDP.invalid && openingDP.errors.pattern">
+              Opening DP is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              pattern="^[0-9]+(\.[0-9]{1,2})?$"
+              [(ngModel)]="newDeposit"
+              name="deposit"
+              #deposit="ngModel"
+              id="deposit"
+              type="number"
+              placeholder="Deposit">
+            <mat-hint>Deposit</mat-hint>
+            <mat-error *ngIf="deposit.invalid && deposit.errors.pattern">
+              Deposit is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <textarea
+              matInput
+              [(ngModel)]="newRemarks"
+              name="remarks"
+              #remarks="ngModel"
+              id="remarks"
+              type="number"
+              placeholder="Remarks"></textarea>
+            <mat-hint>Any Commnent ?</mat-hint>
+          </mat-form-field>
+          <br>
+          <button
+            mat-raised-button
+            type="button"
+            class="add-vendor-button" 
+            (click)="addButtonPressed()"
+            [disabled]="vendorName.invalid ||
+                        loanAdded.invalid ||
+                        loanPayed.invalid ||
+                        openingDP.invalid ||
+                        deposit.invalid">
+            Add
+          </button>
+          <button
+            mat-raised-button
+            type="button"
+            class="cancel-vendor-button"
+            (click)="cancelButtonPressed()">
+            Cancel
+          </button>
+        </form>
+      </mat-card>
+      <div>&nbsp;</div>
+    </div>
+  </ng-template>
+</div>

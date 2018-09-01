@@ -1,0 +1,56 @@
+.inventory-table-div {
+    overflow: auto;
+    height: 435px;
+    width: 96%;
+    margin: 2%;
+}
+.inventory-table {
+    background: rgb(192, 230, 218);
+    width: 1500px;
+    /* height: 2000px ; */
+}
+.productType {
+    background: rgb(98, 128, 156);
+    font-style: italic;
+    font-weight: bold; 
+}
+
+.mat-column-productName {
+    flex: 0 0 150px;
+}
+
+.mat-column-stockOpening {
+    flex: 0 0 60px;
+}
+
+.mat-column-stockBalance {
+    flex: 0 0 60px;
+}
+
+.mat-column-stockTotalIn {
+    flex: 0 0 60px;
+}
+
+.mat-column-stockSenIn {
+    flex: 0 0 60px;
+}
+
+.mat-column-stockOthersIn {
+    flex: 0 0 60px;
+}
+
+.mat-column-stockTotalOut {
+    flex: 0 0 60px;
+}
+
+.vendorTooltip {
+    background: red;
+}
+
+button.save-button {
+    background: rgb(101, 193, 247);
+    margin-top: 2%;
+    margin-left: 2%;
+    margin-right: 2%;
+    width: 96%;
+}

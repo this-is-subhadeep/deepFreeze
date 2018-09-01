@@ -1,0 +1,315 @@
+<div>
+  <div @fadeIn *ngIf="showProdTable; else addNewProdForm">
+    <div class="products-table-div mat-elevation-z10">
+      <mat-table
+        [dataSource]="dataSource"
+        class="products-table mat-elevation-z6">
+        <!-- Product Id -->
+        <ng-container matColumnDef="productId">
+          <mat-header-cell *matHeaderCellDef>Product Id</mat-header-cell>
+          <mat-cell *matCellDef="let completeProduct"> {{ completeProduct.id }}</mat-cell>
+        </ng-container>
+        <!-- Product Name -->
+        <ng-container matColumnDef="productName">
+          <mat-header-cell *matHeaderCellDef>Product Name</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeProduct"
+            [ngClass]="getSelectRowClass(completeProduct)"
+            (click)="setProductSelected(completeProduct)">
+            <div *ngIf="!isThisProductSelected(completeProduct); else editableProductName">
+              {{ completeProduct.name }}
+            </div>
+            <ng-template #editableProductName>
+              <mat-form-field>
+                <input
+                  matInput
+                  required
+                  maxlength="20"
+                  [(ngModel)]="selectedCompleteProduct.name"
+                  name="updateProductName"
+                  #updateProductName="ngModel"
+                  id="updateProductName">
+                <mat-error *ngIf="updateProductName.invalid && updateProductName.errors.required">
+                  Please enter a product Name !!
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Product Type -->
+        <ng-container matColumnDef="productType">
+          <mat-header-cell *matHeaderCellDef>Product Type</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeProduct"
+            [ngClass]="getSelectRowClass(completeProduct)"
+            (click)="setProductSelected(completeProduct)">
+            <div *ngIf="!isThisProductSelected(completeProduct); else editableType">
+              {{ completeProduct.productType.name }}
+            </div>
+            <ng-template #editableType>
+              <mat-form-field>
+                <mat-select
+                  required
+                  [(ngModel)]="selectedCompleteProduct.productType.id"
+                  name="updateProductTypeList"
+                  #updateProductTypeList="ngModel"
+                  id="updateProductTypeList">
+                  <mat-option *ngFor="let productType of productTypes" [value]="productType.id">
+                      {{productType.name}}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="updateProductTypeList.invalid && updateProductTypeList.errors.required">
+                  Please select a Product Type !!
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Package Size -->
+        <ng-container matColumnDef="packageSize">
+          <mat-header-cell *matHeaderCellDef>Size</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeProduct"
+            [ngClass]="getSelectRowClass(completeProduct)"
+            (click)="setProductSelected(completeProduct)">
+            <div *ngIf="!isThisProductSelected(completeProduct); else editablePackageSize">
+              {{ completeProduct.packageSize }}
+            </div>
+            <ng-template #editablePackageSize>
+              <mat-form-field>
+                <input
+                  matInput
+                  type="number"
+                  required
+                  pattern="^[0-9]{0,3}$"
+                  [(ngModel)]="selectedCompleteProduct.packageSize"
+                  name="updatePackageSize"
+                  #updatePackageSize="ngModel"
+                  id="updatePackageSize">
+                <mat-error *ngIf="updatePackageSize.touched && updatePackageSize.invalid && updatePackageSize.errors.required">
+                  Please enter a Package Size
+                </mat-error>
+                <mat-error *ngIf="updatePackageSize.invalid && updatePackageSize.errors.pattern">
+                  This must be a no. of max 3 char
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Cost Proce -->
+        <ng-container matColumnDef="costPrice">
+          <mat-header-cell *matHeaderCellDef>Cost</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeProduct"
+            [ngClass]="getSelectRowClass(completeProduct)"
+            (click)="setProductSelected(completeProduct)">
+            <div *ngIf="!isThisProductSelected(completeProduct); else editableCostPrice">
+                {{ completeProduct.costPrice }}
+            </div>
+            <ng-template #editableCostPrice>
+              <mat-form-field>
+                <input
+                  matInput
+                  required
+                  pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                  type="number"
+                  [(ngModel)]="selectedCompleteProduct.costPrice"
+                  name="updateCostPrice"
+                  #updateCostPrice="ngModel"
+                  id="updateCostPrice">
+                <mat-error *ngIf="updateCostPrice.touched && updateCostPrice.invalid && updateCostPrice.errors.required">
+                  Cost Price is Required
+                </mat-error>
+                <mat-error *ngIf="updateCostPrice.invalid && updateCostPrice.errors.pattern">
+                  Cost Price is not of currency format
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <!-- Selling Proce -->
+        <ng-container matColumnDef="sellingPrice">
+          <mat-header-cell *matHeaderCellDef>Selling</mat-header-cell>
+          <mat-cell
+            *matCellDef="let completeProduct"
+            [ngClass]="getSelectRowClass(completeProduct)"
+            (click)="setProductSelected(completeProduct)">
+            <div *ngIf="!isThisProductSelected(completeProduct); else editableSellingPrice">
+                {{ completeProduct.sellingPrice }}
+            </div>
+            <ng-template #editableSellingPrice>
+              <mat-form-field>
+                <input
+                  matInput
+                  required
+                  pattern="^[0-9]+(\.[0-9]{1,2})?$"
+                  type="number"
+                  [(ngModel)]="selectedCompleteProduct.sellingPrice"
+                  name="updateSellingPrice"
+                  #updateSellingPrice="ngModel"
+                  id="updateSellingPrice">
+                <mat-error *ngIf="updateSellingPrice.touched && updateSellingPrice.invalid && updateSellingPrice.errors.required">
+                  Selling Price is Required
+                </mat-error>
+                <mat-error *ngIf="updateSellingPrice.invalid && updateSellingPrice.errors.pattern">
+                  Selling Price is not of currency format
+                </mat-error>
+              </mat-form-field>
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+      </mat-table>
+    </div>
+    <mat-paginator
+      [length]="dataSource.totalNoOfItems"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="pageEvent = handlePageEvent($event)">
+    </mat-paginator>
+    <div *ngIf="showAddButton; else updateButton">
+      <button @fadeIn @dropDown mat-raised-button type="button" class="add-button" (click)="addProdButtonPressed()">
+        Add Product
+      </button>
+    </div>
+    <ng-template #updateButton>
+      <div @fadeIn @dropDown>
+        <button
+          mat-raised-button
+          type="button"
+          class="update-product-button"
+          (click)="updateProdButtonPressed()"
+          [disabled]="!isUpdateEnabled()">
+          Update Product
+        </button>
+        <button
+          mat-raised-button
+          type="button"
+          class="cancel-product-button"
+          (click)="cancelButtonPressed()">
+          Cancel
+        </button>
+      </div>
+    </ng-template>
+  </div>
+  <ng-template #addNewProdForm>
+    <div @fadeIn>
+      <br><br><br>
+      <mat-card class="mat-elevation-z10 add-product-card">
+        <form action="">
+          <mat-form-field>
+            <input
+              matInput
+              required
+              maxlength="20"
+              [(ngModel)]="newProductName"
+              name="productName"
+              #productName="ngModel"
+              id="productName"
+              placeholder="Product Name">
+            <mat-hint>Name of the Product</mat-hint>
+            <mat-error *ngIf="productName.invalid && productName.errors.required">
+              Please enter a product Name !!
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select
+              required
+              [(ngModel)]="newProductTypeId"
+              name="productTypeList"
+              #productTypeList="ngModel"
+              id="productTypeList"
+              placeholder="Product Type">
+              <mat-option *ngFor="let productType of productTypes" [value]="productType.id">
+                  {{productType.name}}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Cup, Stick, Block, etc., ?</mat-hint>
+            <mat-error *ngIf="productTypeList.invalid && productTypeList.errors.required">
+              Please select a Product Type !!
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input
+              matInput
+              required
+              pattern="^[0-9]{0,3}$"
+              [(ngModel)]="newPackageSize"
+              name="packageSize"
+              #packageSize="ngModel"
+              id="packageSize"
+              type="number"
+              placeholder="Package Size">
+            <mat-hint>No. of items in one package</mat-hint>
+            <mat-error *ngIf="packageSize.invalid && packageSize.errors.required">
+              Please enter a Package Size for the Product !!
+            </mat-error>
+            <mat-error *ngIf="packageSize.invalid && packageSize.errors.pattern">
+              Package Size must be a number of maximum 3 characters
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              required
+              pattern="^[0-9]+(\.[0-9]{1,2})?$"
+              [(ngModel)]="newCostPrice"
+              name="costPrice"
+              #costPrice="ngModel"
+              id="costPrice"
+              type="number"
+              placeholder="Cost Price">
+            <mat-error *ngIf="costPrice.invalid && costPrice.errors.required">
+              Cost Price is Required
+            </mat-error>
+            <mat-error *ngIf="costPrice.invalid && costPrice.errors.pattern">
+              Cost Price is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              required
+              pattern="^[0-9]+(\.[0-9]{1,2})?$"
+              [(ngModel)]="newSellingPrice"
+              name="sellingPrice"
+              #sellingPrice="ngModel"
+              id="sellingPrice"
+              type="number"
+              placeholder="Selling Price">
+            <mat-error *ngIf="sellingPrice.invalid && sellingPrice.errors.required">
+              Selling Price is Required
+            </mat-error>
+            <mat-error *ngIf="sellingPrice.invalid && sellingPrice.errors.pattern">
+              Selling Price is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <button
+            mat-raised-button
+            type="button"
+            class="add-product-button" 
+            (click)="addButtonPressed()"
+            [disabled]="productName.invalid ||
+                        productTypeList.invalid ||
+                        packageSize.invalid ||
+                        costPrice.invalid ||
+                        sellingPrice.invalid">
+            Add
+          </button>
+          <button
+            mat-raised-button
+            type="button"
+            class="cancel-product-button"
+            (click)="cancelButtonPressed()">
+            Cancel
+          </button>
+        </form>
+      </mat-card>
+      <div>&nbsp;</div>
+    </div>
+  </ng-template>
+</div>

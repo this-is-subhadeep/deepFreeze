@@ -1,0 +1,37 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="'dialog'"
+    [mode]="'over'"
+    [opened]="false">
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-nav-list>
+      <a #inventory mat-list-item routerLink="/inventory" [ngClass]="inventoryClass" (click)="itemClicked('inventory')">Intentory</a>
+      <a #products mat-list-item routerLink="/products" [ngClass]="productClass" (click)="itemClicked('products')">Products</a>
+      <a #vendors mat-list-item routerLink="/vendors" [ngClass]="vendorClass" (click)="itemClicked('vendors')">Vendors</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>{{title}}</span>
+      <span class="fill-remaining-space"></span>
+      <span>
+        <mat-form-field class="datePicker">
+          <input matInput [ngClass]="datePickerClass" [(ngModel)]="dateSelected" [matDatepicker]="picker" disabled #mainDatePicked="ngModel">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker disabled="false"></mat-datepicker>
+        </mat-form-field>
+      </span>
+    </mat-toolbar>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>
