@@ -18,21 +18,15 @@ export class InventoryDataSource implements DataSource<CompleteInventoryRow> {
         this.comInventorySubject.complete();
     }
 
-    loadCompleteInventory(refDate:string, pageSize:number, pageNumber:number) {
+    loadCompleteInventory(refDate:string) {
         this.service.findCompleteInventoryObservable(refDate)
         .subscribe(completeInventory => {
             // console.log(completeInventory);
             if(completeInventory!=undefined) {
-                let startIndex=(pageSize*(pageNumber-1)+1);
-                let endIndex=startIndex+pageSize-1;
                 let compInvList:CompleteInventoryRow[]=new Array();
-                let i=1;
                 if(completeInventory.rows!=undefined) {
                     completeInventory.rows.forEach(completeInventoryRow => {
-                        if(i>=startIndex && i<=endIndex) {
-                            compInvList.push(completeInventoryRow);
-                        }
-                        i++;
+                        compInvList.push(completeInventoryRow);
                     });
                 }
                 // this._totalNoOfItems=completeInventory.rows.length;

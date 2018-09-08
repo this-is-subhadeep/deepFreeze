@@ -27,8 +27,6 @@ const staticColumnsToDisplay=["productName",
 export class InventoryComponent implements OnInit {
   private dataSource:InventoryDataSource;
   private columnsToDisplay=[];
-  private pageSize=1000;
-  private pageIndex=0;
   private prodTypeClass="productType";
   private compVenList:CompleteVendor[];
 
@@ -55,7 +53,7 @@ export class InventoryComponent implements OnInit {
 
   private loadCompleteInventoryData() {
     let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    this.dataSource.loadCompleteInventory(date,this.pageSize,this.pageIndex+1);
+    this.dataSource.loadCompleteInventory(date);
     // console.log(this.dataSource);
   }
 
@@ -75,7 +73,17 @@ export class InventoryComponent implements OnInit {
 
   private  getVenDetails(ven:CompleteVendor) {
     // console.log(ven.name," - ",ven.deposit," - ",ven.totalLoan);
-    return "Total Loan : "+ven.totalLoan+" - Opening : "+ven.openingDp;
+    let totalOut = 0;
+    this.dataSource.connect().subscribe(compInvRows => {
+      compInvRows.forEach(compInvRow => {
+        if(compInvRow.vendorValue[ven.id]!=null && compInvRow.vendorValue[ven.id]!=undefined) {
+          compInvRow.prodDets.sellingPrice
+          totalOut+=compInvRow.prodDets.sellingPrice.valueOf()*compInvRow.vendorValue[ven.id];
+        }
+      })
+    });
+
+    return "Total Loan : "+ven.totalLoan+" - Opening : "+ven.openingDp+" - Out : "+totalOut;
   }
 
   private log(data) {
