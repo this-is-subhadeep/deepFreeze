@@ -5,6 +5,10 @@ import java.util.SortedSet;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * @author Subhadeep Mitra
+ *
+ */
 public class Product implements Comparable<Product> {
 	@Id
 	private String id;
