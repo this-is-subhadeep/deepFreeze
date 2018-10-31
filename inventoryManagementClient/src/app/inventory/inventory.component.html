@@ -31,7 +31,11 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="stockBalance" sticky>
-        <mat-header-cell *matHeaderCellDef>Balance</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>
+          <span [matTooltip]="getBalance()">
+            Balance
+          </span>
+        </mat-header-cell>
         <mat-cell
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
@@ -39,7 +43,11 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="stockTotalIn" sticky>
-        <mat-header-cell *matHeaderCellDef>Total<br>In</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>
+          <span [matTooltip]="getTotalIn()">
+            Total<br>In
+          </span>
+        </mat-header-cell>
         <mat-cell
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
@@ -47,7 +55,11 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="stockSenIn" sticky>
-        <mat-header-cell *matHeaderCellDef>Sen<br>In</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>
+          <span [matTooltip]="getTotalSenIn()">
+            Sen<br>In
+          </span>
+        </mat-header-cell>
         <mat-cell
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
@@ -65,7 +77,11 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="stockOthersIn" sticky>
-        <mat-header-cell *matHeaderCellDef>Others<br>In</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>
+          <span [matTooltip]="getTotalOthersIn()">
+            Others<br>In
+          </span>
+        </mat-header-cell>
         <mat-cell
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
@@ -83,7 +99,11 @@
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="stockTotalOut" sticky>
-        <mat-header-cell *matHeaderCellDef>Total<br>Out</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>
+          <span [matTooltip]="getTotalOut()">
+            Total<br>Out
+          </span>
+        </mat-header-cell>
         <mat-cell 
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
@@ -108,7 +128,6 @@
         <mat-cell
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
-          <!-- {{ inventoryRow.vendorValue[vendorData.id] }} -->
           <div *ngIf="isRowProductType(inventoryRow); else productData"></div>
           <ng-template #productData>
             <input

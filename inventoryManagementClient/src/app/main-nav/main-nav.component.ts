@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DateService } from '../services/date.service';
+import { MatSidenav } from '@angular/material';
 
 @Component({
   selector: 'main-nav',
@@ -17,10 +18,13 @@ export class MainNavComponent {
   private datePickerClass = "datePicker";
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
-      map(result => result.matches)
+      map(result => {
+        console.log(result.matches);
+        return result.matches;
+      })
     );
-    
-  constructor(private breakpointObserver: BreakpointObserver, private dateService:DateService) {}
+
+  constructor(private breakpointObserver: BreakpointObserver, private dateService: DateService) { }
 
   log(data) {
     console.log(this.dateSelected);
@@ -30,14 +34,14 @@ export class MainNavComponent {
     return this.dateService.date;
   }
 
-  set dateSelected(date:Date) {
-    this.dateService.date=date;
+  set dateSelected(date: Date) {
+    this.dateService.date = date;
     let today = new Date();
     // console.log("today",today.getFullYear(),"-",today.getMonth(),"-",today.getDate());
     // console.log("date",date.getFullYear(),"-",date.getMonth(),"-",date.getDate());
-    if(today.getFullYear() === date.getFullYear()
-      && today.getMonth()  === date.getMonth()
-      && today.getDate()    === date.getDate()) {
+    if (today.getFullYear() === date.getFullYear()
+      && today.getMonth() === date.getMonth()
+      && today.getDate() === date.getDate()) {
       this.datePickerClass = "datePicker";
     } else {
       this.datePickerClass = "datePickerDiff";
@@ -45,15 +49,16 @@ export class MainNavComponent {
     this.dateService.dateChangeListener.next();
   }
 
-  itemClicked(compName:string) {
-    // console.log(compName);
+  itemClicked(compName: string, drawer: MatSidenav) {
+    console.log(drawer);
     this.inventoryClass = "";
     this.productClass = "";
     this.vendorClass = "";
-      switch(compName) {
-      case 'inventory' : this.inventoryClass = "active"; break;
-      case 'products' : this.productClass = "active"; break;
-      case 'vendors' : this.vendorClass = "active"; break;
+    switch (compName) {
+      case 'inventory': this.inventoryClass = "active"; break;
+      case 'products': this.productClass = "active"; break;
+      case 'vendors': this.vendorClass = "active"; break;
     }
+    drawer.close();
   }
 }

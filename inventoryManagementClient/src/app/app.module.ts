@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { MatTableModule,
          MatButtonModule,
@@ -76,7 +77,8 @@ import { InventoryService } from './services/inventory.service';
    MatPaginatorModule,
    MatDatepickerModule,
    MatNativeDateModule,
-   MatTooltipModule
+   MatTooltipModule,
+   MatExpansionModule
   ],
   providers: [
     ProductService,

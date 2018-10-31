@@ -1,5 +1,5 @@
 .vendors-table-div {
-    height: 360px;
+    /* height: 360px; */
     overflow: auto;
     margin: 2%;
     width: 96%
@@ -7,25 +7,18 @@
 .vendors-table {
     background: rgb(181, 230, 148);
 }
-button.add-vendor-button {
-    background: rgb(101, 193, 247);
-    margin: 2%;
-    width: 46%
+.add-vendor-row {
+    background: rgb(101, 216, 236);
 }
-button.add-button {
-    background: rgb(101, 193, 247);
-    margin: 2%;
-    width: 96%
+button.add-vendor-button {
+    background: rgb(179, 247, 101);
 }
 button.update-vendor-button {
-    background: rgb(203, 247, 101);
-    margin: 2%;
-    width: 46%
+    background: rgb(101, 216, 236);
 }
 button.cancel-vendor-button {
     background: rgb(218, 90, 81);
-    margin: 2%;
-    width: 46%
+    margin-left: 2vh;
 }
 mat-card.add-vendor-card {
     margin: auto;
@@ -33,4 +26,8 @@ mat-card.add-vendor-card {
 }
 .selectedRow {
     background: rgb(126, 167, 99);
+}
+
+.mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
+    flex-basis: 0;
 }

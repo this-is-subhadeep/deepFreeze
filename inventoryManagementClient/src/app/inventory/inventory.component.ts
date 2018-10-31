@@ -71,13 +71,71 @@ export class InventoryComponent implements OnInit {
     return "";
   }
 
+  private getBalance() {
+    let total = 0;
+    this.dataSource.connect().subscribe(compInvRows => {
+      compInvRows.forEach(compInvRow => {
+        total+=compInvRow.stockBalance;
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalIn() {
+    let total = 0;
+    this.dataSource.connect().subscribe(compInvRows => {
+      compInvRows.forEach(compInvRow => {
+        total+=compInvRow.stockTotalIn;
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalSenIn() {
+    let total = 0;
+    this.dataSource.connect().subscribe(compInvRows => {
+      compInvRows.forEach(compInvRow => {
+        total+=compInvRow.stockSenIn;
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalOthersIn() {
+    let total = 0;
+    this.dataSource.connect().subscribe(compInvRows => {
+      compInvRows.forEach(compInvRow => {
+        total+=compInvRow.stockOthersIn;
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalOut() {
+    let total = 0;
+    let value = 0;
+    this.dataSource.connect().subscribe(compInvRows => {
+      compInvRows.forEach(compInvRow => {
+        total+=compInvRow.stockTotalOut;
+        if(compInvRow.prodDets!=null && compInvRow.prodDets!=undefined) {
+          value+=compInvRow.prodDets.sellingPrice.valueOf()*compInvRow.stockTotalOut
+        }
+      })
+    });
+
+    return "Total : "+total+" - Value : "+value;
+  }
+
   private  getVenDetails(ven:CompleteVendor) {
     // console.log(ven.name," - ",ven.deposit," - ",ven.totalLoan);
     let totalOut = 0;
     this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         if(compInvRow.vendorValue[ven.id]!=null && compInvRow.vendorValue[ven.id]!=undefined) {
-          compInvRow.prodDets.sellingPrice
           totalOut+=compInvRow.prodDets.sellingPrice.valueOf()*compInvRow.vendorValue[ven.id];
         }
       })
