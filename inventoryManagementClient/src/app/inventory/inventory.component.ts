@@ -7,8 +7,6 @@ import { fadeInEffect, dropDownEffect } from '../animations';
 import { CompleteInventoryRow, CompleteInventory } from './inventory-definition';
 import { VendorService } from '../services/vendor.service';
 import { CompleteVendor } from '../vendor/vendor-definition';
-import { VendorDataSource } from '../vendor/vendor-datasource';
-import { BehaviorSubject } from 'rxjs';
 
 const staticColumnsToDisplay=["productName",
                               "stockOpening",

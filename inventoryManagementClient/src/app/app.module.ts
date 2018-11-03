@@ -19,7 +19,8 @@ import { MatTableModule,
          MatCardModule,
          MatPaginatorModule,
          MatDatepickerModule,
-         MatTooltipModule
+         MatTooltipModule,
+         MatMenuModule
         } from '@angular/material';
 import { MatNativeDateModule } from '@angular/material'
 import { MatIconModule } from '@angular/material'
@@ -30,6 +31,7 @@ import { MainNavComponent } from './main-nav/main-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { InventoryComponent } from './inventory/inventory.component';
 import { VendorComponent } from './vendor/vendor.component';
+import { SellingComponent } from './selling/selling.component';
 import { DateService } from './services/date.service';
 import { VendorService } from './services/vendor.service';
 import { InventoryService } from './services/inventory.service';
@@ -39,7 +41,8 @@ import { InventoryService } from './services/inventory.service';
     ProductComponent,
     MainNavComponent,
     InventoryComponent,
-    VendorComponent
+    VendorComponent,
+    SellingComponent
   ],
   imports: [
     BrowserModule,
@@ -71,6 +74,10 @@ import { InventoryService } from './services/inventory.service';
       {
         path: 'vendors',
         component: VendorComponent
+      },
+      {
+        path: 'selling',
+        component: SellingComponent
       }
    ]),
    MatCardModule,
@@ -78,7 +85,8 @@ import { InventoryService } from './services/inventory.service';
    MatDatepickerModule,
    MatNativeDateModule,
    MatTooltipModule,
-   MatExpansionModule
+   MatExpansionModule,
+   MatMenuModule
   ],
   providers: [
     ProductService,

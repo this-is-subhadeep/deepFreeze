@@ -15,6 +15,7 @@ export class MainNavComponent {
   private inventoryClass = "";
   private productClass = "";
   private vendorClass = "";
+  private sellingClass = "";
   private datePickerClass = "datePicker";
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -37,8 +38,6 @@ export class MainNavComponent {
   set dateSelected(date: Date) {
     this.dateService.date = date;
     let today = new Date();
-    // console.log("today",today.getFullYear(),"-",today.getMonth(),"-",today.getDate());
-    // console.log("date",date.getFullYear(),"-",date.getMonth(),"-",date.getDate());
     if (today.getFullYear() === date.getFullYear()
       && today.getMonth() === date.getMonth()
       && today.getDate() === date.getDate()) {
@@ -58,6 +57,7 @@ export class MainNavComponent {
       case 'inventory': this.inventoryClass = "active"; break;
       case 'products': this.productClass = "active"; break;
       case 'vendors': this.vendorClass = "active"; break;
+      case 'selling': this.sellingClass = "active"; break;
     }
     drawer.close();
   }

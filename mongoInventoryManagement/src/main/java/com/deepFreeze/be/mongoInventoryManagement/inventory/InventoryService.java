@@ -13,12 +13,16 @@ import com.deepFreeze.be.mongoInventoryManagement.product.CompleteProduct;
 import com.deepFreeze.be.mongoInventoryManagement.product.ProductService;
 import com.deepFreeze.be.mongoInventoryManagement.vendor.CompleteVendor;
 import com.deepFreeze.be.mongoInventoryManagement.vendor.VendorService;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @Service
 public class InventoryService {
 
 	@Autowired
 	InventoryRepository inventoryRepository;
+	
+	@Autowired
+	InventoryOpeningRepository inventoryOpeningRepository;
 	
 	@Autowired
 	ProductService productService;
@@ -32,10 +36,24 @@ public class InventoryService {
 		return invList;
 	}
 
+	public List<InventoryOpening> getAllInventoryOpening() {
+		List<InventoryOpening> invOpnList = inventoryOpeningRepository.findAll();
+		Collections.sort(invOpnList);
+		return invOpnList;
+	}
+
 	public Inventory getInventory(LocalDate refDate) {
 		Optional<Inventory> inventoryContainer = inventoryRepository.findById(refDate);
 		if (inventoryContainer.isPresent()) {
 			return inventoryContainer.get();
+		}
+		return null;
+	}
+
+	public InventoryOpening getInventoryOpening(LocalDate refDate) {
+		Optional<InventoryOpening> inventoryOpeningContainer = inventoryOpeningRepository.findById(refDate);
+		if (inventoryOpeningContainer.isPresent()) {
+			return inventoryOpeningContainer.get();
 		}
 		return null;
 	}
@@ -49,17 +67,75 @@ public class InventoryService {
 		CompleteInventory compInv = new CompleteInventory(getDefaultInventoryRows(refDate), compVens);
 		List<CompleteProduct> compProds = productService.getAllCompleteProducts(refDate);
 		Inventory inv = getInventory(refDate);
+		LocalDate openingDate = refDate.withDayOfMonth(02);
+		InventoryOpening invOpn = getInventoryOpening(openingDate);
+		System.out.println(refDate + " - " + openingDate+" - " +invOpn);
 		fillStockIn(inv, compInv, compProds);
 		fillStockOut(inv, compInv, compProds);
+		fillStockOpening(invOpn, compInv, compProds);
 		compInv.getRows().forEach(invRow -> {
+			int totalStockOpening = invRow.getStockOpening()!=null? invRow.getStockOpening() : 0;
 			int totalIn = invRow.getStockTotalIn()!=null? invRow.getStockTotalIn() : 0;
 			int totalOut = invRow.getStockTotalOut()!=null? invRow.getStockTotalOut() : 0;
-			int balance = totalIn - totalOut;
+			int balance = totalStockOpening + totalIn - totalOut;
 			if(balance!=0) {
-				invRow.setStockBalance(totalIn - totalOut);
+				invRow.setStockBalance(balance);
 			}
 		});
 		return compInv;
+	}
+	
+	public void fillStockOpening(InventoryOpening invOpn, CompleteInventory compInv, List<CompleteProduct> compProds) {
+		if(invOpn!=null) {
+			List<StockInOut> stockOpenings = invOpn.getStockOpeing();
+			if(stockOpenings!=null) {
+				stockOpenings.forEach(stockOpening -> {
+					if(stockOpening.getId()!=null && stockOpening.getId().getProductId() != null) {
+						compInv.getRows().forEach(row -> {
+							if (row.getId().equals(stockOpening.getId().getProductId())) {
+								row.setStockOpening(null);
+								if(stockOpening.getPackages()!=0) {
+									int packageSize = 0;
+									for (CompleteProduct compProd : compProds) {
+										if (compProd.getId().equals(stockOpening.getId().getProductId())) {
+											packageSize = compProd.getPackageSize();
+										}
+									}
+									Integer totalStockOpening = row.getStockOpening();
+									if(totalStockOpening==null) {
+										totalStockOpening = new Integer(0);
+									}
+									totalStockOpening = totalStockOpening.intValue() + stockOpening.getPackages()*packageSize;
+									row.setStockOpening(totalStockOpening);		
+								}
+								if (stockOpening.getPieces() != 0) {
+									Integer totalStockOpening = row.getStockOpening();
+									if(totalStockOpening==null) {
+										totalStockOpening = new Integer(0);
+									}
+									totalStockOpening = totalStockOpening.intValue() + stockOpening.getPieces();
+									row.setStockOpening(totalStockOpening);									
+								}
+								if(row.getStockTotalIn()!=null) {
+									Integer totalStockOpening = row.getStockOpening();
+									if(totalStockOpening==null) {
+										totalStockOpening = new Integer(0);
+									}
+									totalStockOpening = totalStockOpening.intValue() + row.getStockTotalIn();
+								}
+								if(row.getStockTotalOut()!=null) {
+									Integer totalStockOpening = row.getStockOpening();
+									if(totalStockOpening==null) {
+										totalStockOpening = new Integer(0);
+									}
+									totalStockOpening = totalStockOpening.intValue() - row.getStockTotalOut();
+								}
+							}
+						});
+					}
+				});
+			}
+		}
 	}
 	
 	private void fillStockIn(Inventory inv, CompleteInventory compInv, List<CompleteProduct> compProds) {

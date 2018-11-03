@@ -1,134 +1,132 @@
-<div>
-  <div @fadeIn>
-    <div class="vendors-table-div mat-elevation-z10">
-      <mat-accordion>
-        <mat-expansion-panel class='vendors-table' (closed)='cancelButtonPressed()' *ngFor="let compVen of completeVendors">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{compVen.name}}
-            </mat-panel-title>
-            <mat-panel-description>
-              {{getFormattedtotalLoan(compVen)}}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
+<div @fadeIn>
+  <div class="vendors-table-div mat-elevation-z10">
+    <mat-accordion>
+      <mat-expansion-panel class='vendors-table' (closed)='cancelButtonPressed()' *ngFor="let compVen of completeVendors">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{compVen.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{getFormattedtotalLoan(compVen)}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
 
-          <mat-form-field>
-            <input matInput required maxlength="20" [(ngModel)]="compVen.name" name="updateVendorName"
-              #updateVendorName="ngModel" id="updateVendorName" placeholder="Vendor Name">
-            <mat-error *ngIf="updateVendorName.invalid && updateVendorName.errors.required">
-              Please enter a Vendor Name !!
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput required maxlength="20" [(ngModel)]="compVen.name" name="updateVendorName" #updateVendorName="ngModel"
+            id="updateVendorName" placeholder="Vendor Name">
+          <mat-error *ngIf="updateVendorName.invalid && updateVendorName.errors.required">
+            Please enter a Vendor Name !!
+          </mat-error>
+        </mat-form-field>
 
-          <mat-form-field>
-            <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.loanAdded" name="updateLoanAdded"
-              #updateLoanAdded="ngModel" id="updateLoanAdded" placeholder="Loan +">
-            <mat-error *ngIf="updateLoanAdded.invalid && updateLoanAdded.errors.pattern">
-              Loan Amount is not of currency format
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.loanAdded" name="updateLoanAdded"
+            #updateLoanAdded="ngModel" id="updateLoanAdded" placeholder="Loan +">
+          <mat-error *ngIf="updateLoanAdded.invalid && updateLoanAdded.errors.pattern">
+            Loan Amount is not of currency format
+          </mat-error>
+        </mat-form-field>
 
-          <mat-form-field>
-            <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.loanPayed" name="updateLoanPayed"
-              #updateLoanPayed="ngModel" id="updateLoanPayed" placeholder="Loan -">
-            <mat-error *ngIf="updateLoanPayed.invalid && updateLoanPayed.errors.pattern">
-              Payed Amount is not of currency format
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.loanPayed" name="updateLoanPayed"
+            #updateLoanPayed="ngModel" id="updateLoanPayed" placeholder="Loan -">
+          <mat-error *ngIf="updateLoanPayed.invalid && updateLoanPayed.errors.pattern">
+            Payed Amount is not of currency format
+          </mat-error>
+        </mat-form-field>
 
-          <mat-form-field>
-            <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.openingDp" name="updateOpeningDp"
-              #updateOpeningDp="ngModel" id="updateOpeningDp" placeholder="Opening DP">
-            <mat-error *ngIf="updateOpeningDp.invalid && updateOpeningDp.errors.pattern">
-              Opening DP is not of currency format
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.openingDp" name="updateOpeningDp"
+            #updateOpeningDp="ngModel" id="updateOpeningDp" placeholder="Opening DP">
+          <mat-error *ngIf="updateOpeningDp.invalid && updateOpeningDp.errors.pattern">
+            Opening DP is not of currency format
+          </mat-error>
+        </mat-form-field>
 
-          <mat-form-field>
-            <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.deposit" name="updateDeposit"
-              #updateDeposit="ngModel" id="updateDeposit" placeholder="Deposit">
-            <mat-error *ngIf="updateDeposit.invalid && updateDeposit.errors.pattern">
-              Deposit is not of currency format
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="compVen.deposit" name="updateDeposit"
+            #updateDeposit="ngModel" id="updateDeposit" placeholder="Deposit">
+          <mat-error *ngIf="updateDeposit.invalid && updateDeposit.errors.pattern">
+            Deposit is not of currency format
+          </mat-error>
+        </mat-form-field>
 
-          <mat-form-field>
-            <textarea matInput type="text" [(ngModel)]="compVen.remarks" name="updateRemarks" #updateRemarks="ngModel"
-              id="updateRemarks" placeholder="Remarks"></textarea>
-          </mat-form-field>
+        <mat-form-field>
+          <textarea matInput type="text" [(ngModel)]="compVen.remarks" name="updateRemarks" #updateRemarks="ngModel" id="updateRemarks"
+            placeholder="Remarks"></textarea>
+        </mat-form-field>
 
-          <mat-action-row>
-            <button mat-raised-button type="button" class="update-vendor-button" (click)="updateVenButtonPressed(compVen)"
-              [disabled]="!isUpdateEnabled(compVen)">
-              Update Vendor
-            </button>
-          </mat-action-row>
-        </mat-expansion-panel>
-        <mat-expansion-panel class='add-vendor-row' (closed)='cancelButtonPressed()'>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Add new Vendor
-            </mat-panel-title>
-            <mat-panel-description></mat-panel-description>
-          </mat-expansion-panel-header>
+        <mat-action-row>
+          <button mat-raised-button type="button" class="update-vendor-button" (click)="updateVenButtonPressed(compVen)"
+            [disabled]="!isUpdateEnabled(compVen)">
+            Update Vendor
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+      <mat-expansion-panel class='add-vendor-row' (closed)='cancelButtonPressed()'>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Add new Vendor
+          </mat-panel-title>
+          <mat-panel-description></mat-panel-description>
+        </mat-expansion-panel-header>
 
-          <mat-form-field>
-            <input matInput required maxlength="20" [(ngModel)]="newVendorName" name="vendorName" #vendorName="ngModel"
-              id="vendorName" placeholder="Vendor Name">
-            <mat-hint>Name of the Vendor</mat-hint>
-            <mat-error *ngIf="vendorName.invalid && vendorName.errors.required">
-              Please enter a vendor Name !!
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newLoanAdded" name="loanAdded" #loanAdded="ngModel"
-              id="loanAdded" type="number" placeholder="Loan +">
-            <mat-hint>New Loan Amount</mat-hint>
-            <mat-error *ngIf="loanAdded.invalid && loanAdded.errors.pattern">
-              Loan Amount is not of currency format
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newLoanPayed" name="loanPayed" #loanPayed="ngModel"
-              id="loanPayed" type="number" placeholder="Loan -">
-            <mat-hint>Loan Amount Payed Back</mat-hint>
-            <mat-error *ngIf="loanPayed.invalid && loanPayed.errors.pattern">
-              Amount is not of currency format
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newOpeningDP" name="openingDP" #openingDP="ngModel"
-              id="openingDP" type="number" placeholder="Opening Dp">
-            <mat-hint>Vendors Opening Dp</mat-hint>
-            <mat-error *ngIf="openingDP.invalid && openingDP.errors.pattern">
-              Opening DP is not of currency format
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newDeposit" name="deposit" #deposit="ngModel"
-              id="deposit" type="number" placeholder="Deposit">
-            <mat-hint>Deposit</mat-hint>
-            <mat-error *ngIf="deposit.invalid && deposit.errors.pattern">
-              Deposit is not of currency format
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <textarea matInput [(ngModel)]="newRemarks" name="remarks" #remarks="ngModel" id="remarks" type="number"
-              placeholder="Remarks"></textarea>
-            <mat-hint>Any Commnent ?</mat-hint>
-          </mat-form-field>
+        <mat-form-field>
+          <input matInput required maxlength="20" [(ngModel)]="newVendorName" name="vendorName" #vendorName="ngModel"
+            id="vendorName" placeholder="Vendor Name">
+          <mat-hint>Name of the Vendor</mat-hint>
+          <mat-error *ngIf="vendorName.invalid && vendorName.errors.required">
+            Please enter a vendor Name !!
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newLoanAdded" name="loanAdded" #loanAdded="ngModel"
+            id="loanAdded" type="number" placeholder="Loan +">
+          <mat-hint>New Loan Amount</mat-hint>
+          <mat-error *ngIf="loanAdded.invalid && loanAdded.errors.pattern">
+            Loan Amount is not of currency format
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newLoanPayed" name="loanPayed" #loanPayed="ngModel"
+            id="loanPayed" type="number" placeholder="Loan -">
+          <mat-hint>Loan Amount Payed Back</mat-hint>
+          <mat-error *ngIf="loanPayed.invalid && loanPayed.errors.pattern">
+            Amount is not of currency format
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newOpeningDP" name="openingDP" #openingDP="ngModel"
+            id="openingDP" type="number" placeholder="Opening Dp">
+          <mat-hint>Vendors Opening Dp</mat-hint>
+          <mat-error *ngIf="openingDP.invalid && openingDP.errors.pattern">
+            Opening DP is not of currency format
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newDeposit" name="deposit" #deposit="ngModel"
+            id="deposit" type="number" placeholder="Deposit">
+          <mat-hint>Deposit</mat-hint>
+          <mat-error *ngIf="deposit.invalid && deposit.errors.pattern">
+            Deposit is not of currency format
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput [(ngModel)]="newRemarks" name="remarks" #remarks="ngModel" id="remarks" type="number"
+            placeholder="Remarks"></textarea>
+          <mat-hint>Any Commnent ?</mat-hint>
+        </mat-form-field>
 
-          <mat-action-row>
-            <button mat-raised-button type="button" class="add-vendor-button" (click)="addButtonPressed()" [disabled]="vendorName.invalid ||
+        <mat-action-row>
+          <button mat-raised-button type="button" class="add-vendor-button" (click)="addButtonPressed()" [disabled]="vendorName.invalid ||
                         loanAdded.invalid ||
                         loanPayed.invalid ||
                         openingDP.invalid ||
                         deposit.invalid">
-              Add
-            </button>
-          </mat-action-row>
-        </mat-expansion-panel>
-      </mat-accordion>
-    </div>
+            Add
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </div>

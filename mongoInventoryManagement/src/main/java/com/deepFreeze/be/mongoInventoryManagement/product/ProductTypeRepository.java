@@ -1,7 +1,12 @@
 package com.deepFreeze.be.mongoInventoryManagement.product;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ProductTypeRepository extends MongoRepository<ProductType, String> {
+import com.deepFreeze.be.mongoInventoryManagement.support.GenericRepository;
 
+@Repository
+public class ProductTypeRepository extends GenericRepository<ProductType, String> {
+	public ProductTypeRepository() {
+		super(ProductType.class);
+	}
 }

@@ -22,12 +22,29 @@ public class InventoryController {
 		return inventoryService.getAllInventory();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/inventory-opening")
+	public List<InventoryOpening> getAllInventoryOpening() {
+		return inventoryService.getAllInventoryOpening();
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/inventory/{refDate}")
 	public Inventory getInventory(@PathVariable String refDate) {
 		LocalDate refLocalDate = null;
 		try {
 			refLocalDate = LocalDate.parse(refDate);
 			return inventoryService.getInventory(refLocalDate);
+		} catch (DateTimeParseException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/inventory-opening/{refDate}")
+	public InventoryOpening getInventoryOpening(@PathVariable String refDate) {
+		LocalDate refLocalDate = null;
+		try {
+			refLocalDate = LocalDate.parse(refDate);
+			return inventoryService.getInventoryOpening(refLocalDate);
 		} catch (DateTimeParseException e) {
 			System.out.println(e);
 		}
