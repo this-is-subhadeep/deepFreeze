@@ -15,10 +15,16 @@
       </mat-form-field>
       <div [hidden]='!isVendorSelected()'>
         <mat-form-field>
-          <input matInput type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="selectedVendor.deposit" name="deposit"
-            #deposit="ngModel" id="deposit" placeholder="Deposit">
+          <input matInput required [depositValidator]='getTotalAmountSold()' type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="selectedVendor.deposit"
+            name="deposit" #deposit="ngModel" id="deposit" placeholder="Deposit">
+          <mat-error *ngIf="deposit.invalid && deposit.errors.required">
+            Please enter a Deposit amount
+          </mat-error>
           <mat-error *ngIf="deposit.invalid && deposit.errors.pattern">
             Deposit is not of currency format
+          </mat-error>
+          <mat-error *ngIf="deposit.invalid && deposit.errors.depositValidator">
+            Not Enough Products Sold. Please Select More
           </mat-error>
         </mat-form-field>
       </div>
@@ -81,8 +87,15 @@
         <td>
           <mat-card class='ven-value-card'>
             <mat-form-field>
-              <input matInput type="number" maxlength="5" [(ngModel)]="sellingProduct.soldUnits">
+              <input matInput required [unitValidator]='getStockBalance(sellingProduct.product.id)' type="number"
+                maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold">
               <span matSuffix>/{{getStockBalance(sellingProduct.product.id)}}</span>
+              <mat-error *ngIf="unitsSold.invalid && unitsSold.errors.required && (unitsSold.dirty || unitsSold.touched)">
+                Please provide a Unit Amount
+              </mat-error>
+              <mat-error *ngIf="unitsSold.invalid && unitsSold.errors.unitValidator && (unitsSold.dirty || unitsSold.touched)">
+                Sold Unit exceeds Available amount
+              </mat-error>
             </mat-form-field>
           </mat-card>
         </td>

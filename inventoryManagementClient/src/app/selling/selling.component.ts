@@ -9,6 +9,7 @@ import { fadeInEffect, dropDownEffect } from '../animations';
 import { CompleteProduct } from '../product/product-definition';
 import { CompleteInventory } from '../inventory/inventory-definition';
 import { SellingData } from './selling-definition';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-selling',
@@ -19,7 +20,6 @@ import { SellingData } from './selling-definition';
 export class SellingComponent implements OnInit {
   private completeProducts: CompleteProduct[];
   private savedCompleteProducts: CompleteProduct[];
-  // private sellingProductList: CompleteProduct[];
   private sellingProductList: SellingData[];
   private completeVendors: CompleteVendor[];
   private completeInventory: CompleteInventory;
@@ -171,6 +171,14 @@ export class SellingComponent implements OnInit {
     });
     this.sellingProductList.splice(ind, 1);
     // console.log(this.sellingProductList);
+  }
+
+  private isUnitInvalid(id:number, soldUnitEle:NgModel) {
+    console.log('id :',id,'soldUnitEle :',soldUnitEle);
+    // if(soldUnitEle.value>10) {
+    //   soldUnitEle.invalid = true;
+    // }
+    return soldUnitEle.invalid;
   }
 
   private log(data) {

@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 
 import { MatTableModule,
@@ -35,6 +35,8 @@ import { SellingComponent } from './selling/selling.component';
 import { DateService } from './services/date.service';
 import { VendorService } from './services/vendor.service';
 import { InventoryService } from './services/inventory.service';
+import { UnitValidatorDirective } from './product/unit-validator.directive';
+import { DepositValidatorDirective } from './product/deposit-validator.directive';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,12 +44,15 @@ import { InventoryService } from './services/inventory.service';
     MainNavComponent,
     InventoryComponent,
     VendorComponent,
-    SellingComponent
+    SellingComponent,
+    UnitValidatorDirective,
+    DepositValidatorDirective
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatTableModule,
     MatButtonModule,
