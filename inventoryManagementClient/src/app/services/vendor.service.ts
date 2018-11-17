@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { StringResponse } from '../support/support-definition';
-import { CompleteVendor } from '../vendor/vendor-definition';
+import { StringResponse } from '../definitions/support-definition';
+import { CompleteVendor } from '../definitions/vendor-definition';
 
 @Injectable({
   providedIn: 'root'
@@ -35,12 +35,12 @@ export class VendorService {
 
   addCompleteVendor(newVendor:CompleteVendor, refDate:string) {
     let url = this.getCompleteVendorUrl+"/"+refDate;
-    return this.http.post(url,newVendor);
+    return this.http.post<CompleteVendor>(url,newVendor);
   }
   
   updateCompleteVendor(newVendor:CompleteVendor, refDate:string) {
     let url = this.getCompleteVendorUrl+"/"+refDate;
-    return this.http.put(url,newVendor);
+    return this.http.put<CompleteVendor>(url,newVendor);
   }
 
 }

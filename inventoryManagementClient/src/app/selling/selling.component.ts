@@ -4,12 +4,12 @@ import { VendorService } from '../services/vendor.service';
 import { InventoryService } from '../services/inventory.service';
 import { DateService } from '../services/date.service';
 import { DatePipe } from '@angular/common';
-import { CompleteVendor } from '../vendor/vendor-definition';
+import { CompleteVendor } from '../definitions/vendor-definition';
 import { fadeInEffect, dropDownEffect } from '../animations';
-import { CompleteProduct } from '../product/product-definition';
-import { CompleteInventory } from '../inventory/inventory-definition';
-import { SellingData } from './selling-definition';
-import { NgModel } from '@angular/forms';
+import { CompleteProduct } from '../definitions/product-definition';
+import { CompleteInventory } from '../definitions/inventory-definition';
+import { SellingData } from '../definitions/selling-definition';
+import { NgModel, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-selling',
@@ -153,13 +153,32 @@ export class SellingComponent implements OnInit {
 
   private saveButtonPressed() {
     console.log('Save Button Pressed', this.sellingProductList);
+    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    this.completeInventory.rows.forEach(row => {
+      this.sellingProductList.forEach(soldRow => {
+        if(row.id === soldRow.product.id) {
+          row.vendorValue[this.selectedVendor.id] = soldRow.soldUnits.valueOf();
+        }
+      });
+    });
+    this.completeInventory.vens.forEach(ven => {
+      if(ven.id === this.selectedVendor.id) {
+        ven.deposit = this.selectedVendor.deposit;
+      }
+    });
+    console.log('Final Inventory :', this.completeInventory);
+    this.inventoryService.saveCompleteInventory(this.completeInventory, date).subscribe(resp => {
+      this.loadCompleteInventoryData();
+    });
+    this.refresh();
   }
 
   private saveAndBillButtonPressed() {
-    console.log('Save & Bill Button Pressed', this.sellingProductList);
-  }
+    this.saveButtonPressed();
+    console.log('Bill Button Pressed');
+  }  
 
-  private deleteProductFromLIst(ind: number) {
+  private deleteProductFromList(ind: number) {
     console.log('Deleting Product :', ind);
     this.completeProducts.push(this.sellingProductList[ind].product);
     this.completeProducts = this.completeProducts.sort((ele1, ele2) => {
@@ -170,7 +189,6 @@ export class SellingComponent implements OnInit {
       return compareRes;
     });
     this.sellingProductList.splice(ind, 1);
-    // console.log(this.sellingProductList);
   }
 
   private isUnitInvalid(id:number, soldUnitEle:NgModel) {

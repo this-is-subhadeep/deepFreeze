@@ -59,31 +59,43 @@ public class VendorService {
 		}
 		return maxVenId.substring(0, 3) + String.format("%06d", vidNumber + 1);
 	}
+	
+	private CompleteVendor getCompleteVendorfromVendor(Vendor ven, LocalDate refDate) {
+		CompleteVendor compVen = new CompleteVendor();
+		compVen.setId(ven.getId());
+		compVen.setName(ven.getName());
+		compVen.setTotalLoan(getTotalLoan(ven, refDate));
+		ven.getDetails().forEach(detail -> {
+			if (refDate.compareTo(detail.getId()) == 0) {
+				compVen.setLoanAdded((detail.getLoanAdded()));
+				compVen.setLoanPayed((detail.getLoanPayed()));
+				compVen.setDeposit((detail.getDeposit()));
+				compVen.setRemarks((detail.getRemarks()));
+			}
+		});
+		for (VendorDetail detail : ven.getDetails()) {
+			if (refDate.compareTo(detail.getId()) >= 0) {
+				compVen.setOpeningDp((detail.getOpeningDp()));
+				break;
+			}
+		}
+		return compVen;
+	}
+	
+	public CompleteVendor getCompleteVendor(String id, LocalDate refDate) {
+		CompleteVendor compVen = new CompleteVendor();
+		if (id!=null && refDate != null) {
+			compVen = getCompleteVendorfromVendor(getVendor(id), refDate);
+		}
+		return compVen;
+	}
 
 	public List<CompleteVendor> getAllCompleteVendors(LocalDate refDate) {
 		List<CompleteVendor> compVenList = new ArrayList<>();
 		if (refDate != null) {
 			getAllVendors().forEach(ven -> {
 				if (refDate.compareTo(ven.getStartDate()) >= 0 && refDate.compareTo(ven.getEndDate()) < 0) {
-					CompleteVendor compVen = new CompleteVendor();
-					compVen.setId(ven.getId());
-					compVen.setName(ven.getName());
-					compVen.setTotalLoan(getTotalLoan(ven, refDate));
-					ven.getDetails().forEach(detail -> {
-						if (refDate.compareTo(detail.getId()) == 0) {
-							compVen.setLoanAdded((detail.getLoanAdded()));
-							compVen.setLoanPayed((detail.getLoanPayed()));
-							compVen.setDeposit((detail.getDeposit()));
-							compVen.setRemarks((detail.getRemarks()));
-						}
-					});
-					for (VendorDetail detail : ven.getDetails()) {
-						if (refDate.compareTo(detail.getId()) >= 0) {
-							compVen.setOpeningDp((detail.getOpeningDp()));
-							break;
-						}
-					}
-					compVenList.add(compVen);
+					compVenList.add(getCompleteVendorfromVendor(ven, refDate));
 				}
 			});
 		}

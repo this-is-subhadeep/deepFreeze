@@ -4,9 +4,9 @@ import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { InventoryDataSource } from './inventory-datasource';
 import { fadeInEffect, dropDownEffect } from '../animations';
-import { CompleteInventoryRow, CompleteInventory } from './inventory-definition';
+import { CompleteInventoryRow, CompleteInventory } from '../definitions/inventory-definition';
 import { VendorService } from '../services/vendor.service';
-import { CompleteVendor } from '../vendor/vendor-definition';
+import { CompleteVendor } from '../definitions/vendor-definition';
 
 const staticColumnsToDisplay=["productName",
                               "stockOpening",
@@ -159,7 +159,7 @@ export class InventoryComponent implements OnInit {
     });
     this.dataSource.vendorObservable.subscribe(vendors => {
       compInv.vens = vendors;
-    })
+    });
     this.service.saveCompleteInventory(compInv, date).subscribe(resp => {
       this.loadCompleteInventoryData();
     });

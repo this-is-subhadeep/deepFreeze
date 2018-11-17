@@ -63,21 +63,27 @@ public class VendorController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/complete-Vendors/{refDate}")
-	public void addCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
+	public CompleteVendor addCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
 		try {
-			service.addCompleteVendor(completeVendor, LocalDate.parse(refDate));
+			LocalDate date = LocalDate.parse(refDate);
+			service.addCompleteVendor(completeVendor, date);
+			return service.getCompleteVendor(completeVendor.getId(), date);
 		} catch (DateTimeParseException e) {
 			e.printStackTrace(System.out);
 		}
+		return null;
 	}
 
 	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(method = RequestMethod.PUT, value = "/complete-Vendors/{refDate}")
-	public void updateCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
+	public CompleteVendor updateCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
 		try {
-			service.updateCompleteVendor(completeVendor, LocalDate.parse(refDate));
+			LocalDate date = LocalDate.parse(refDate);
+			service.updateCompleteVendor(completeVendor, date);
+			return service.getCompleteVendor(completeVendor.getId(), date);
 		} catch (DateTimeParseException e) {
 			e.printStackTrace(System.out);
 		}
+		return null;
 	}
 }

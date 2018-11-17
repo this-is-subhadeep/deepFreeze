@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CompleteInventory } from '../inventory/inventory-definition';
+import { CompleteInventory } from '../definitions/inventory-definition';
 import { environment } from '../../environments/environment';
 
 @Injectable({

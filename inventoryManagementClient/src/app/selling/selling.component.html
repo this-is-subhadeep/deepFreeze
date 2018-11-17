@@ -55,40 +55,14 @@
       </tr>
       <tr *ngFor="let sellingProduct of sellingProductList; let i = index">
         <td>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header class='product-panel-header'>
-              <mat-panel-title style="align-items: center">
-                <span>
-                  {{sellingProduct.product.name}}
-                </span>
-              </mat-panel-title>
-              <mat-panel-description>
-                {{sellingProduct.product.productType.name}}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            <mat-form-field>
-              <input matInput [value]="sellingProduct.product.packageSize" name="packageSize" id="packageSize"
-                placeholder="Size" disabled>
-            </mat-form-field>
-
-            <mat-form-field>
-              <input matInput [value]="sellingProduct.product.costPrice" name="costPrice" id="costPrice" placeholder="Cost"
-                disabled>
-            </mat-form-field>
-
-            <mat-form-field>
-              <input matInput [value]="sellingProduct.product.sellingPrice" name="sellingPrice" id="sellingPrice"
-                placeholder="Selling" disabled>
-            </mat-form-field>
-
-          </mat-expansion-panel>
+          <app-product [product]='sellingProduct.product' [editable]='false'></app-product>
         </td>
         <td>
           <mat-card class='ven-value-card'>
             <mat-form-field>
               <input matInput required [unitValidator]='getStockBalance(sellingProduct.product.id)' type="number"
-                maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold">
+                maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold"
+                (change)='deposit.control.updateValueAndValidity()'>
               <span matSuffix>/{{getStockBalance(sellingProduct.product.id)}}</span>
               <mat-error *ngIf="unitsSold.invalid && unitsSold.errors.required && (unitsSold.dirty || unitsSold.touched)">
                 Please provide a Unit Amount
@@ -106,7 +80,7 @@
         </td>
         <td>
           <mat-card class='action-card'>
-            <button mat-button type='button' (click)='deleteProductFromLIst(i)'>
+            <button mat-button type='button' (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'>
               <mat-icon aria-label="Side nav toggle icon">delete</mat-icon>
             </button>
           </mat-card>
