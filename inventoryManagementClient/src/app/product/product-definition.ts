@@ -1,24 +1,24 @@
 export class ProductType {
-    id:string;
+    _id:string;
     name:string;
     showOrder:number;
     clone():ProductType {
         let newClone = new ProductType();
-        newClone.id = this.id;
+        newClone._id = this._id;
         newClone.name = this.name;
         newClone.showOrder = this.showOrder;
         return newClone;
     }
     static cloneAnother (prodTyp:ProductType):ProductType {
         let newClone = new ProductType();
-        newClone.id = prodTyp.id;
+        newClone._id = prodTyp._id;
         newClone.name = prodTyp.name;
         newClone.showOrder = prodTyp.showOrder;
         return newClone;
     }
 }
 export class CompleteProduct {
-    id:string;
+    _id:string;
     name:string;
     productType:ProductType;
     packageSize:Number;
@@ -29,7 +29,7 @@ export class CompleteProduct {
     }
     clone() {
         let newClone = new CompleteProduct();
-        newClone.id = this.id;
+        newClone._id = this._id;
         newClone.name = this.name;
         newClone.productType = this.productType.clone();
         newClone.packageSize = this.packageSize;
@@ -39,7 +39,7 @@ export class CompleteProduct {
     }
     static cloneAnother (compProd:CompleteProduct):CompleteProduct {
         let newClone = new CompleteProduct();
-        newClone.id = compProd.id;
+        newClone._id = compProd._id;
         newClone.name = compProd.name;
         newClone.productType = ProductType.cloneAnother(compProd.productType);
         newClone.packageSize = compProd.packageSize;

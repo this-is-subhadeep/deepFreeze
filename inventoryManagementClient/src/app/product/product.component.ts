@@ -32,7 +32,7 @@ export class ProductComponent implements OnInit {
     this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteProductData();
-      this.service.refresh();
+      // this.service.refresh();
       this.refresh();
     });
   }
@@ -64,7 +64,8 @@ export class ProductComponent implements OnInit {
   }
 
   get newProductTypeId() {
-    return this.newCompleteProduct.productType.id;
+    console.log(this.newCompleteProduct);
+    return this.newCompleteProduct.productType._id;
   }
 
   set newProductTypeId(id) {
@@ -109,13 +110,13 @@ export class ProductComponent implements OnInit {
   }
   isThisProductSelected(compProd:CompleteProduct) {
     return (this.selectedCompleteProduct!=null
-            && this.selectedCompleteProduct.id === compProd.id);
+            && this.selectedCompleteProduct._id === compProd._id);
   }
   handlePageEvent(e:PageEvent) {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
     this.loadCompleteProductData();
-    this.service.refresh();
+    // this.service.refresh();
   }
   addProdButtonPressed() {
     this.refresh();
@@ -127,7 +128,7 @@ export class ProductComponent implements OnInit {
     console.log(this.selectedCompleteProduct,date);
     this.service.updateCompleteProduct(this.selectedCompleteProduct,date).subscribe(resp => {
       this.loadCompleteProductData();
-      this.service.refresh();
+      // this.service.refresh();
     })
     this.showUpdateButton=false;
     this.refresh();
@@ -135,12 +136,12 @@ export class ProductComponent implements OnInit {
 
   addButtonPressed() {
     let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    let nextProductId = this.service.nextProductId;
-    this.newCompleteProduct.id=this.service.nextProductId;
+    // let nextProductId = this.service.nextProductId;
+    this.newCompleteProduct._id=null;
     console.log(this.newCompleteProduct,date);
     this.service.addCompleteProduct(this.newCompleteProduct,date).subscribe(resp => {
       this.loadCompleteProductData();
-      this.service.refresh();
+      // this.service.refresh();
     })
     this.showAddForm=false;
     this.refresh();

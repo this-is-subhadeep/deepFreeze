@@ -7,7 +7,7 @@
         <!-- Product Id -->
         <ng-container matColumnDef="productId">
           <mat-header-cell *matHeaderCellDef>Product Id</mat-header-cell>
-          <mat-cell *matCellDef="let completeProduct"> {{ completeProduct.id }}</mat-cell>
+          <mat-cell *matCellDef="let completeProduct"> {{ completeProduct._id }}</mat-cell>
         </ng-container>
         <!-- Product Name -->
         <ng-container matColumnDef="productName">
@@ -50,11 +50,11 @@
               <mat-form-field>
                 <mat-select
                   required
-                  [(ngModel)]="selectedCompleteProduct.productType.id"
+                  [(ngModel)]="selectedCompleteProduct.productType._id"
                   name="updateProductTypeList"
                   #updateProductTypeList="ngModel"
                   id="updateProductTypeList">
-                  <mat-option *ngFor="let productType of productTypes" [value]="productType.id">
+                  <mat-option *ngFor="let productType of productTypes" [value]="productType._id">
                       {{productType.name}}
                   </mat-option>
                 </mat-select>
@@ -222,7 +222,7 @@
               #productTypeList="ngModel"
               id="productTypeList"
               placeholder="Product Type">
-              <mat-option *ngFor="let productType of productTypes" [value]="productType.id">
+              <mat-option *ngFor="let productType of productTypes" [value]="productType._id">
                   {{productType.name}}
               </mat-option>
             </mat-select>

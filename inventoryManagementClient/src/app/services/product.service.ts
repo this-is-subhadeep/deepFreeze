@@ -8,12 +8,12 @@ import { StringResponse } from '../support/support-definition';
   providedIn: 'root'
 })
 export class ProductService {
-  private serverAddressNextProductId='/product-next-id';
+  // private serverAddressNextProductId='/product-next-id';
   private serverAddressProductTypes='/product-types';
   private serverAddressCompleteProducts='/complete-products';
-  private _nextProductId:string;
+  // private _nextProductId:string;
   private _productTypes:ProductType[];
-  private getNextProductIdUrl=environment.serverBase+this.serverAddressNextProductId;
+  // private getNextProductIdUrl=environment.serverBase+this.serverAddressNextProductId;
   private getProductTypesUrl=environment.serverBase+this.serverAddressProductTypes;
   private getCompleteProductUrl=environment.serverBase+this.serverAddressCompleteProducts;
   constructor(private http:HttpClient) {
@@ -21,18 +21,18 @@ export class ProductService {
     this.http.get<ProductType[]>(this.getProductTypesUrl).subscribe(data => {
       this._productTypes = data;
     })
-    this.refresh();
+    // this.refresh();
   }
 
-  refresh() {
-    this.http.get<StringResponse>(this.getNextProductIdUrl).subscribe(data => {
-      this._nextProductId = data.response;
-    });
-  }
+  // refresh() {
+  //   this.http.get<StringResponse>(this.getNextProductIdUrl).subscribe(data => {
+  //     this._nextProductId = data.response;
+  //   });
+  // }
 
-  get nextProductId() {
-    return this._nextProductId;
-  }
+  // get nextProductId() {
+  //   return this._nextProductId;
+  // }
 
   get productTypes() {
     return this._productTypes;
@@ -45,7 +45,7 @@ export class ProductService {
   getProductType(typeId:string):ProductType {
     let prodType:ProductType=null;
     this.productTypes.forEach(productType => {
-      if(productType.id==typeId) {
+      if(productType._id==typeId) {
         prodType = productType;
       }
     })
