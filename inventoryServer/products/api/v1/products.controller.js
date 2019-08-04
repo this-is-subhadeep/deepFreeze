@@ -1,21 +1,14 @@
 const service = require('./products.service');
 const logger = require('../../log');
 
-const getAllProducts = (req, res) => {
-    logger.debug('controller', 'getAllProducts');
-    service.getAllProducts().then((response) => {
-        res.status(response.status).send(response.products);
-    }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
-    });
-};
-
 const getProductsByType = (req, res) => {
     logger.debug('controller', 'getProductsByType');
     service.getProductsByType(req.body).then((response) => {
         res.status(response.status).send(response.products);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 };
 
@@ -24,7 +17,9 @@ const getAllProductTypes = (req, res) => {
     service.getAllProductTypes().then((response) => {
         res.status(response.status).send(response.productTypes);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 }
 
@@ -33,7 +28,9 @@ const getProductType = (req, res) => {
     service.getProductType(req.query.type).then((response) => {
         res.status(response.status).send(response.productType);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 }
 
@@ -43,76 +40,63 @@ const getAllCompleteProducts = (req, res) => {
     service.getAllCompleteProducts(req.params.refDate).then((response) => {
         res.status(response.status).send(response.completeProducts);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
-    });
-}
-
-const addProduct = (req, res) => {
-    logger.debug('controller','addProduct');
-    service.addProduct(req.body).then((response) => {
-        res.status(response.status).send(response.product);
-    }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 }
 
 const addProductType = (req, res) => {
     logger.debug('controller','addProductType');
     service.addProductType(req.body).then((response) => {
-        res.status(response.status).send(response.productType);
+        res.status(response.status).send(response._id);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
-    });
-}
-
-const updateProduct = (req, res) => {
-    logger.debug('controller','updateProduct');
-    service.updateProduct(req.body).then((response) => {
-        res.status(response.status).send(response.product);
-    }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 }
 
 const addCompleteProduct = (req, res) => {
     logger.debug('controller', 'addCompleteProduct');
     service.addCompleteProduct(req.body, req.params.refDate).then((response) => {
-        res.status(response.status).send(response.product);
+        res.status(response.status).send(response._id);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 };
 
 const updateProductType = (req, res) => {
     logger.debug('controller','updateProduct');
     service.updateProductType(req.body).then((response) => {
-        res.status(response.status).send(response.productType);
+        res.status(response.status).send(response._id);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 }
 
 const updateCompleteProduct = (req, res) => {
     logger.debug('controller','updateCompleteProduct');
     service.updateCompleteProduct(req.body, req.params.refDate).then((response) => {
-        res.status(response.status).send({
-            message : response.message
-        });
+        res.status(response.status).send(response._id);
     }).catch((reject) => {
-        res.status(reject.status).send(reject.message);
+        res.status(reject.status).send([{
+            code : reject.errorCode
+        }]);
     });
 }
 
 module.exports = {
-    getAllProducts,
     getProductsByType,
     getAllProductTypes,
     getProductType,
     getAllCompleteProducts,
-    addProduct,
     addProductType,
     addCompleteProduct,
-    updateProduct,
     updateProductType,
     updateCompleteProduct
 }

@@ -1,11 +1,6 @@
 const dao = require('./products.dao');
 const logger = require('../../log');
 
-const getAllProducts = () => {
-    logger.debug('service', 'getAllProducts');
-    return dao.getAllProducts();
-};
-
 const getProductsByType = (prodType) => {
     logger.debug('service', 'getProductsByType');
     return dao.getProductsByType(prodType);
@@ -31,11 +26,6 @@ const getCompleteProductsFromList = (prodList, refDate) => {
     return dao.getCompleteProductsFromList(prodList, refDate);
 };
 
-const addProduct = (prod) => {
-    logger.debug('service', 'addProduct');
-    return dao.addProduct(prod);
-};
-
 const addProductType = (prodType) => {
     logger.debug('service', 'addProductType');
     return dao.addProductType(prodType);
@@ -44,11 +34,6 @@ const addProductType = (prodType) => {
 const addCompleteProduct = (compProd, refDate) => {
     logger.debug('service', 'addCompleteProduct');
     return dao.addCompleteProduct(compProd, refDate);
-};
-
-const updateProduct = (prod) => {
-    logger.debug('service', 'updateProduct');
-    return dao.updateProduct(prod);
 };
 
 const updateProductType = (prodType) => {
@@ -62,16 +47,13 @@ const updateCompleteProduct = (compProd, refDate) => {
 };
 
 module.exports = {
-    getAllProducts,
     getProductsByType,
     getAllProductTypes,
     getProductType,
     getAllCompleteProducts,
     getCompleteProductsFromList,
-    addProduct,
     addProductType,
     addCompleteProduct,
-    updateProduct,
     updateProductType,
     updateCompleteProduct
 }

@@ -1,0 +1,309 @@
+{
+    "swagger" : "2.0",
+    "info" : {
+        "version" : "1.0.0",
+        "title" : "Product API",
+        "description" : "An API to get the available Products and their Details.",
+        "license" : {
+            "name" : "MIT",
+            "url" : "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host" : "localhost:3000",
+    "basePath" : "/api/v1",
+    "tags" : [
+        {
+            "name" : "Product Type",
+            "description" : "API to get all Product Type information"
+        },
+        {
+            "name" : "Product",
+            "description" : "API to get all Product information"
+        }
+    ],
+    "schemes" : [
+        "http"
+    ],
+    "consumes" : [
+        "application/json"
+    ],
+    "produces" : [
+        "application/json"
+    ],
+    "paths" : {
+        "/product-types" : {
+            "get" : {
+                "tags" : [
+                    "Product Type"
+                ],
+                "summary" : "Get all Product Types",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "type" : "array",
+                            "items" : {
+                                "$ref" : "#/definitions/productType"
+                            }
+                        }
+                    },
+                    "404" : {
+                        "description" : "Data Could not Fetched",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "post" : {
+                "tags" : [
+                    "Product Type"
+                ],
+                "summary" : "Creates a new Product Type",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Product Type Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/productType"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Created",
+                        "schema" :{
+                            "$ref" : "#/definitions/_id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "put" : {
+                "tags" : [
+                    "Product Type"
+                ],
+                "summary" : "Updates an existing Product Type",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Product Type Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/productType"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Updated",
+                        "schema" :{
+                            "$ref" : "#/definitions/_id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        },
+        "/complete-products/{refDate}" : {
+            "parameters" :[
+                {
+                    "name" : "refDate",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "This is the Date on which we want the product information",
+                    "type" : "string"
+                }
+            ],
+            "get" : {
+                "tags" : [
+                    "Product"
+                ],
+                "summary" : "Get all Products in the system",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "type" : "array",
+                            "items" :{
+                                "$ref" : "#/definitions/completeProduct"
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "404" : {
+                        "description" : "Data Could not Fetched",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "post" : {
+                "tags" : [
+                    "Product"
+                ],
+                "summary" : "Creates a new Product",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Product Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/completeProduct"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Created",
+                        "schema" :{
+                            "$ref" : "#/definitions/_id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "put" : {
+                "tags" : [
+                    "Product"
+                ],
+                "summary" : "Updates an existing Product",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Product Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/completeProduct"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Updated",
+                        "schema" :{
+                            "$ref" : "#/definitions/_id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions" : {
+        "_id" :{
+            "type" : "string"
+        },
+        "errors" : {
+            "type" : "array",
+            "items" : {
+                "type" : "object",
+                "properties" :{
+                    "code" : {
+                        "type" : "string"
+                    }
+                }
+            }
+        },
+        "productType" : {
+            "type" : "object",
+            "properties" : {
+                "_id" : {
+                    "type" : "string"
+                },
+                "name" : {
+                    "type" : "string"
+                },
+                "showOrder" : {
+                    "type" : "number"
+                }
+            }
+        },
+        "completeProduct" : {
+            "type" : "object",
+            "properties" : {
+                "_id" : {
+                    "type" : "string"
+                },
+                "name" : {
+                    "type" : "string"
+                },
+                "productType" :{
+                    "$ref" : "#/definitions/productType"
+                },
+                "packageSize" : {
+                    "type" : "number"
+                },
+                "costPrice" : {
+                    "type" : "number"
+                },
+                "sellingPrice" : {
+                    "type" : "number"
+                }
+            }
+        }
+    }
+}
