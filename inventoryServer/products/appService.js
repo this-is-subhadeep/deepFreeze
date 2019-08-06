@@ -20,7 +20,7 @@ const setupDbConnection = () => {
 const setAppMiddleware = (app) => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended : false}));
-;}
+};
 
 const apiSetup = (app) => {
     app.use(cors({

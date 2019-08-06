@@ -1,8 +1,9 @@
 const serverConfig = {
-    PORT : 3000,
+    PORT : process.env.PORT || 3000,
     environment : {
         prod : false
-    }
+    },
+    logLocation : process.env.SERVER_LOGS || './logs'
 }
 
 const dbConfig = {

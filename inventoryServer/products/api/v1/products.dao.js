@@ -87,13 +87,14 @@ const getProductType = (productTypeId) => {
 const getCompleteProductsFromList = (products, refDate) => {
     logger.debug('dao', 'getAllCompleteProduct');
     return new Promise((resolve, reject) => {
-        refDateObj = new Date(refDate);
+        const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
             logger.debug(refDateObj);
             if(products) {
-                res.products.forEach(product => {
+                const compProds = new Array();
+                products.forEach(product => {
                     if(refDateObj >= product.startDate && refDateObj < product.endDate) {
-                        compProd = {
+                        const compProd = {
                             _id : product._id,
                             name : product.name,
                             productType : product.productType,
@@ -132,7 +133,7 @@ const getCompleteProductsFromList = (products, refDate) => {
 const getAllCompleteProducts = (refDate) => {
     logger.debug('dao', 'getAllCompleteProduct');
     return new Promise((resolve, reject) => {
-        refDateObj = new Date(refDate);
+        const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
             logger.debug(refDateObj);
             ProductModel.find({},(err, products) => {
@@ -153,7 +154,7 @@ const getAllCompleteProducts = (refDate) => {
                     if(products) {
                         products.forEach(product => {
                             if(refDateObj >= product.startDate && refDateObj < product.endDate) {
-                                compProd = {
+                                const compProd = {
                                     _id : product._id,
                                     name : product.name,
                                     productType : product.productType,
@@ -228,7 +229,7 @@ const addCompleteProduct = (completeProduct, refDate) => {
     logger.debug('dao','addProductType');
     return new Promise((resolve, reject) => {
         if(completeProduct) {
-            refDateObj = new Date(refDate);
+            const refDateObj = new Date(refDate);
             if(!isNaN(refDateObj.getTime())) {
                 const prodModel = new ProductModel();
                 prodModel._id = 'itm-'+uuidv1();
@@ -344,10 +345,10 @@ const updateCompleteProduct = (completeProduct, refDate) => {
                 productFound.name = completeProduct.name;
                 productFound.productType = completeProduct.productType;
                 logger.debug('Result :', productFound);
-                refDateObj = new Date(refDate);
+                const refDateObj = new Date(refDate);
                 if(!isNaN(refDateObj.getTime())) {
                     logger.debug('refDateObj :',refDateObj);
-                    newDet = {
+                    const newDet = {
                         _id : refDateObj,
                         packageSize : completeProduct.packageSize,
                         costPrice : completeProduct.costPrice,

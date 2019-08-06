@@ -1,12 +1,10 @@
 const fs = require('fs');
-const conf = require('../config');
-const logStream = fs.createWriteStream('log/server.log', {flags: 'a'});
+const { serverConfig } = require('../config').appConfig;
+const logStream = fs.createWriteStream(serverConfig.logLocation+'/server.log', {flags: 'a'});
 const log = (...args) => {
     let fullText='';
     args.forEach(element => {
         let nextText='';
-        // console.log('typeof ', typeof element);
-        // console.log('element ',element);
         switch(typeof element) {
             case 'string' :
                 nextText = element;
@@ -24,7 +22,7 @@ const log = (...args) => {
 };
 
 const debug = (...args) => {
-    if(!conf.appConfig.serverConfig.environment.prod) {
+    if(!serverConfig.environment.prod) {
         log(...args);
     }
 };

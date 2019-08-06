@@ -51,8 +51,8 @@ const productTypeSchema = new mongoose.Schema({
     versionKey : false
 });
 
-ProductModel = new mongoose.model('products', productSchema);
-ProductTypeModel = new mongoose.model('productType', productTypeSchema);
+const ProductModel = new mongoose.model('products', productSchema);
+const ProductTypeModel = new mongoose.model('productType', productTypeSchema);
 
 module.exports = {
     ProductModel,
