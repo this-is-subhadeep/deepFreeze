@@ -2,23 +2,27 @@
     "swagger" : "2.0",
     "info" : {
         "version" : "1.0.0",
-        "title" : "Product API",
+        "title" : "API Gateway",
         "description" : "An API to get the available Products and their Details.",
         "license" : {
             "name" : "MIT",
             "url" : "https://opensource.org/licenses/MIT"
         }
     },
-    "host" : "localhost:3000",
-    "basePath" : "/api/v1",
+    "host" : "localhost:8000",
+    "basePath" : "/",
     "tags" : [
-        {
-            "name" : "Product Type",
-            "description" : "API to get all Product Type information"
-        },
         {
             "name" : "Product",
             "description" : "API to get all Product information"
+        },
+        {
+            "name" : "Vendor",
+            "description" : "API to get all Vendor information"
+        },
+        {
+            "name" : "Inventory",
+            "description" : "API to get all Inventory information"
         }
     ],
     "schemes" : [
@@ -31,10 +35,10 @@
         "application/json"
     ],
     "paths" : {
-        "/product-types" : {
+        "/product/product-types" : {
             "get" : {
                 "tags" : [
-                    "Product Type"
+                    "Product"
                 ],
                 "summary" : "Get all Product Types",
                 "responses" : {
@@ -63,7 +67,7 @@
             },
             "post" : {
                 "tags" : [
-                    "Product Type"
+                    "Product"
                 ],
                 "summary" : "Creates a new Product Type",
                 "parameters" : [
@@ -99,7 +103,7 @@
             },
             "put" : {
                 "tags" : [
-                    "Product Type"
+                    "Product"
                 ],
                 "summary" : "Updates an existing Product Type",
                 "parameters" : [
@@ -134,7 +138,7 @@
                 }
             }
         },
-        "/complete-products/{refDate}" : {
+        "/product/{refDate}" : {
             "parameters" :[
                 {
                     "name" : "refDate",
@@ -155,7 +159,7 @@
                         "schema" : {
                             "type" : "array",
                             "items" :{
-                                "$ref" : "#/definitions/completeProduct"
+                                "$ref" : "#/definitions/product"
                             }
                         }
                     },
@@ -191,7 +195,7 @@
                         "required" : true,
                         "description" : "Product Details",
                         "schema" : {
-                            "$ref" : "#/definitions/completeProduct"
+                            "$ref" : "#/definitions/product"
                         }
                     }
                 ],
@@ -227,7 +231,7 @@
                         "required" : true,
                         "description" : "Product Details",
                         "schema" : {
-                            "$ref" : "#/definitions/completeProduct"
+                            "$ref" : "#/definitions/product"
                         }
                     }
                 ],
@@ -282,7 +286,7 @@
                 }
             }
         },
-        "completeProduct" : {
+        "product" : {
             "type" : "object",
             "properties" : {
                 "_id" : {

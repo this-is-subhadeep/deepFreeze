@@ -1,24 +1,22 @@
 {
-  "name": "products",
+  "name": "apigateway",
   "version": "1.0.0",
-  "description": "micro service to get products data",
+  "description": "Gateway for Inventory apis",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint ./**/*.js --ignore-path .eslintignore"
   },
-  "keywords": [
-    "Products",
-    "microservice"
-  ],
   "author": "Subhadeep Mitra",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongoose": "^5.6.6",
-    "uuid": "^3.3.2"
+    "http-proxy-middleware": "^0.19.1",
+    "morgan": "^1.9.1",
+    "swagger-ui-express": "^4.0.7"
   },
   "devDependencies": {
     "eslint": "^6.1.0"

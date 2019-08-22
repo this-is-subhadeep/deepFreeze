@@ -124,7 +124,8 @@ export class ProductComponent implements OnInit {
   }
 
   updateProdButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.dateService.date.toISOString();
     console.log(this.selectedCompleteProduct,date);
     this.service.updateCompleteProduct(this.selectedCompleteProduct,date).subscribe(resp => {
       this.loadCompleteProductData();
@@ -135,7 +136,8 @@ export class ProductComponent implements OnInit {
   }
 
   addButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.dateService.date.toISOString();
     // let nextProductId = this.service.nextProductId;
     this.newCompleteProduct._id=null;
     console.log(this.newCompleteProduct,date);
@@ -173,7 +175,9 @@ export class ProductComponent implements OnInit {
     this.refresh();
   }
   private loadCompleteProductData() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.dateService.date.toISOString();
+    console.log(this.dateService.date.toISOString());
     this.dataSource.loadCompleteProducts(date,this.pageSize,this.pageIndex+1);
   }
 }

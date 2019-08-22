@@ -9,8 +9,8 @@ import { StringResponse } from '../support/support-definition';
 })
 export class ProductService {
   // private serverAddressNextProductId='/product-next-id';
-  private serverAddressProductTypes='/product-types';
-  private serverAddressCompleteProducts='/complete-products';
+  private serverAddressProductTypes='/product/product-types';
+  private serverAddressCompleteProducts='/product';
   // private _nextProductId:string;
   private _productTypes:ProductType[];
   // private getNextProductIdUrl=environment.serverBase+this.serverAddressNextProductId;
@@ -52,6 +52,7 @@ export class ProductService {
     return prodType;
   }
   addCompleteProduct(newCompleteProduct:CompleteProduct, refDate:string) {
+    console.log(this.getCompleteProductUrl+"/"+refDate)
     let url = this.getCompleteProductUrl+"/"+refDate;
     return this.http.post(url,newCompleteProduct);
   }
