@@ -1,31 +1,16 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { StringResponse } from '../support/support-definition';
 import { CompleteVendor } from '../vendor/vendor-definition';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VendorService {
-  private serverAddressCompleteVendors='/complete-Vendors';
-  private serverAddressNextVendorId='/vendor-next-id';
-  private _nextVendorId:string;
-  private getNextVendorIdUrl=environment.serverBase+this.serverAddressNextVendorId;
+  private serverAddressCompleteVendors='/vendor';
   private getCompleteVendorUrl=environment.serverBase+this.serverAddressCompleteVendors;
 
   constructor(private http:HttpClient) {
-    this.refresh();
-  }
-
-  refresh() {
-    this.http.get<StringResponse>(this.getNextVendorIdUrl).subscribe(data => {
-      this._nextVendorId = data.response;
-    });
-  }
-
-  get nextVendorId() {
-    return this._nextVendorId;
   }
 
   findCompleteVendorObservable (refDate:string) {

@@ -8,7 +8,8 @@ export class DateService {
   private _date:Date;
   private _dateChangeSubject = new Subject();
   constructor() {
-    this._date=new Date();
+    let tmpDate=new Date();
+    this._date=new Date(Date.UTC(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()));
   }
   get date()  {
     return this._date;

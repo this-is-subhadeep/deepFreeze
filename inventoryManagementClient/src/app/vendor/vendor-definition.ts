@@ -1,5 +1,5 @@
 export class CompleteVendor {
-    id:string;
+    _id:string;
     name:string;
     totalLoan:number;
     loanAdded:number;
@@ -9,7 +9,7 @@ export class CompleteVendor {
     remarks:string;
     clone():CompleteVendor {
         let newClone       = new CompleteVendor();
-        newClone.id        = this.id;
+        newClone._id        = this._id;
         newClone.name      = this.name;
         newClone.totalLoan = this.totalLoan;
         newClone.loanAdded = this.loanAdded;
@@ -21,7 +21,7 @@ export class CompleteVendor {
     }
     static cloneAnother (prod:CompleteVendor):CompleteVendor {
         let newClone       = new CompleteVendor();
-        newClone.id        = prod.id;
+        newClone._id        = prod._id;
         newClone.name      = prod.name;
         newClone.totalLoan = prod.totalLoan;
         newClone.loanAdded = prod.loanAdded;

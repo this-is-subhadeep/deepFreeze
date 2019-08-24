@@ -34,6 +34,14 @@ const setupMiddleware = (app) => {
         }
     }));
 
+    app.use('/vendor', httpProxy({
+        target : serverConfig.vendorURL,
+        changeOrigin : true,
+        pathRewrite : {
+            '^/vendor' : '/api/v1'
+        }
+    }));
+
 };
 
 module.exports = {

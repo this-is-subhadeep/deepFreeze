@@ -48,7 +48,7 @@ export class InventoryComponent implements OnInit {
         this.columnsToDisplay.push(colName);
       });
       this.compVenList.forEach(compVendor => {
-        this.columnsToDisplay.push(compVendor.id);
+        this.columnsToDisplay.push(compVendor._id);
       });
     });
   }
@@ -83,7 +83,7 @@ export class InventoryComponent implements OnInit {
   }
 
   vendorTrackBy(index, ven:CompleteVendor) {
-    return ven.id;
+    return ven._id;
   }
 
   private saveButtonPressed() {

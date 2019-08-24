@@ -32,7 +32,6 @@ export class VendorComponent implements OnInit {
     this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteVendorData();
-      this.service.refresh();
       this.refresh();
     });
   }
@@ -101,7 +100,6 @@ export class VendorComponent implements OnInit {
 
   log(data) {
     console.log("Here",data);
-    // return false;
   }
   setVendorSelected(compVen:CompleteVendor) {
     if(!this.isThisVendorSelected(compVen)) {
@@ -116,13 +114,12 @@ export class VendorComponent implements OnInit {
   }
   isThisVendorSelected(compVen:CompleteVendor) {
     return (this.selectedCompleteVendor!=null
-            && this.selectedCompleteVendor.id === compVen.id);
+            && this.selectedCompleteVendor._id === compVen._id);
   }
   handlePageEvent(e:PageEvent) {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
     this.loadCompleteVendorData();
-    this.service.refresh();
   }
   addVenButtonPressed() {
     this.refresh();
@@ -130,24 +127,24 @@ export class VendorComponent implements OnInit {
   }
 
   updateVenButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.dateService.date.toISOString();
     console.log(this.selectedCompleteVendor,date);
     this.service.updateCompleteVendor(this.selectedCompleteVendor,date).subscribe(resp => {
       this.loadCompleteVendorData();
-      this.service.refresh();
     })
     this.showUpdateButton=false;
     this.refresh();
   }
 
   addButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    let nextVendorId = this.service.nextVendorId;
-    this.newCompleteVendor.id=this.service.nextVendorId;
+    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.dateService.date.toISOString();
+    // let nextVendorId = this.service.nextVendorId;
+    this.newCompleteVendor._id=null;
     // console.log(this.newCompleteVendor,date);
     this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
       this.loadCompleteVendorData();
-      this.service.refresh();
     })
     this.showAddForm=false;
     this.refresh();
@@ -176,7 +173,8 @@ export class VendorComponent implements OnInit {
     this.refresh();
   }
   private loadCompleteVendorData() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.dateService.date.toISOString();
     // console.log(date);
     this.dataSource.loadCompleteVendors(date,this.pageSize,this.pageIndex+1);
     // console.log(this.dataSource);

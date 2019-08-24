@@ -31,7 +31,8 @@ export class MainNavComponent {
   }
 
   set dateSelected(date:Date) {
-    this.dateService.date=date;
+    console.log(`dateSelected : ${JSON.stringify(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())))}`);
+    this.dateService.date=new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     let today = new Date();
     // console.log("today",today.getFullYear(),"-",today.getMonth(),"-",today.getDate());
     // console.log("date",date.getFullYear(),"-",date.getMonth(),"-",date.getDate());

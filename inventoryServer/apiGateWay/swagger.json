@@ -255,6 +255,124 @@
                     }
                 }
             }
+        },
+        "/vendor/{refDate}" : {
+            "parameters" :[
+                {
+                    "name" : "refDate",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "This is the Date on which we want the vendor information",
+                    "type" : "string"
+                }
+            ],
+            "get" : {
+                "tags" : [
+                    "Vendor"
+                ],
+                "summary" : "Get all Vendors in the system",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "type" : "array",
+                            "items" :{
+                                "$ref" : "#/definitions/vendor"
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "404" : {
+                        "description" : "Data Could not Fetched",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "post" : {
+                "tags" : [
+                    "Vendor"
+                ],
+                "summary" : "Creates a new Vendor",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Vendor Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/vendor"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Created",
+                        "schema" :{
+                            "$ref" : "#/definitions/id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "put" : {
+                "tags" : [
+                    "Vendor"
+                ],
+                "summary" : "Updates an existing Vendor",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Product Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/vendor"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Updated",
+                        "schema" :{
+                            "$ref" : "#/definitions/id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions" : {
@@ -311,6 +429,32 @@
                 },
                 "sellingPrice" : {
                     "type" : "number"
+                }
+            }
+        },
+        "vendor" : {
+            "type" : "object",
+            "properties" : {
+                "_id" : {
+                    "type" : "string"
+                },
+                "name" : {
+                    "type" : "string"
+                },
+                "loanAdded" : {
+                    "type" : "number"
+                },
+                "loanPayed" : {
+                    "type" : "number"
+                },
+                "openingDp" : {
+                    "type" : "number"
+                },
+                "deposit" : {
+                    "type" : "number"
+                },
+                "remarks" : {
+                    "type" : "string"
                 }
             }
         }
