@@ -2,47 +2,47 @@ const dao = require('./products.dao');
 const logger = require('../../log');
 
 const getProductsByType = (prodType) => {
-    logger.debug('service', 'getProductsByType');
+    logger.info('service getProductsByType');
     return dao.getProductsByType(prodType);
 };
 
 const getAllProductTypes = () => {
-    logger.debug('service', 'getAllProductTypes');
+    logger.info('service getAllProductTypes');
     return dao.getAllProductTypes();
 };
 
 const getProductType = (prodTypeId) => {
-    logger.debug('service', 'getProductType');
+    logger.info('service getProductType');
     return dao.getProductType(prodTypeId);
 };
 
 const getAllCompleteProducts = (refDate) => {
-    logger.debug('service', 'getAllCompleteProducts');
+    logger.info('service getAllCompleteProducts');
     return dao.getAllCompleteProducts(refDate);
 };
 
 const getCompleteProductsFromList = (prodList, refDate) => {
-    logger.debug('service', 'getCompleteProductsFromList');
+    logger.info('service getCompleteProductsFromList');
     return dao.getCompleteProductsFromList(prodList, refDate);
 };
 
 const addProductType = (prodType) => {
-    logger.debug('service', 'addProductType');
+    logger.info('service addProductType');
     return dao.addProductType(prodType);
 };
 
 const addCompleteProduct = (compProd, refDate) => {
-    logger.debug('service', 'addCompleteProduct');
+    logger.info('service addCompleteProduct');
     return dao.addCompleteProduct(compProd, refDate);
 };
 
 const updateProductType = (prodType) => {
-    logger.debug('service', 'updateProductType');
+    logger.info('service updateProductType');
     return dao.updateProductType(prodType);
 };
 
 const updateCompleteProduct = (compProd, refDate) => {
-    logger.debug('service', 'updateCompleteProduct');
+    logger.info('service updateCompleteProduct');
     return dao.updateCompleteProduct(compProd, refDate);
 };
 

@@ -1,37 +1,45 @@
 const fs = require('fs');
+const winston = require('winston');
 const { serverConfig } = require('../config').appConfig;
-const logStream = fs.createWriteStream(serverConfig.logLocation+'/server.log', {flags: 'a'});
-const log = (...args) => {
-    let fullText='';
-    args.forEach(element => {
-        let nextText='';
-        switch(typeof element) {
-            case 'string' :
-                nextText = element;
-                break;
-            case 'object' :
-                nextText = (element instanceof Error) ? element.stack : JSON.stringify(element, null, '\t');
-                break;
-            default :
-                nextText = element.toString();
-        }
-        fullText=fullText===''?nextText:fullText+' '+nextText;
-    });
-    console.log(fullText);
-    logStream.write(new Date().toISOString()+' :: '+fullText+'\n');
-};
 
-const debug = (...args) => {
-    if(!serverConfig.environment.prod) {
-        log(...args);
+let debugLevel = serverConfig.environment.prod ? 'warn' : 'debug';
+
+const options = {
+    file : {
+        level : debugLevel,
+        filename : serverConfig.logLocation+'/server.log',
+        handleExceptions : true,
+        json : true,
+        maxsize : 5242880,
+        maxFiles : 10,
+        colorize : false
+    },
+    console : {
+        level : debugLevel,
+        handleExceptions : true,
+        json : false,
+        colorize : true
     }
 };
 
-const error = (...args) => {
-    log(...args);
+const winLogger = winston.createLogger({
+    transports : [
+        new winston.transports.File(options.file),
+        new winston.transports.Console(options.console)
+    ],
+    format : winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf( info => {
+            return `[${info.timestamp}] - <${info.level}> : ${info.message}`;
+        })
+    ),
+    exitOnError : false
+}); 
+
+winLogger.stream = {
+    write : (message, encoding) => {
+        winLogger.info(message);
+    }
 };
 
-module.exports  = {
-    debug,
-    error
-}
+module.exports = winLogger;

@@ -2,7 +2,7 @@ const service = require('./products.service');
 const logger = require('../../log');
 
 const getProductsByType = (req, res) => {
-    logger.debug('controller', 'getProductsByType');
+    logger.info('controller getProductsByType');
     service.getProductsByType(req.body).then((response) => {
         res.status(response.status).send(response.products);
     }).catch((reject) => {
@@ -13,7 +13,7 @@ const getProductsByType = (req, res) => {
 };
 
 const getAllProductTypes = (req, res) => {
-    logger.debug('controller', 'getAllProductTypes');
+    logger.info('controller getAllProductTypes');
     service.getAllProductTypes().then((response) => {
         res.status(response.status).send(response.productTypes);
     }).catch((reject) => {
@@ -24,7 +24,7 @@ const getAllProductTypes = (req, res) => {
 }
 
 const getProductType = (req, res) => {
-    logger.debug('controller', 'getProductType');
+    logger.info('controller getProductType');
     service.getProductType(req.query.type).then((response) => {
         res.status(response.status).send(response.productType);
     }).catch((reject) => {
@@ -35,7 +35,7 @@ const getProductType = (req, res) => {
 }
 
 const getAllCompleteProducts = (req, res) => {
-    logger.debug('controller', 'getAllCompleteProducts');
+    logger.info('controller getAllCompleteProducts');
     logger.debug(req.params.refDate);
     service.getAllCompleteProducts(req.params.refDate).then((response) => {
         res.status(response.status).send(response.completeProducts);
@@ -47,7 +47,7 @@ const getAllCompleteProducts = (req, res) => {
 }
 
 const addProductType = (req, res) => {
-    logger.debug('controller','addProductType');
+    logger.info('controller addProductType');
     service.addProductType(req.body).then((response) => {
         res.status(response.status).send(response._id);
     }).catch((reject) => {
@@ -58,7 +58,7 @@ const addProductType = (req, res) => {
 }
 
 const addCompleteProduct = (req, res) => {
-    logger.debug('controller', 'addCompleteProduct');
+    logger.info('controller addCompleteProduct');
     service.addCompleteProduct(req.body, req.params.refDate).then((response) => {
         res.status(response.status).send(response._id);
     }).catch((reject) => {
@@ -69,7 +69,7 @@ const addCompleteProduct = (req, res) => {
 };
 
 const updateProductType = (req, res) => {
-    logger.debug('controller','updateProduct');
+    logger.info('controller updateProduct');
     service.updateProductType(req.body).then((response) => {
         res.status(response.status).send(response._id);
     }).catch((reject) => {
@@ -80,7 +80,7 @@ const updateProductType = (req, res) => {
 }
 
 const updateCompleteProduct = (req, res) => {
-    logger.debug('controller','updateCompleteProduct');
+    logger.info('controller updateCompleteProduct');
     service.updateCompleteProduct(req.body, req.params.refDate).then((response) => {
         res.status(response.status).send(response._id);
     }).catch((reject) => {

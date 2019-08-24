@@ -9,5 +9,5 @@ service.setupSwagger(app);
 service.setupMiddleware(app);
 
 app.listen(serverConfig.PORT, () => {
-    logger.debug(`Listening to PORT ${serverConfig.PORT}`);
+    logger.info(`Listening to PORT ${serverConfig.PORT}`);
 });

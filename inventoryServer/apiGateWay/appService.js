@@ -1,10 +1,10 @@
-const bodyParser = require('body-parser');
 const { serverConfig } = require('./config').appConfig;
 const cors = require('cors');
 const morgan = require('morgan');
 const httpProxy = require('http-proxy-middleware');
 const swaggerUi = require ('swagger-ui-express');
 const swaggerDocument = require ('./swagger.json');
+const logger = require('./log');
 
 const apiSetup = (app) => {
     app.use(cors({
@@ -19,7 +19,12 @@ const setupSwagger = (app) => {
 
 const setupMiddleware = (app) => {
     morgan.token('time', () => new Date().toISOString());
-    app.use(morgan('[:time] :remote-addr :method :url :status :res[content-length] :response-time ms'));
+    app.use(morgan(
+        '[:time] :remote-addr :method :url :status :res[content-length] :response-time ms',
+        {
+            stream : logger.stream
+        }
+    ));
     
     app.use('/product', httpProxy({
         target : serverConfig.productURL,

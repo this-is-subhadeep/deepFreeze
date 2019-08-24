@@ -5,7 +5,7 @@ const logger = require('./log');
 
 const setupDbConnection = () => {
     db.getDbConnection().on('connected', () => {
-        logger.debug('Mongo DB Connected');
+        logger.info('Mongo DB Connected');
     }).on('error', (err) => {
         logger.error('Mongo DB Connection error Occured');
         if(err) {

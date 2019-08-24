@@ -3,7 +3,7 @@ const logger = require('../../log');
 const uuidv1 = require('uuid/v1');
 
 const getProductsByType = (productType) => {
-    logger.debug('dao','getProductsByType');
+    logger.info('dao getProductsByType');
     return new Promise((resolve, reject) => {
         ProductModel.find({
             productType : productType
@@ -31,7 +31,7 @@ const getProductsByType = (productType) => {
 };
 
 const getAllProductTypes = () => {
-    logger.debug('dao','getAllProductTypes');
+    logger.info('dao getAllProductTypes');
     return new Promise((resolve, reject) => {
         ProductTypeModel.find({},(err, productTypes) => {
             if(err) {
@@ -57,7 +57,7 @@ const getAllProductTypes = () => {
 };
 
 const getProductType = (productTypeId) => {
-    logger.debug('dao','getProductType');
+    logger.info('dao getProductType');
     return new Promise((resolve, reject) => {
         ProductTypeModel.findOne({
             _id : productTypeId
@@ -85,11 +85,11 @@ const getProductType = (productTypeId) => {
 };
 
 const getCompleteProductsFromList = (products, refDate) => {
-    logger.debug('dao', 'getAllCompleteProduct');
+    logger.info('dao getAllCompleteProduct');
     return new Promise((resolve, reject) => {
         const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
-            logger.debug(refDateObj);
+            logger.debug(JSON.stringify(refDateObj));
             if(products) {
                 const compProds = new Array();
                 products.forEach(product => {
@@ -131,11 +131,11 @@ const getCompleteProductsFromList = (products, refDate) => {
 };
 
 const getAllCompleteProducts = (refDate) => {
-    logger.debug('dao', 'getAllCompleteProduct');
+    logger.info('dao getAllCompleteProduct');
     return new Promise((resolve, reject) => {
         const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
-            logger.debug(refDateObj);
+            logger.debug(JSON.stringify(refDateObj));
             ProductModel.find({},(err, products) => {
                 if(err) {
                     reject({
@@ -195,7 +195,7 @@ const getAllCompleteProducts = (refDate) => {
 };
 
 const addProductType = (productType) => {
-    logger.debug('dao','addProductType');
+    logger.info('dao addProductType');
     return new Promise((resolve, reject) => {
         if(productType) {
             const prodTypeModel = new ProductTypeModel();
@@ -226,7 +226,7 @@ const addProductType = (productType) => {
 };
 
 const addCompleteProduct = (completeProduct, refDate) => {
-    logger.debug('dao','addProductType');
+    logger.info('dao addProductType');
     return new Promise((resolve, reject) => {
         if(completeProduct) {
             const refDateObj = new Date(refDate);
@@ -244,7 +244,7 @@ const addCompleteProduct = (completeProduct, refDate) => {
                     costPrice : completeProduct.costPrice,
                     sellingPrice : completeProduct.sellingPrice
                 });
-                logger.debug(prodModel);
+                logger.debug(JSON.stringify(prodModel));
                 prodModel.save((err, addedProduct) => {
                     if(err) {
                         reject({
@@ -322,13 +322,13 @@ const updateProductType = (productType) => {
 };
 
 const updateCompleteProduct = (completeProduct, refDate) => {
-    logger.debug('dao', 'updateCompleteProduct');
+    logger.info('dao updateCompleteProduct');
     return new Promise((resolve, reject) => {
         // try {
         ProductModel.findOne({
             _id : completeProduct._id
         },(err, productFound) => {
-            logger.debug(productFound);
+            logger.debug(JSON.stringify(productFound));
             if(err) {
                 reject({
                     status : 500,
@@ -344,17 +344,17 @@ const updateCompleteProduct = (completeProduct, refDate) => {
             } else {
                 productFound.name = completeProduct.name;
                 productFound.productType = completeProduct.productType;
-                logger.debug('Result :', productFound);
+                logger.debug(`Result : ${JSON.stringify(productFound)}`);
                 const refDateObj = new Date(refDate);
                 if(!isNaN(refDateObj.getTime())) {
-                    logger.debug('refDateObj :',refDateObj);
+                    logger.debug(`refDateObj : ${JSON.stringify(refDateObj)}`);
                     const newDet = {
                         _id : refDateObj,
                         packageSize : completeProduct.packageSize,
                         costPrice : completeProduct.costPrice,
                         sellingPrice : completeProduct.sellingPrice
                     };
-                    logger.debug('newDet', newDet);
+                    logger.debug(`newDet : ${JSON.stringify(newDet)}`);
                     for(let i=0; i<productFound.details.length; i++) {
                         logger.debug(refDateObj.getTime()==productFound.details[i]._id.getTime() )
                         if(refDateObj.getTime()==productFound.details[i]._id.getTime()) {
@@ -369,7 +369,7 @@ const updateCompleteProduct = (completeProduct, refDate) => {
                             status : 500,
                             errorCode : 'S001'
                         });
-                        logger.error('Complete Product could not be Updated :', err);
+                        logger.error(`Complete Product could not be Updated : ${err}`);
                     } else if(!updatedProduct) {
                         reject({
                             status : 404,
