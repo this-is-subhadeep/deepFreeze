@@ -177,7 +177,7 @@ export class ProductComponent implements OnInit {
   private loadCompleteProductData() {
     // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
     let date = this.dateService.date.toISOString();
-    console.log(this.dateService.date.toISOString());
+    console.log(`loadCompleteProductData : ${this.dateService.date.toISOString()}`);
     this.dataSource.loadCompleteProducts(date,this.pageSize,this.pageIndex+1);
   }
 }

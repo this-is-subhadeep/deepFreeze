@@ -39,6 +39,7 @@ export class ProductService {
   }
 
   findCompleteProductObservable (refDate:string) {
+    console.log(`findCompleteProductObservable : ${this.getCompleteProductUrl}/${refDate}`)
     let url = this.getCompleteProductUrl+"/"+refDate;
     return this.http.get<CompleteProduct[]>(url);
   }
@@ -52,7 +53,7 @@ export class ProductService {
     return prodType;
   }
   addCompleteProduct(newCompleteProduct:CompleteProduct, refDate:string) {
-    console.log(this.getCompleteProductUrl+"/"+refDate)
+    console.log(`addCompleteProduct : ${this.getCompleteProductUrl}/${refDate}`)
     let url = this.getCompleteProductUrl+"/"+refDate;
     return this.http.post(url,newCompleteProduct);
   }
