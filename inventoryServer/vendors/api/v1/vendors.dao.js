@@ -124,7 +124,7 @@ const addCompleteVendor = (completeVendor, refDate) => {
             const refDateObj = new Date(refDate);
             if(!isNaN(refDateObj.getTime())) {
                 const venModel = new VendorModel();
-                venModel._id = 'itm-'+uuidv1();
+                venModel._id = 'ven-'+uuidv1();
                 venModel.name = completeVendor.name;
                 venModel.startDate = refDateObj;
                 venModel.endDate = new Date('9999-12-31T00:00:00.000Z');

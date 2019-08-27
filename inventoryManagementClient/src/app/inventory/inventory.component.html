@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <div>
     <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
       Save Inventory
@@ -108,7 +108,6 @@
         <mat-cell
           *matCellDef="let inventoryRow"
           [ngClass]="getRowTypeClass(inventoryRow)">
-          <!-- {{ inventoryRow.vendorValue[vendorData.id] }} -->
           <div *ngIf="isRowProductType(inventoryRow); else productData"></div>
           <ng-template #productData>
             <input
@@ -126,4 +125,4 @@
       <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
     </mat-table>
   </div>
-</div>
+</div> -->

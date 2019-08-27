@@ -373,6 +373,88 @@
                     }
                 }
             }
+        },
+        "/inventory/{refDate}" : {
+            "parameters" :[
+                {
+                    "name" : "refDate",
+                    "in" : "path",
+                    "required" : true,
+                    "description" : "This is the Date on which we want the inventory information",
+                    "type" : "string"
+                }
+            ],
+            "get" : {
+                "tags" : [
+                    "Inventory"
+                ],
+                "summary" : "Get all Inventory in the system",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "type" : "array",
+                            "items" :{
+                                "$ref" : "#/definitions/inventory"
+                            }
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "404" : {
+                        "description" : "Data Could not Fetched",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            },
+            "post" : {
+                "tags" : [
+                    "Inventory"
+                ],
+                "summary" : "Creates a new Inventory",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "required" : true,
+                        "description" : "Inventory Details",
+                        "schema" : {
+                            "$ref" : "#/definitions/inventory"
+                        }
+                    }
+                ],
+                "responses" : {
+                    "201" : {
+                        "description" : "Created",
+                        "schema" :{
+                            "$ref" : "#/definitions/id"
+                        }
+                    },
+                    "400" : {
+                        "description" : "Bad Request",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }                    },
+                    "500" : {
+                        "description" : "Server Error",
+                        "schema" :{
+                            "$ref" : "#/definitions/errors"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions" : {
@@ -455,6 +537,43 @@
                 },
                 "remarks" : {
                     "type" : "string"
+                }
+            }
+        },
+        "inventory" : {
+            "type" : "object",
+            "properties" : {
+                "rows" : {
+                    "type" : "object",
+                    "properties" : {
+                        "<productIds>" : {
+                            "type" : "object",
+                            "properties" : {
+                                "stockSenIn" : {
+                                    "type" : "number"
+                                },
+                                "stockOthersIn" : {
+                                    "type" : "number"
+                                },
+                                "vendorValue" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "<vendorIds>" : {
+                                            "type" : "object",
+                                            "properties" : {
+                                                "packages" : {
+                                                    "type" : "number"
+                                                },
+                                                "pieces" : {
+                                                    "type" : "number"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

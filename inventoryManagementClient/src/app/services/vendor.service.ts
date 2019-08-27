@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { CompleteVendor } from '../vendor/vendor-definition';
+import { appConfigurations } from 'src/environments/conf';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VendorService {
-  private serverAddressCompleteVendors='/vendor';
-  private getCompleteVendorUrl=environment.serverBase+this.serverAddressCompleteVendors;
+  private getCompleteVendorUrl=environment.serverBase+appConfigurations.vendorURL;
 
   constructor(private http:HttpClient) {
   }

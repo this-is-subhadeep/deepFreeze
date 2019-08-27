@@ -2,16 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { ProductType, CompleteProduct } from '../product/product-definition';
 import { environment } from '../../environments/environment';
+import { appConfigurations } from 'src/environments/conf';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private serverAddressProductTypes='/product/product-types';
-  private serverAddressCompleteProducts='/product';
   private _productTypes:ProductType[];
-  private getProductTypesUrl=environment.serverBase+this.serverAddressProductTypes;
-  private getCompleteProductUrl=environment.serverBase+this.serverAddressCompleteProducts;
+  private getProductTypesUrl=environment.serverBase+appConfigurations.productTypeURL;
+  private getCompleteProductUrl=environment.serverBase+appConfigurations.productURL;
   constructor(private http:HttpClient) {
     this._productTypes=[];
     this.http.get<ProductType[]>(this.getProductTypesUrl).subscribe(data => {

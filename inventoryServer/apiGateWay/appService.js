@@ -42,6 +42,14 @@ const setupMiddleware = (app) => {
         }
     }));
 
+    app.use('/inventory', httpProxy({
+        target : serverConfig.inventoryURL,
+        changeOrigin : true,
+        pathRewrite : {
+            '^/inventory' : '/api/v1'
+        }
+    }));
+
 };
 
 module.exports = {
