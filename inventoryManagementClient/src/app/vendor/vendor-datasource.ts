@@ -1,35 +1,35 @@
 import { DataSource } from "@angular/cdk/table";
-import { CompleteVendor } from "./vendor-definition";
+import { Vendor } from "./vendor-definition";
 import { BehaviorSubject, Observable } from "rxjs";
 import { VendorService } from "../services/vendor.service";
 import { CollectionViewer } from "@angular/cdk/collections";
 
-export class VendorDataSource implements DataSource<CompleteVendor> {
+export class VendorDataSource implements DataSource<Vendor> {
 
-    private comVendorSubject = new BehaviorSubject<CompleteVendor []>([]);
+    private vendorSubject = new BehaviorSubject<Vendor []>([]);
     private _totalNoOfItems = 0;
     constructor(private service: VendorService) {}
-    connect(): Observable<CompleteVendor[]> {
-        return this.comVendorSubject.asObservable();
+    connect(): Observable<Vendor[]> {
+        return this.vendorSubject.asObservable();
     }
     disconnect(collectionViewer: CollectionViewer) {
-        this.comVendorSubject.complete();
+        this.vendorSubject.complete();
     }
-    loadCompleteVendors(refDate:string, pageSize:number, pageNumber:number) {
-        this.service.findCompleteVendorObservable(refDate)
+    loadVendors(refDate:string, pageSize:number, pageNumber:number) {
+        this.service.findVendorObservable(refDate)
         .subscribe(vendors => {
             let startIndex=(pageSize*(pageNumber-1)+1);
             let endIndex=startIndex+pageSize-1;
-            let compVenList:CompleteVendor[]=new Array();
+            let venList:Vendor[]=new Array();
             let i=1;
             vendors.forEach(vendor => {
                 if(i>=startIndex && i<=endIndex) {
-                    compVenList.push(vendor);
+                    venList.push(vendor);
                 }
                 i++;
             })
             this._totalNoOfItems=vendors.length;
-            this.comVendorSubject.next(compVenList);
+            this.vendorSubject.next(venList);
         });
     }
     get totalNoOfItems() {

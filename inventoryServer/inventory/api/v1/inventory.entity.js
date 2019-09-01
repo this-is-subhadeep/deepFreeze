@@ -8,32 +8,37 @@ const inventorySchema = new mongoose.Schema({
         _id : {
             productId : {
                 type : String,
+                require : [true, "Product Id must be present"]
             },
             wholeSellerId : {
                 type : String
             }
         },
         packages : {
-            type : String
+            type : Number
         },
         pieces : {
-            type : String
+            type : Number,
+            require : [true, "Pieces Id must be present"]
         }
     }],
     stockOut : [{
         _id : {
             productId : {
                 type : String,
+                require : [true, "Product Id must be present"]
             },
             vendorId : {
-                type : String
+                type : String,
+                require : [true, "Vendor Id must be present"]
             }
         },
         packages : {
-            type : String
+            type : Number
         },
         pieces : {
-            type : String
+            type : Number,
+            require : [true, "Pieces Id must be present"]
         }
     }]
 }, {

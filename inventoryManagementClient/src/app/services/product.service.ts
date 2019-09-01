@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { ProductType, CompleteProduct } from '../product/product-definition';
+import { ProductType, Product } from '../product/product-definition';
 import { environment } from '../../environments/environment';
 import { appConfigurations } from 'src/environments/conf';
 
@@ -10,7 +10,7 @@ import { appConfigurations } from 'src/environments/conf';
 export class ProductService {
   private _productTypes:ProductType[];
   private getProductTypesUrl=environment.serverBase+appConfigurations.productTypeURL;
-  private getCompleteProductUrl=environment.serverBase+appConfigurations.productURL;
+  private getProductUrl=environment.serverBase+appConfigurations.productURL;
   constructor(private http:HttpClient) {
     this._productTypes=[];
     this.http.get<ProductType[]>(this.getProductTypesUrl).subscribe(data => {
@@ -22,10 +22,10 @@ export class ProductService {
     return this._productTypes;
   }
 
-  findCompleteProductObservable (refDate:string) {
-    console.log(`findCompleteProductObservable : ${this.getCompleteProductUrl}/${refDate}`)
-    let url = this.getCompleteProductUrl+"/"+refDate;
-    return this.http.get<CompleteProduct[]>(url);
+  findProductObservable (refDate:string) {
+    console.log(`findProductObservable : ${this.getProductUrl}/${refDate}`)
+    let url = this.getProductUrl+"/"+refDate;
+    return this.http.get<Product[]>(url);
   }
   getProductType(typeId:string):ProductType {
     let prodType:ProductType=null;
@@ -36,13 +36,13 @@ export class ProductService {
     })
     return prodType;
   }
-  addCompleteProduct(newCompleteProduct:CompleteProduct, refDate:string) {
-    console.log(`addCompleteProduct : ${this.getCompleteProductUrl}/${refDate}`)
-    let url = this.getCompleteProductUrl+"/"+refDate;
-    return this.http.post(url,newCompleteProduct);
+  addProduct(newProduct:Product, refDate:string) {
+    console.log(`addProduct : ${this.getProductUrl}/${refDate}`)
+    let url = this.getProductUrl+"/"+refDate;
+    return this.http.post(url,newProduct);
   }
-  updateCompleteProduct(newCompleteProduct:CompleteProduct, refDate:string) {
-    let url = this.getCompleteProductUrl+"/"+refDate;
-    return this.http.put(url,newCompleteProduct);
+  updateProduct(newProduct:Product, refDate:string) {
+    let url = this.getProductUrl+"/"+refDate;
+    return this.http.put(url,newProduct);
   }
 }

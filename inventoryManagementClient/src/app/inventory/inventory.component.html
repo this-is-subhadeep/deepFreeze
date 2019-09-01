@@ -1,4 +1,4 @@
-<!-- <div>
+<div>
   <div>
     <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
       Save Inventory
@@ -60,7 +60,7 @@
               name="stockSenIn"
               #stockSenIn="ngModel"
               id="stockSenIn"
-              (blur)="validateSenIn(inventoryRow)">
+              (blur)="validateSenIn(inventoryRow);syncTotalIn(inventoryRow)">
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -78,7 +78,7 @@
               name="stockOthersIn"
               #stockOthersIn="ngModel"
               id="stockOthersIn"
-              (blur)="validateOthersIn(inventoryRow)">
+              (blur)="validateOthersIn(inventoryRow);syncTotalIn(inventoryRow)">
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -90,7 +90,7 @@
           {{ inventoryRow.stockTotalOut }}
         </mat-cell>
       </ng-container>
-      <ng-container *ngFor="let vendorData of (dataSource.vendorObservable|async); trackBy: vendorTrackBy" [matColumnDef]="vendorData.id">
+      <ng-container *ngFor="let vendorData of (dataSource.vendorObservable|async); trackBy: vendorTrackBy" [matColumnDef]="vendorData._id">
         <mat-header-cell *matHeaderCellDef>
           <span [matTooltip]="getVenDetails(vendorData)" [matTooltipClass]="'vendorTooltip'">
             {{vendorData.name}}
@@ -113,11 +113,11 @@
             <input
               type="number"
               matInput
-              [(ngModel)] = "inventoryRow.vendorValue[vendorData.id]"
+              [(ngModel)] = "inventoryRow.vendorValue[vendorData._id]"
               name="vendorValue"
               #vendorValue="ngModel"
               id="vendorValue"
-              (blur)="validateVendorValue(inventoryRow, vendorData.id)">
+              (blur)="validateVendorValue(inventoryRow, vendorData._id);syncTotalOut(inventoryRow, vendorData._id)">
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -125,4 +125,4 @@
       <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
     </mat-table>
   </div>
-</div> -->
+</div>

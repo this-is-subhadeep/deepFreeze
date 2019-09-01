@@ -1,30 +1,30 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { CompleteVendor } from '../vendor/vendor-definition';
+import { Vendor } from '../vendor/vendor-definition';
 import { appConfigurations } from 'src/environments/conf';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VendorService {
-  private getCompleteVendorUrl=environment.serverBase+appConfigurations.vendorURL;
+  private getVendorUrl=environment.serverBase+appConfigurations.vendorURL;
 
   constructor(private http:HttpClient) {
   }
 
-  findCompleteVendorObservable (refDate:string) {
-    let url = this.getCompleteVendorUrl+"/"+refDate;
-    return this.http.get<CompleteVendor[]>(url);
+  findVendorObservable (refDate:string) {
+    let url = this.getVendorUrl+"/"+refDate;
+    return this.http.get<Vendor[]>(url);
   }
 
-  addCompleteVendor(newVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+"/"+refDate;
+  addVendor(newVendor:Vendor, refDate:string) {
+    let url = this.getVendorUrl+"/"+refDate;
     return this.http.post(url,newVendor);
   }
   
-  updateCompleteVendor(newVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+"/"+refDate;
+  updateVendor(newVendor:Vendor, refDate:string) {
+    let url = this.getVendorUrl+"/"+refDate;
     return this.http.put(url,newVendor);
   }
 

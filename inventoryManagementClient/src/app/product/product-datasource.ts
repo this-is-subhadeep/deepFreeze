@@ -1,35 +1,35 @@
 import { DataSource } from "@angular/cdk/table";
-import { CompleteProduct } from "./product-definition";
+import { Product } from "./product-definition";
 import { Observable, BehaviorSubject } from "rxjs";
 import { ProductService } from "../services/product.service";
 import { CollectionViewer } from "@angular/cdk/collections";
 
-export class ProductDataSource implements DataSource<CompleteProduct> {
+export class ProductDataSource implements DataSource<Product> {
 
-    private comProductSubject = new BehaviorSubject<CompleteProduct []>([]);
+    private productSubject = new BehaviorSubject<Product []>([]);
     private _totalNoOfItems = 0;
     constructor(private service: ProductService) {}
-    connect(): Observable<CompleteProduct[]> {
-        return this.comProductSubject.asObservable();
+    connect(): Observable<Product[]> {
+        return this.productSubject.asObservable();
     }
     disconnect(collectionViewer: CollectionViewer) {
-        this.comProductSubject.complete();
+        this.productSubject.complete();
     }
-    loadCompleteProducts(refDate:string, pageSize:number, pageNumber:number) {
-        this.service.findCompleteProductObservable(refDate)
-        .subscribe(completeProducts => {
+    loadProducts(refDate:string, pageSize:number, pageNumber:number) {
+        this.service.findProductObservable(refDate)
+        .subscribe(products => {
             let startIndex=(pageSize*(pageNumber-1)+1);
             let endIndex=startIndex+pageSize-1;
-            let compProdList:CompleteProduct[]=new Array();
+            let prodList:Product[]=new Array();
             let i=1;
-            completeProducts.forEach(completeProduct => {
+            products.forEach(product => {
                 if(i>=startIndex && i<=endIndex) {
-                    compProdList.push(completeProduct);
+                    prodList.push(product);
                 }
                 i++;
             })
-            this._totalNoOfItems=completeProducts.length;
-            this.comProductSubject.next(compProdList);
+            this._totalNoOfItems=products.length;
+            this.productSubject.next(prodList);
         });
     }
     get totalNoOfItems() {

@@ -17,18 +17,18 @@ export class ProductType {
         return newClone;
     }
 }
-export class CompleteProduct {
+export class Product {
     _id:string;
     name:string;
     productType:ProductType;
-    packageSize:Number;
-    costPrice:Number;
-    sellingPrice:Number;
+    packageSize:number;
+    costPrice:number;
+    sellingPrice:number;
     constructor() {
         this.productType = new ProductType();
     }
     clone() {
-        let newClone = new CompleteProduct();
+        let newClone = new Product();
         newClone._id = this._id;
         newClone.name = this.name;
         newClone.productType = this.productType.clone();
@@ -37,14 +37,14 @@ export class CompleteProduct {
         newClone.sellingPrice = this.sellingPrice;
         return newClone;
     }
-    static cloneAnother (compProd:CompleteProduct):CompleteProduct {
-        let newClone = new CompleteProduct();
-        newClone._id = compProd._id;
-        newClone.name = compProd.name;
-        newClone.productType = ProductType.cloneAnother(compProd.productType);
-        newClone.packageSize = compProd.packageSize;
-        newClone.costPrice = compProd.costPrice;
-        newClone.sellingPrice = compProd.sellingPrice;
+    static cloneAnother (prod:Product):Product {
+        let newClone = new Product();
+        newClone._id = prod._id;
+        newClone.name = prod.name;
+        newClone.productType = ProductType.cloneAnother(prod.productType);
+        newClone.packageSize = prod.packageSize;
+        newClone.costPrice = prod.costPrice;
+        newClone.sellingPrice = prod.sellingPrice;
         return newClone;
 
     }

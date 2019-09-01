@@ -1,4 +1,4 @@
-export class CompleteVendor {
+export class Vendor {
     _id:string;
     name:string;
     totalLoan:number;
@@ -7,8 +7,8 @@ export class CompleteVendor {
     openingDp:number;
     deposit:number;
     remarks:string;
-    clone():CompleteVendor {
-        let newClone       = new CompleteVendor();
+    clone():Vendor {
+        let newClone       = new Vendor();
         newClone._id        = this._id;
         newClone.name      = this.name;
         newClone.totalLoan = this.totalLoan;
@@ -19,16 +19,16 @@ export class CompleteVendor {
         newClone.remarks   = this.remarks;
         return newClone;
     }
-    static cloneAnother (prod:CompleteVendor):CompleteVendor {
-        let newClone       = new CompleteVendor();
-        newClone._id        = prod._id;
-        newClone.name      = prod.name;
-        newClone.totalLoan = prod.totalLoan;
-        newClone.loanAdded = prod.loanAdded;
-        newClone.loanPayed = prod.loanPayed;
-        newClone.openingDp = prod.openingDp;
-        newClone.deposit   = prod.deposit;
-        newClone.remarks   = prod.remarks;
+    static cloneAnother (ven:Vendor):Vendor {
+        let newClone       = new Vendor();
+        newClone._id        = ven._id;
+        newClone.name      = ven.name;
+        newClone.totalLoan = ven.totalLoan;
+        newClone.loanAdded = ven.loanAdded;
+        newClone.loanPayed = ven.loanPayed;
+        newClone.openingDp = ven.openingDp;
+        newClone.deposit   = ven.deposit;
+        newClone.remarks   = ven.remarks;
         return newClone;
     }
 }

@@ -3,7 +3,7 @@ import { VendorDataSource } from './vendor-datasource';
 import { VendorService } from '../services/vendor.service';
 import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
-import { CompleteVendor } from './vendor-definition';
+import { Vendor } from './vendor-definition';
 import { PageEvent } from '@angular/material';
 import { fadeInEffect, dropDownEffect } from '../animations';
 
@@ -20,8 +20,8 @@ export class VendorComponent implements OnInit {
   private showAddForm=false;
   private pageSize=5;
   private pageIndex=0;
-  private newCompleteVendor:CompleteVendor;
-  private selectedCompleteVendor:CompleteVendor;
+  private newCompleteVendor:Vendor;
+  private selectedCompleteVendor:Vendor;
   private selectedClass="selectedRow";
 
   constructor(private service:VendorService, private datePipe: DatePipe, private dateService:DateService) { }
@@ -37,8 +37,8 @@ export class VendorComponent implements OnInit {
   }
 
   refresh() {
-    this.newCompleteVendor = new CompleteVendor();
-    this.selectedCompleteVendor = new CompleteVendor();
+    this.newCompleteVendor = new Vendor();
+    this.selectedCompleteVendor = new Vendor();
     this.showUpdateButton=false;
   }
 
@@ -101,18 +101,18 @@ export class VendorComponent implements OnInit {
   log(data) {
     console.log("Here",data);
   }
-  setVendorSelected(compVen:CompleteVendor) {
+  setVendorSelected(compVen:Vendor) {
     if(!this.isThisVendorSelected(compVen)) {
-      this.selectedCompleteVendor=CompleteVendor.cloneAnother(compVen);
+      this.selectedCompleteVendor=Vendor.cloneAnother(compVen);
       // console.log(this.selectedCompleteVendor);
       this.showUpdateButton=true;
     }
   }
 
-  getSelectRowClass(compVen:CompleteVendor) {
+  getSelectRowClass(compVen:Vendor) {
     return this.isThisVendorSelected(compVen)?this.selectedClass:null;
   }
-  isThisVendorSelected(compVen:CompleteVendor) {
+  isThisVendorSelected(compVen:Vendor) {
     return (this.selectedCompleteVendor!=null
             && this.selectedCompleteVendor._id === compVen._id);
   }
@@ -130,7 +130,7 @@ export class VendorComponent implements OnInit {
     // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
     let date = this.dateService.date.toISOString();
     console.log(this.selectedCompleteVendor,date);
-    this.service.updateCompleteVendor(this.selectedCompleteVendor,date).subscribe(resp => {
+    this.service.updateVendor(this.selectedCompleteVendor,date).subscribe(resp => {
       this.loadCompleteVendorData();
     })
     this.showUpdateButton=false;
@@ -143,7 +143,7 @@ export class VendorComponent implements OnInit {
     // let nextVendorId = this.service.nextVendorId;
     this.newCompleteVendor._id=null;
     // console.log(this.newCompleteVendor,date);
-    this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
+    this.service.addVendor(this.newCompleteVendor,date).subscribe(resp => {
       this.loadCompleteVendorData();
     })
     this.showAddForm=false;
@@ -176,7 +176,7 @@ export class VendorComponent implements OnInit {
     // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
     let date = this.dateService.date.toISOString();
     // console.log(date);
-    this.dataSource.loadCompleteVendors(date,this.pageSize,this.pageIndex+1);
+    this.dataSource.loadVendors(date,this.pageSize,this.pageIndex+1);
     // console.log(this.dataSource);
   }
 }
