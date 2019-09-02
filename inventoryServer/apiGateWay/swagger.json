@@ -523,6 +523,9 @@
                 "name" : {
                     "type" : "string"
                 },
+                "totalLoan" : {
+                    "type" : "number"
+                },
                 "loanAdded" : {
                     "type" : "number"
                 },

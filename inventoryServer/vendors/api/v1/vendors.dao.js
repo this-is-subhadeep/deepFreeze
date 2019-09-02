@@ -20,7 +20,7 @@ const getCompleteVendorsFromList = (vendors, refDate) => {
                             if(refDateObj >= detail._id) {
                                 compVen.loanAdded = detail.loanAdded;
                                 compVen.loanPayed = detail.loanPayed;
-                                compVen.openingDP = detail.openingDP;
+                                compVen.openingDp = detail.openingDp;
                                 compVen.deposit = detail.deposit;
                                 compVen.remarks = detail.remarks;
                             }
@@ -84,7 +84,8 @@ const getAllCompleteVendors = (refDate) => {
                                     if(refDateObj >= detail._id) {
                                         compVen.loanAdded = detail.loanAdded;
                                         compVen.loanPayed = detail.loanPayed;
-                                        compVen.openingDP = detail.openingDP;
+                                        compVen.totalLoan = detail.loanAdded - detail.loanPayed;
+                                        compVen.openingDp = detail.openingDp;
                                         compVen.deposit = detail.deposit;
                                         compVen.remarks = detail.remarks;
                                         break;
