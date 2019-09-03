@@ -4,10 +4,10 @@ import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { InventoryDataSource } from './inventory-datasource';
 import { fadeInEffect, dropDownEffect } from '../animations';
-import { UIInventoryRow, Inventory, InventoryRow } from './inventory-definition';
+import { UIInventoryRow, Inventory, InventoryRow } from '../definitions/inventory-definition';
 import { VendorService } from '../services/vendor.service';
-import { Vendor } from '../vendor/vendor-definition';
-import { Product } from '../product/product-definition';
+import { Vendor } from '../definitions/vendor-definition';
+import { Product } from '../definitions/product-definition';
 
 const staticColumnsToDisplay=["productName",
                               "stockOpening",
@@ -76,6 +76,75 @@ export class InventoryComponent implements OnInit {
     return "";
   }
 
+  private getBalance() {
+    let total = 0;
+    this.dataSource.connect().subscribe(invRows => {
+      invRows.forEach(invRow => {
+        if(invRow.stockBalance) {
+          total+=invRow.stockBalance;
+        }
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalIn() {
+    let total = 0;
+    this.dataSource.connect().subscribe(invRows => {
+      invRows.forEach(invRow => {
+        if(invRow.stockTotalIn) {
+          total+=invRow.stockTotalIn;
+        }
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalSenIn() {
+    let total = 0;
+    this.dataSource.connect().subscribe(invRows => {
+      invRows.forEach(invRow => {
+        if(invRow.stockSenIn) {
+          total+=invRow.stockSenIn;
+        }
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalOthersIn() {
+    let total = 0;
+    this.dataSource.connect().subscribe(invRows => {
+      invRows.forEach(invRow => {
+        if(invRow.stockOthersIn) {
+          total+=invRow.stockOthersIn;
+        }
+      })
+    });
+
+    return "Total : "+total;
+  }
+  
+  private getTotalOut() {
+    let total = 0;
+    let value = 0;
+    this.dataSource.connect().subscribe(invRows => {
+      invRows.forEach(invRow => {
+        if(invRow.stockTotalOut) {
+          total+=invRow.stockTotalOut;
+          if(invRow.prodDets) {
+            value+=invRow.prodDets.sellingPrice.valueOf()*invRow.stockTotalOut;
+          }
+        }
+      })
+    });
+
+    return "Total : "+total+" - Value : "+value;
+  }
+
   private  getVenDetails(ven:Vendor) {
     let infoText = "";
     if(ven.totalLoan) {
@@ -85,7 +154,7 @@ export class InventoryComponent implements OnInit {
       if(infoText!== "") {
         infoText += " - ";
       }
-      infoText += `Opening : ${ven.openingDp}}`;
+      infoText += `Opening : ${ven.openingDp}`;
     }
     return infoText;
   }
@@ -123,12 +192,6 @@ export class InventoryComponent implements OnInit {
     this.service.saveInventory(inv, date).subscribe(resp => {
       this.loadInventoryData();
     });
-  }
-
-  private validateVendorValue(invRow:UIInventoryRow, venId:string) {
-    if(!this.validateValue(invRow.vendorValue[venId])) {
-      invRow.vendorValue[venId] = undefined;
-    }
   }
 
   private syncTotalIn(invRow:UIInventoryRow) {
@@ -170,6 +233,12 @@ export class InventoryComponent implements OnInit {
       invRow.stockBalance = invRow.stockTotalIn;
     } else if(!invRow.stockTotalIn && invRow.stockTotalOut) {
       invRow.stockBalance = 0 - invRow.stockTotalOut;
+    }
+  }
+
+  private validateVendorValue(invRow:UIInventoryRow, venId:string) {
+    if(!this.validateValue(invRow.vendorValue[venId])) {
+      invRow.vendorValue[venId] = undefined;
     }
   }
 

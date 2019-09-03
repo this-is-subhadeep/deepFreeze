@@ -84,7 +84,13 @@ const getAllCompleteVendors = (refDate) => {
                                     if(refDateObj >= detail._id) {
                                         compVen.loanAdded = detail.loanAdded;
                                         compVen.loanPayed = detail.loanPayed;
-                                        compVen.totalLoan = detail.loanAdded - detail.loanPayed;
+                                        if(detail.loanAdded && detail.loanPayed) {
+                                            compVen.totalLoan = detail.loanAdded - detail.loanPayed;
+                                        } else if(detail.loanAdded && !detail.loanPayed) {
+                                            compVen.totalLoan = detail.loanAdded
+                                        } else if(!detail.loanAdded && detail.loanPayed) {
+                                            compVen.totalLoan = 0 - detail.loanPayed;
+                                        }
                                         compVen.openingDp = detail.openingDp;
                                         compVen.deposit = detail.deposit;
                                         compVen.remarks = detail.remarks;
@@ -134,7 +140,7 @@ const addCompleteVendor = (completeVendor, refDate) => {
                     _id : refDateObj,
                     loanAdded : completeVendor.loanAdded,
                     loanPayed : completeVendor.loanPayed,
-                    openingDP : completeVendor.openingDP,
+                    openingDp : completeVendor.openingDp,
                     deposit : completeVendor.deposit,
                     remarks : completeVendor.remarks
                 });
@@ -170,12 +176,13 @@ const addCompleteVendor = (completeVendor, refDate) => {
     });
 };
 
-const updateCompleteVendor = (completeVendor, refDate) => {
+const updateCompleteVendor = (vendor, refDate) => {
     logger.info('dao updateCompleteVendor');
+    logger.debug(`vendor : ${JSON.stringify(vendor)}`);
     return new Promise((resolve, reject) => {
         // try {
         VendorModel.findOne({
-            _id : completeVendor._id
+            _id : vendor._id
         },(err, vendorFound) => {
             logger.debug(JSON.stringify(vendorFound));
             if(err) {
@@ -191,18 +198,18 @@ const updateCompleteVendor = (completeVendor, refDate) => {
                 });
                 logger.error('Vendor not found');
             } else {
-                vendorFound.name = completeVendor.name;
+                vendorFound.name = vendor.name;
                 logger.debug(`Result : ${JSON.stringify(vendorFound)}`);
                 const refDateObj = new Date(refDate);
                 if(!isNaN(refDateObj.getTime())) {
                     logger.debug(`refDateObj : ${JSON.stringify(refDateObj)}`);
                     const newDet = {
                         _id : refDateObj,
-                        loanAdded : completeVendor.loanAdded,
-                        loanPayed : completeVendor.loanPayed,
-                        openingDP : completeVendor.openingDP,
-                        deposit : completeVendor.deposit,
-                        remarks : completeVendor.remarks
+                        loanAdded : vendor.loanAdded,
+                        loanPayed : vendor.loanPayed,
+                        openingDp : vendor.openingDp,
+                        deposit : vendor.deposit,
+                        remarks : vendor.remarks
                     };
                     logger.debug(`newDet : ${JSON.stringify(newDet)}`);
                     for(let i=0; i<vendorFound.details.length; i++) {

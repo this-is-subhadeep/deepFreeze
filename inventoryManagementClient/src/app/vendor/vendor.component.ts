@@ -1,182 +1,82 @@
-import { Component, OnInit } from '@angular/core';
-import { VendorDataSource } from './vendor-datasource';
+import { Component, OnInit, Input } from '@angular/core';
+import { Vendor } from '../definitions/vendor-definition';
 import { VendorService } from '../services/vendor.service';
 import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
-import { Vendor } from './vendor-definition';
-import { PageEvent } from '@angular/material';
-import { fadeInEffect, dropDownEffect } from '../animations';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { sizeValidator, priceValidator } from '../validators';
+import { MatExpansionPanel } from '@angular/material';
 
 @Component({
   selector: 'app-vendor',
   templateUrl: './vendor.component.html',
-  styleUrls: ['./vendor.component.css'],
-  animations: [fadeInEffect, dropDownEffect]
+  styleUrls: ['./vendor.component.css']
 })
 export class VendorComponent implements OnInit {
-  dataSource:VendorDataSource;
-  columnsToDisplay=["vendorName", "totalLoan", "loanAdded", "loanPayed", "openingDps", "deposit", "remarks"];
-  private showUpdateButton=false;
-  private showAddForm=false;
-  private pageSize=5;
-  private pageIndex=0;
-  private newCompleteVendor:Vendor;
-  private selectedCompleteVendor:Vendor;
-  private selectedClass="selectedRow";
 
-  constructor(private service:VendorService, private datePipe: DatePipe, private dateService:DateService) { }
+  @Input() vendor: Vendor;
+  @Input() editable: boolean;
+
+  venForm: FormGroup;
+  constructor(private service: VendorService,
+    private dateService: DateService,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.dataSource=new VendorDataSource(this.service);
-    this.loadCompleteVendorData();
-    this.refresh();
-    this.dateService.dateChangeListener.subscribe(() => {
-      this.loadCompleteVendorData();
-      this.refresh();
+    this.venForm = this.fb.group({
+      name: [
+        this.vendor.name, [
+          Validators.required
+        ]
+      ],
+      loanAdded: [
+        this.vendor.loanAdded, [
+          priceValidator
+        ]
+      ],
+      loanPayed: [
+        this.vendor.loanPayed, [
+          priceValidator
+        ]
+      ],
+      openingDp: [
+        this.vendor.openingDp, [
+          priceValidator
+        ]
+      ],
+      deposit: [
+        this.vendor.deposit, [
+          priceValidator
+        ]
+      ],
+      remarks: [
+        this.vendor.remarks
+      ]
+    });
+
+    if (!this.editable) {
+      this.venForm.disable();
+    }
+  }
+
+  getFormattedtotalLoan(ven:Vendor) {
+    return ven.totalLoan?Math.round(ven.totalLoan*100)/100:0;
+  }
+
+
+  onUpdate(exPanel: MatExpansionPanel) {
+    let date = this.dateService.date.toISOString();
+    this.vendor.name = this.venForm.controls.name.value;
+    this.vendor.loanAdded = this.venForm.controls.loanAdded.value;
+    this.vendor.loanPayed = this.venForm.controls.loanPayed.value;
+    this.vendor.openingDp = this.venForm.controls.openingDp.value;
+    this.vendor.deposit = this.venForm.controls.deposit.value;
+    this.vendor.remarks = this.venForm.controls.remarks.value;
+    this.service.updateVendor(this.vendor, date).subscribe(resp => {
+      // this.vendor.totalLoan = resp.totalLoan;
+      exPanel.close();
     });
   }
 
-  refresh() {
-    this.newCompleteVendor = new Vendor();
-    this.selectedCompleteVendor = new Vendor();
-    this.showUpdateButton=false;
-  }
 
-  get showVenTable() {
-    return !this.showAddForm;
-  }
-
-  get showAddButton() {
-    return !this.showUpdateButton;
-  }
-
-  get newVendorName() {
-    return this.newCompleteVendor.name;
-  }
-
-  set newVendorName(name) {
-    this.newCompleteVendor.name=name;
-  }
-
-  get newLoanAdded() {
-    return this.newCompleteVendor.loanAdded;
-  }
-
-  set newLoanAdded(loanAdded) {
-    this.newCompleteVendor.loanAdded=loanAdded;
-  }
-
-  get newLoanPayed() {
-    return this.newCompleteVendor.loanPayed;
-  }
-
-  set newLoanPayed(loanPayed) {
-    this.newCompleteVendor.loanPayed=loanPayed;
-  }
-
-  get newOpeningDP() {
-    return this.newCompleteVendor.openingDp;
-  }
-
-  set newOpeningDP(openingDps) {
-    this.newCompleteVendor.openingDp=openingDps;
-  }
-
-  get newDeposit() {
-    return this.newCompleteVendor.deposit;
-  }
-
-  set newDeposit(deposit) {
-    this.newCompleteVendor.deposit=deposit;
-  }
-
-  get newRemarks() {
-    return this.newCompleteVendor.remarks;
-  }
-
-  set newRemarks(remarks) {
-    this.newCompleteVendor.remarks=remarks;
-  }
-
-  log(data) {
-    console.log("Here",data);
-  }
-  setVendorSelected(compVen:Vendor) {
-    if(!this.isThisVendorSelected(compVen)) {
-      this.selectedCompleteVendor=Vendor.cloneAnother(compVen);
-      // console.log(this.selectedCompleteVendor);
-      this.showUpdateButton=true;
-    }
-  }
-
-  getSelectRowClass(compVen:Vendor) {
-    return this.isThisVendorSelected(compVen)?this.selectedClass:null;
-  }
-  isThisVendorSelected(compVen:Vendor) {
-    return (this.selectedCompleteVendor!=null
-            && this.selectedCompleteVendor._id === compVen._id);
-  }
-  handlePageEvent(e:PageEvent) {
-    this.pageSize = e.pageSize;
-    this.pageIndex = e.pageIndex;
-    this.loadCompleteVendorData();
-  }
-  addVenButtonPressed() {
-    this.refresh();
-    this.showAddForm=true;
-  }
-
-  updateVenButtonPressed() {
-    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    let date = this.dateService.date.toISOString();
-    console.log(this.selectedCompleteVendor,date);
-    this.service.updateVendor(this.selectedCompleteVendor,date).subscribe(resp => {
-      this.loadCompleteVendorData();
-    })
-    this.showUpdateButton=false;
-    this.refresh();
-  }
-
-  addButtonPressed() {
-    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    let date = this.dateService.date.toISOString();
-    // let nextVendorId = this.service.nextVendorId;
-    this.newCompleteVendor._id=null;
-    // console.log(this.newCompleteVendor,date);
-    this.service.addVendor(this.newCompleteVendor,date).subscribe(resp => {
-      this.loadCompleteVendorData();
-    })
-    this.showAddForm=false;
-    this.refresh();
-  }
-
-  isUpdateEnabled() {
-    let flag = (this.selectedCompleteVendor.name!=null && this.selectedCompleteVendor.name!="");
-    if(flag && this.selectedCompleteVendor.loanAdded!=null) {
-      flag = ((this.selectedCompleteVendor.loanAdded*1000)%10==0)
-    }
-    if(flag && this.selectedCompleteVendor.loanPayed!=null) {
-      flag = ((this.selectedCompleteVendor.loanPayed*1000)%10==0)
-    }
-    if(flag && this.selectedCompleteVendor.openingDp!=null) {
-      flag = ((this.selectedCompleteVendor.openingDp*1000)%10==0)
-    }
-    if(flag && this.selectedCompleteVendor.deposit!=null) {
-      flag = ((this.selectedCompleteVendor.deposit*1000)%10==0)
-    }
-  return flag;
-  }
-
-  cancelButtonPressed() {
-    this.showAddForm=false;
-    this.showUpdateButton=false;
-    this.refresh();
-  }
-  private loadCompleteVendorData() {
-    // let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    let date = this.dateService.date.toISOString();
-    // console.log(date);
-    this.dataSource.loadVendors(date,this.pageSize,this.pageIndex+1);
-    // console.log(this.dataSource);
-  }
 }

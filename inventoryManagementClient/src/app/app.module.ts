@@ -6,7 +6,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { MatTableModule,
          MatButtonModule,
@@ -18,32 +19,44 @@ import { MatTableModule,
          MatCardModule,
          MatPaginatorModule,
          MatDatepickerModule,
-         MatTooltipModule
+         MatTooltipModule,
+         MatMenuModule
         } from '@angular/material';
 import { MatNativeDateModule } from '@angular/material'
 import { MatIconModule } from '@angular/material'
 
-import { ProductComponent } from './product/product.component';
 import { ProductService } from './services/product.service';
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { InventoryComponent } from './inventory/inventory.component';
-import { VendorComponent } from './vendor/vendor.component';
+import { SellingComponent } from './selling/selling.component';
 import { DateService } from './services/date.service';
 import { VendorService } from './services/vendor.service';
 import { InventoryService } from './services/inventory.service';
+import { UnitValidatorDirective } from './custom-directives/unit-validator.directive';
+import { DepositValidatorDirective } from './custom-directives/deposit-validator.directive';
+import { ProductViewComponent } from './product-view/product-view.component';
+import { ProductComponent } from './product/product.component';
+import { VendorViewComponent } from './vendor-view/vendor-view.component';
+import { VendorComponent } from './vendor/vendor.component';
 @NgModule({
   declarations: [
     AppComponent,
-    ProductComponent,
+    ProductViewComponent,
     MainNavComponent,
     InventoryComponent,
+    VendorViewComponent,
+    SellingComponent,
+    UnitValidatorDirective,
+    DepositValidatorDirective,
+    ProductComponent,
     VendorComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MatTableModule,
     MatButtonModule,
@@ -65,18 +78,24 @@ import { InventoryService } from './services/inventory.service';
       },
       {
         path: 'products',
-        component: ProductComponent
+        component: ProductViewComponent
       },
       {
         path: 'vendors',
-        component: VendorComponent
+        component: VendorViewComponent
+      },
+      {
+        path: 'selling',
+        component: SellingComponent
       }
    ]),
    MatCardModule,
    MatPaginatorModule,
    MatDatepickerModule,
    MatNativeDateModule,
-   MatTooltipModule
+   MatTooltipModule,
+   MatExpansionModule,
+   MatMenuModule
   ],
   providers: [
     ProductService,

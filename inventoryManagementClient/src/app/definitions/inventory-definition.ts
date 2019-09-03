@@ -1,5 +1,5 @@
-import { Product, ProductType } from "../product/product-definition";
-import { Vendor } from "../vendor/vendor-definition";
+import { Product, ProductType } from "./product-definition"
+import { Vendor } from "./vendor-definition";
 
 export class InventoryRow {
     stockSenIn:number;
@@ -89,9 +89,14 @@ export class UIInventoryRow {
     }
 }
 
-export interface InventoryServiceResult {
+export interface InventoryGetResult {
     inventories : Inventory;
     products : Product[];
     productTypes : ProductType[];
     vendors : Vendor[];
+}
+
+export interface InventorySaveResult {
+    inventoryId : string,
+    vendorId : string
 }

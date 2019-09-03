@@ -1,11 +1,10 @@
 import { DataSource } from "@angular/cdk/table";
-import { UIInventoryRow, Inventory } from "./inventory-definition";
+import { UIInventoryRow, Inventory } from "../definitions/inventory-definition";
 import { Observable, BehaviorSubject } from "rxjs";
 import { InventoryService } from "../services/inventory.service";
 import { CollectionViewer } from "@angular/cdk/collections";
-import { Vendor } from "../vendor/vendor-definition";
-import { Product } from "../product/product-definition";
-import { ProductDataSource } from "../product/product-datasource";
+import { Vendor } from "../definitions/vendor-definition";
+import { Product } from "../definitions/product-definition";
 
 export class InventoryDataSource implements DataSource<UIInventoryRow> {
 
@@ -21,9 +20,10 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
     }
 
     loadInventory(refDate:string, pageSize:number, pageNumber:number) {
+        // console.log(refDate);
         this.service.findInventoryObservable(refDate)
         .subscribe(inventoryData => {
-            console.log(inventoryData.inventories);
+            // console.log(`invs : ${JSON.stringify(inventoryData.inventories)}`);
             if(inventoryData) {
                 if(inventoryData.productTypes) {
                     let startIndex=(pageSize*(pageNumber-1)+1);

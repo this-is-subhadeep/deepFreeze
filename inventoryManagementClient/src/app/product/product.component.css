@@ -1,36 +1,8 @@
-.products-table-div {
-    height: 360px;
-    overflow: auto;
-    margin: 2%;
-    width: 96%
+.product-panel-header {
+    padding-top: 1.5vh;
+    padding-bottom: 1.5vh;
 }
-.products-table {
-    background: rgb(230, 201, 148);
-}
-button.add-product-button {
-    background: rgb(101, 193, 247);
-    margin: 2%;
-    width: 46%
-}
-button.add-button {
-    background: rgb(101, 193, 247);
-    margin: 2%;
-    width: 96%
-}
-button.update-product-button {
-    background: rgb(203, 247, 101);
-    margin: 2%;
-    width: 46%
-}
-button.cancel-product-button {
-    background: rgb(218, 90, 81);
-    margin: 2%;
-    width: 46%
-}
-mat-card.add-product-card {
-    margin: auto;
-    width: 50%
-}
-.selectedRow {
-    background: rgb(187, 166, 126);
+
+.mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
+    flex-basis: 0;
 }

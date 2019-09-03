@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
-import { ProductType, Product } from '../product/product-definition';
+import { ProductType, Product } from '../definitions/product-definition';
 import { environment } from '../../environments/environment';
 import { appConfigurations } from 'src/environments/conf';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,9 @@ export class ProductService {
   }
 
   findProductObservable (refDate:string) {
-    console.log(`findProductObservable : ${this.getProductUrl}/${refDate}`)
+    // console.log(`findProductObservable : ${this.getProductUrl}/${refDate}`)
     let url = this.getProductUrl+"/"+refDate;
-    return this.http.get<Product[]>(url);
+    return this.http.get<Product[]>(url).pipe(map(products => products.sort((prod1, prod2) => prod1.productType.showOrder - prod2.productType.showOrder)));
   }
   getProductType(typeId:string):ProductType {
     let prodType:ProductType=null;
@@ -37,7 +38,7 @@ export class ProductService {
     return prodType;
   }
   addProduct(newProduct:Product, refDate:string) {
-    console.log(`addProduct : ${this.getProductUrl}/${refDate}`)
+    // console.log(`addProduct : ${this.getProductUrl}/${refDate}`)
     let url = this.getProductUrl+"/"+refDate;
     return this.http.post(url,newProduct);
   }

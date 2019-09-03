@@ -20,7 +20,7 @@ const vendorSchema = new mongoose.Schema({
         _id : Date,
         loanAdded : Number,
         loanPayed : Number,
-        openingDP : Number,
+        openingDp : Number,
         deposit : Number,
         remarks : String
     }]

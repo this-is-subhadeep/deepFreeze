@@ -1,0 +1,33 @@
+.vendors-table-div {
+    /* height: 360px; */
+    overflow: auto;
+    margin: 2%;
+    width: 96%
+}
+.vendors-table {
+    background: rgb(181, 230, 148);
+}
+.add-vendor-row {
+    background: rgb(101, 216, 236);
+}
+button.add-vendor-button {
+    background: rgb(179, 247, 101);
+}
+button.update-vendor-button {
+    background: rgb(101, 216, 236);
+}
+button.cancel-vendor-button {
+    background: rgb(218, 90, 81);
+    margin-left: 2vh;
+}
+mat-card.add-vendor-card {
+    margin: auto;
+    width: 50%
+}
+.selectedRow {
+    background: rgb(126, 167, 99);
+}
+
+.mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
+    flex-basis: 0;
+}

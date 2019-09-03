@@ -1,0 +1,80 @@
+<div>
+  <div @fadeIn>
+    <div class="products-table-div mat-elevation-z10">
+      <mat-accordion>
+        <app-product [product]='prod' [editable]='true' *ngFor="let prod of products"></app-product>
+        <mat-expansion-panel class='add-products-row'>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Add new Product
+            </mat-panel-title>
+            <mat-panel-description></mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-form-field>
+            <input matInput required maxlength="20" [(ngModel)]="newProduct.name" name="productName" #productName="ngModel"
+              id="productName" placeholder="Product Name">
+            <mat-hint>Name of the Product</mat-hint>
+            <mat-error *ngIf="productName.invalid && productName.errors.required">
+              Please enter a product Name !!
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select required [(ngModel)]="newProductTypeId" name="productTypeList" #productTypeList="ngModel" id="productTypeList"
+              placeholder="Product Type">
+              <mat-option *ngFor="let productType of productTypes" [value]="productType._id">
+                {{productType.name}}
+              </mat-option>
+            </mat-select>
+            <mat-hint>Cup, Stick, Block, etc., ?</mat-hint>
+            <mat-error *ngIf="productTypeList.invalid && productTypeList.errors.required">
+              Please select a Product Type !!
+            </mat-error>
+          </mat-form-field>
+          <!-- <br> -->
+          <mat-form-field>
+            <input matInput required pattern="^[0-9]{0,3}$" [(ngModel)]="newProduct.packageSize" name="packageSize"
+              #packageSize="ngModel" id="packageSize" type="number" placeholder="Package Size">
+            <mat-hint>No. of items in one package</mat-hint>
+            <mat-error *ngIf="packageSize.invalid && packageSize.errors.required">
+              Please enter a Package Size for the Product !!
+            </mat-error>
+            <mat-error *ngIf="packageSize.invalid && packageSize.errors.pattern">
+              Package Size must be a number of maximum 3 characters
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newProduct.costPrice" name="costPrice"
+              #costPrice="ngModel" id="costPrice" type="number" placeholder="Cost Price">
+            <mat-error *ngIf="costPrice.invalid && costPrice.errors.required">
+              Cost Price is Required
+            </mat-error>
+            <mat-error *ngIf="costPrice.invalid && costPrice.errors.pattern">
+              Cost Price is not of currency format
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newProduct.sellingPrice" name="sellingPrice"
+              #sellingPrice="ngModel" id="sellingPrice" type="number" placeholder="Selling Price">
+            <mat-error *ngIf="sellingPrice.invalid && sellingPrice.errors.required">
+              Selling Price is Required
+            </mat-error>
+            <mat-error *ngIf="sellingPrice.invalid && sellingPrice.errors.pattern">
+              Selling Price is not of currency format
+            </mat-error>
+          </mat-form-field>
+
+          <mat-action-row>
+            <button mat-raised-button type="button" class="add-product-button" (click)="addButtonPressed()" [disabled]="productName.invalid ||
+                          productTypeList.invalid ||
+                          packageSize.invalid ||
+                          costPrice.invalid ||
+                          sellingPrice.invalid">
+              Add
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>
