@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { InventoryService } from '../services/inventory.service';
-import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { InventoryDataSource } from './inventory-datasource';
 import { fadeInEffect, dropDownEffect } from '../animations';
 import { UIInventoryRow, Inventory, InventoryRow } from '../definitions/inventory-definition';
-import { VendorService } from '../services/vendor.service';
 import { Vendor } from '../definitions/vendor-definition';
 import { Product } from '../definitions/product-definition';
+import { MatSnackBar } from '@angular/material';
+import { environment } from 'src/environments/environment';
 
 const staticColumnsToDisplay=["productName",
                               "stockOpening",
@@ -32,7 +32,9 @@ export class InventoryComponent implements OnInit {
   private venList:Vendor[];
   private prodList:Product[];
 
-  constructor(private service: InventoryService, private vendorService: VendorService, private datePipe: DatePipe, private dateService:DateService) { }
+  constructor(private service: InventoryService,
+    private dateService:DateService,
+    private snackBar : MatSnackBar) { }
 
   ngOnInit() {
     this.dataSource = new InventoryDataSource(this.service);
@@ -186,10 +188,20 @@ export class InventoryComponent implements OnInit {
         }
       })
     });
-    // this.dataSource.vendorObservable.subscribe(vendors => {
-    //   compInv.vens = vendors;
-    // })
+    this.dataSource.vendorObservable.subscribe(vendors => {
+      // console.log(vendors);
+      vendors.forEach(vendor => {
+        if(vendor.deposit) {
+          inv.vendorDeposits[vendor._id] = vendor.deposit;
+        }
+      });
+      // compInv.vens = vendors;
+    });
+    console.log(inv);
     this.service.saveInventory(inv, date).subscribe(resp => {
+      this.snackBar.open('Inventory', 'Saved', {
+        duration : environment.snackBarDuration
+      });
       this.loadInventoryData();
     });
   }

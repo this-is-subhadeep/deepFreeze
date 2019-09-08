@@ -4,8 +4,9 @@ import { FormGroup, Validators, AbstractControl, FormBuilder, NgModel } from '@a
 import { DateService } from '../services/date.service';
 import { ProductService } from '../services/product.service';
 import { DatePipe } from '@angular/common';
-import { MatExpansionPanel } from '@angular/material';
+import { MatExpansionPanel, MatSnackBar } from '@angular/material';
 import { sizeValidator, priceValidator } from '../validators';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-product',
@@ -21,7 +22,8 @@ export class ProductComponent implements OnInit {
   constructor(private service: ProductService,
     private datePipe: DatePipe,
     private dateService: DateService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
 
@@ -63,6 +65,9 @@ export class ProductComponent implements OnInit {
     this.product.costPrice = this.prodForm.controls.cp.value;
     this.product.sellingPrice = this.prodForm.controls.sp.value;
     this.service.updateProduct(this.product, date).subscribe(resp => {
+      this.snackBar.open('Product', 'Updated', {
+        duration : environment.snackBarDuration
+      });
       exPanel.close();
     });
   }

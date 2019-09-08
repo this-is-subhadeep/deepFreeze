@@ -21,7 +21,6 @@ const vendorSchema = new mongoose.Schema({
         loanAdded : Number,
         loanPayed : Number,
         openingDp : Number,
-        deposit : Number,
         remarks : String
     }]
 }, {

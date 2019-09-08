@@ -14,4 +14,12 @@ export function priceValidator(c: AbstractControl) {
     } else {
         return { error: true };
     }
-};
+}
+
+export function productTextValidator(c : AbstractControl) {
+    if(typeof c.value === 'string' && !c.value.includes(' - ')) {
+      return { error : true };
+    } else {
+      return null;
+    }
+}

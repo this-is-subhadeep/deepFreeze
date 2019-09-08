@@ -115,15 +115,15 @@
           <span [matTooltip]="getVenDetails(vendorData)" [matTooltipClass]="'vendorTooltip'">
             {{vendorData.name}}
             <br>
-            Deposit : {{vendorData.deposit}}
-            <!-- <mat-form-field>
+            <!-- Deposit : {{vendorData.deposit}} -->
+            <mat-form-field>
               <input
               matInput
               [(ngModel)] = "vendorData.deposit"
               name="vendorDeposit"
               #vendorDeposit="ngModel"
               id="vendorDeposit">
-            </mat-form-field> -->
+            </mat-form-field>
           </span>
         </mat-header-cell>
         <mat-cell

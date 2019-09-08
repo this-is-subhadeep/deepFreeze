@@ -64,6 +64,5 @@ export class InventoryService {
       this.inventoryUpdateSubject.next(resultObj);
     });
     return this.inventoryUpdateSubject;
-    // return this.http.post(url,compInventory.inventories);
   }
 }

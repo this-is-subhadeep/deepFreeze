@@ -577,6 +577,14 @@
                             }
                         }
                     }
+                },
+                "vendorDeposits" : {
+                    "type" : "object",
+                    "properties" : {
+                        "<vendorIds>" : {
+                            "type" : "number"
+                        }
+                    }
                 }
             }
         }

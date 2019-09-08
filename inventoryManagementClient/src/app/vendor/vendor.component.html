@@ -37,13 +37,6 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput type='number' formControlName='deposit' name='deposit' placeholder='Deposit'>
-      <mat-error *ngIf='venForm.get("openingDp").errors'>
-        Deposit is not of currency format
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field>
       <textarea matInput type='text' formControlName='remarks' name='remarks' placeholder='Remarks'></textarea>
     </mat-form-field>
 

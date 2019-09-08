@@ -5,7 +5,8 @@ import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { sizeValidator, priceValidator } from '../validators';
-import { MatExpansionPanel } from '@angular/material';
+import { MatExpansionPanel, MatSnackBar } from '@angular/material';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-vendor',
@@ -20,7 +21,8 @@ export class VendorComponent implements OnInit {
   venForm: FormGroup;
   constructor(private service: VendorService,
     private dateService: DateService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private snackBar : MatSnackBar) { }
 
   ngOnInit() {
     this.venForm = this.fb.group({
@@ -41,11 +43,6 @@ export class VendorComponent implements OnInit {
       ],
       openingDp: [
         this.vendor.openingDp, [
-          priceValidator
-        ]
-      ],
-      deposit: [
-        this.vendor.deposit, [
           priceValidator
         ]
       ],
@@ -70,9 +67,12 @@ export class VendorComponent implements OnInit {
     this.vendor.loanAdded = this.venForm.controls.loanAdded.value;
     this.vendor.loanPayed = this.venForm.controls.loanPayed.value;
     this.vendor.openingDp = this.venForm.controls.openingDp.value;
-    this.vendor.deposit = this.venForm.controls.deposit.value;
     this.vendor.remarks = this.venForm.controls.remarks.value;
     this.service.updateVendor(this.vendor, date).subscribe(resp => {
+      this.snackBar.open('Vendor', 'Updated', {
+        duration : environment.snackBarDuration
+      });
+      this.vendor.totalLoan = this.vendor.loanAdded - this.vendor.loanPayed;
       // this.vendor.totalLoan = resp.totalLoan;
       exPanel.close();
     });

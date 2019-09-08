@@ -2,9 +2,10 @@ import { Component, OnInit} from '@angular/core';
 
 import { Product } from '../definitions/product-definition';
 import { ProductService } from '../services/product.service';
-import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { fadeInEffect, dropDownEffect } from '../animations';
+import { MatSnackBar } from '@angular/material';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'product-view',
@@ -13,16 +14,16 @@ import { fadeInEffect, dropDownEffect } from '../animations';
   animations: [fadeInEffect, dropDownEffect]
 })
 export class ProductViewComponent implements OnInit {
-  private products: Product[];
   private newProduct:Product;
-  constructor(private service: ProductService, private datePipe: DatePipe, private dateService:DateService) { }
+  constructor(private service: ProductService, 
+    private dateService:DateService,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.loadProductData();
     this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadProductData();
-      // this.service.refresh();
       this.refresh();
     });
   }
@@ -31,8 +32,12 @@ export class ProductViewComponent implements OnInit {
     this.newProduct = new Product();
   }
 
+  get products() {
+    return this.service.productObservable;
+  }
+
   get productTypes() {
-    return this.service.productTypes;
+    return this.service.productTypesObservable;
   }
 
   get newProductTypeId() {
@@ -40,23 +45,25 @@ export class ProductViewComponent implements OnInit {
   }
 
   set newProductTypeId(id) {
-    this.newProduct.productType=this.service.getProductType(id);
+    this.service.productTypesObservable.subscribe(prodTyps => {
+      this.newProduct.productType=prodTyps.filter(prodTyp => prodTyp._id === id)[0];
+    });
   }
 
   addButtonPressed() {
     let date = this.dateService.date.toISOString();
     this.newProduct._id=null;
     this.service.addProduct(this.newProduct,date).subscribe(resp => {
+      this.snackBar.open('Products', 'Saved', {
+        duration : environment.snackBarDuration
+      });
       this.loadProductData();
-      // this.service.refresh();
     })
     this.refresh();
   }
 
   private loadProductData() {
     let date = this.dateService.date.toISOString();
-    this.service.findProductObservable(date).subscribe(products => {
-      this.products=products;
-    })
+    this.service.getAllProducts(date);
   }
 }

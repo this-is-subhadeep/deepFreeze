@@ -30,17 +30,21 @@ export class InventoryRow {
 
 export class Inventory {
     rows:{[id:string]:InventoryRow};
+    vendorDeposits:{[id:string]:number};
     constructor() {
         this.rows = {};
+        this.vendorDeposits = {};
     }
     clone () {
         let newClone = new Inventory();
         newClone.rows = this.rows;
+        newClone.vendorDeposits = this.vendorDeposits;
         return newClone;
     }
     static cloneAnother (inv:Inventory):Inventory {
         let newClone = new Inventory();
         newClone.rows = inv.rows;
+        newClone.vendorDeposits = inv.vendorDeposits;
         return newClone;
     }
 }

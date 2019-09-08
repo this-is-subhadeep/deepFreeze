@@ -2,7 +2,7 @@
   <div @fadeIn>
     <div class="products-table-div mat-elevation-z10">
       <mat-accordion>
-        <app-product [product]='prod' [editable]='true' *ngFor="let prod of products"></app-product>
+        <app-product [product]='prod' [editable]='true' *ngFor="let prod of products | async"></app-product>
         <mat-expansion-panel class='add-products-row'>
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -22,7 +22,7 @@
           <mat-form-field>
             <mat-select required [(ngModel)]="newProductTypeId" name="productTypeList" #productTypeList="ngModel" id="productTypeList"
               placeholder="Product Type">
-              <mat-option *ngFor="let productType of productTypes" [value]="productType._id">
+              <mat-option *ngFor="let productType of productTypes | async" [value]="productType._id">
                 {{productType.name}}
               </mat-option>
             </mat-select>

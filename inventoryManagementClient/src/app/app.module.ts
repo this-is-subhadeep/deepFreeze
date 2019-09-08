@@ -24,6 +24,8 @@ import { MatTableModule,
         } from '@angular/material';
 import { MatNativeDateModule } from '@angular/material'
 import { MatIconModule } from '@angular/material'
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { ProductService } from './services/product.service';
 import { MainNavComponent } from './main-nav/main-nav.component';
@@ -95,7 +97,9 @@ import { VendorComponent } from './vendor/vendor.component';
    MatNativeDateModule,
    MatTooltipModule,
    MatExpansionModule,
-   MatMenuModule
+   MatMenuModule,
+   MatSnackBarModule,
+   MatAutocompleteModule
   ],
   providers: [
     ProductService,

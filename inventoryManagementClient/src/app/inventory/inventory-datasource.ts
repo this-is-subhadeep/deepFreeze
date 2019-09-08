@@ -60,6 +60,15 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
                     });
                     this.inventorySubject.next(uiInventoryRows);
                     if(inventoryData.vendors) {
+                        if(inventoryData.inventories && inventoryData.inventories.vendorDeposits) {
+                            inventoryData.vendors.forEach(vendor => {
+                                if(inventoryData.inventories.vendorDeposits[vendor._id]) {
+                                    vendor.deposit = inventoryData.inventories.vendorDeposits[vendor._id];
+                                } else {
+                                    vendor.deposit = null;
+                                }
+                            });
+                        }
                         this.vendorSubject.next(inventoryData.vendors);
                     }
                     if(inventoryData.products) {

@@ -40,6 +40,17 @@ const inventorySchema = new mongoose.Schema({
             type : Number,
             require : [true, "Pieces Id must be present"]
         }
+    }],
+    deposits : [{
+        _id : {
+            vendorId : {
+                type : String,
+                require : [true, "Vendor Id must be present"]
+            }
+        },
+        amount : {
+            type : Number
+        }
     }]
 }, {
     versionKey : false

@@ -15,7 +15,7 @@
       </mat-form-field>
       <div [hidden]='!isVendorSelected()'>
         <mat-form-field>
-          <input matInput required [depositValidator]='getTotalAmountSold()' type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="selectedVendor.deposit"
+          <input matInput required [depositValidator]='getTotalAmountSold()' type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="vendorDeposit"
             name="deposit" #deposit="ngModel" id="deposit" placeholder="Deposit">
           <mat-error *ngIf="deposit.invalid && deposit.errors.required">
             Please enter a Deposit amount
@@ -90,16 +90,38 @@
     <div [hidden]='!isVendorSelected()'>
       <div class="product-action-row">
         <mat-form-field appearance="outline">
-          <mat-select required [(value)]="sellingProductId" #productList name="sellingProduct" id="productList"
+          <!-- <mat-select required [(value)]="sellingProductId" #productList name="sellingProduct" id="productList"
             placeholder="Product">
             <mat-option value=""></mat-option>
             <mat-option *ngFor="let product of products" [value]="product._id">
               {{product.name + ' - ' +product.productType.name}}
             </mat-option>
-          </mat-select>
-          <mat-hint>Product to Sell !!</mat-hint>
+          </mat-select> -->
+          <!-- <mat-hint>Product to Sell !!</mat-hint>
           <mat-error *ngIf="productList.invalid && productList.errors.required">
             Please select a Product to sell !!
+          </mat-error> -->
+          <input type="text"
+            matInput
+            required
+            #productList
+            name="sellingProduct"
+            id="productList"
+            placeholder="Product"
+            [formControl]="productControl"
+            [matAutocomplete]="autoList"
+            (click) = "productList.select()">
+          <mat-autocomplete autoActiveFirstOption #autoList="matAutocomplete" [displayWith]="productNameDisp">
+            <mat-option *ngFor="let product of filteredProducts | async" [value]="product">
+              {{product.name + ' - ' + product.productType.name}}
+            </mat-option>
+          </mat-autocomplete>
+          <mat-hint>Product to Sell !!</mat-hint>
+          <mat-error *ngIf="productControl.errors && productControl.errors.required">
+            Please select a Product to sell !!
+          </mat-error>
+          <mat-error *ngIf="productControl.errors && !productControl.errors.required">
+            No Such Product !!
           </mat-error>
         </mat-form-field>
         <div class="button-group">

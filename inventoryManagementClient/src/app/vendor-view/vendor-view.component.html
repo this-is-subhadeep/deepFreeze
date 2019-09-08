@@ -1,7 +1,7 @@
 <div @fadeIn>
   <div class="vendors-table-div mat-elevation-z10">
     <mat-accordion>
-      <app-vendor [vendor]='ven' [editable]='true' *ngFor="let ven of vendors"></app-vendor>
+      <app-vendor [vendor]='ven' [editable]='true' *ngFor="let ven of vendors | async "></app-vendor>
       <mat-expansion-panel class='add-vendor-row' (closed)='cancelButtonPressed()'>
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -43,14 +43,6 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newVendor.deposit" name="deposit"
-            #deposit="ngModel" type="number" placeholder="Deposit">
-          <mat-hint>Deposit</mat-hint>
-          <mat-error *ngIf="deposit.invalid && deposit.errors.pattern">
-            Deposit is not of currency format
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field>
           <textarea matInput [(ngModel)]="newVendor.remarks" name="remarks" #remarks="ngModel" type="number"
             placeholder="Remarks"></textarea>
           <mat-hint>Any Commnent ?</mat-hint>
@@ -60,8 +52,7 @@
           <button mat-raised-button type="button" class="add-vendor-button" (click)="addButtonPressed()" [disabled]="vendorName.invalid ||
                         loanAdded.invalid ||
                         loanPayed.invalid ||
-                        openingDP.invalid ||
-                        deposit.invalid">
+                        openingDP.invalid">
             Add
           </button>
         </mat-action-row>

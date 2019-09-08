@@ -37,6 +37,16 @@ const fillStock = (inv, compInv) => {
                 }
             });
         }
+        if(inv.deposits) {
+            logger.debug('fillDeposits');
+            compInv.vendorDeposits = {};
+            inv.deposits.forEach(deposit => {
+                logger.debug(deposit);
+                if(deposit && deposit._id) {
+                    compInv.vendorDeposits[deposit._id.vendorId] = deposit.amount;
+                }
+            });
+        }
     }
 };
 
@@ -112,6 +122,21 @@ const saveStockOut = (compInv, inv) => {
     }
 };
 
+const saveDeposits = (compInv, inv) => {
+    logger.debug('saveDeposits');
+    for(venId in compInv.vendorDeposits) {
+        logger.debug(JSON.stringify(venId));
+        logger.debug(compInv.vendorDeposits[venId]);
+        deposit = {
+            _id : {
+                vendorId : venId
+            },
+            amount : compInv.vendorDeposits[venId]
+        }
+        inv.deposits.push(deposit);
+    }
+};
+
 const addCompleteInventory = (completeInventory, refDate) => {
     logger.info('dao addCompleteInventory');
     return new Promise((resolve, reject) => {
@@ -131,6 +156,7 @@ const addCompleteInventory = (completeInventory, refDate) => {
                 invModel._id = refDateObj;
                 saveStockIn(completeInventory, invModel);
                 saveStockOut(completeInventory, invModel);
+                saveDeposits(completeInventory, invModel);
                 logger.debug(JSON.stringify(invModel));
                 invModel.save((err, addedInventory) => {
                     if(err) {

@@ -4,6 +4,8 @@ import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { Vendor } from '../definitions/vendor-definition';
 import { fadeInEffect, dropDownEffect } from '../animations';
+import { MatSnackBar } from '@angular/material';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'vendor-view',
@@ -12,19 +14,23 @@ import { fadeInEffect, dropDownEffect } from '../animations';
   animations: [fadeInEffect, dropDownEffect]
 })
 export class VendorViewComponent implements OnInit {
-  private vendors: Vendor[];
   private newVendor:Vendor;
 
-  constructor(private service:VendorService, private datePipe: DatePipe, private dateService:DateService) { }
+  constructor(private service:VendorService,
+    private dateService:DateService,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.loadVendorData();
     this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadVendorData();
-      // this.service.refresh();
       this.refresh();
     });
+  }
+
+  get vendors() {
+    return this.service.vendorObservable;
   }
 
   refresh() {
@@ -39,6 +45,9 @@ export class VendorViewComponent implements OnInit {
     let date = this.dateService.date.toISOString();
     this.newVendor._id=null;
     this.service.addVendor(this.newVendor,date).subscribe(resp => {
+      this.snackBar.open('Vendor', 'Saved', {
+        duration : environment.snackBarDuration
+      });
       this.loadVendorData();
       // this.service.refresh();
     })
@@ -50,8 +59,6 @@ export class VendorViewComponent implements OnInit {
   }
   private loadVendorData() {
     let date = this.dateService.date.toISOString();
-    this.service.findVendorObservable(date).subscribe(vendors => {
-      this.vendors=vendors;
-    })
+    this.service.getAllVendors(date);
   }
 }
