@@ -80,7 +80,11 @@
         </td>
         <td>
           <mat-card class='action-card'>
-            <button mat-button type='button' (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'>
+            <button
+              mat-button
+              type='button'
+              (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'
+              [disabled]='!sellingProduct.enableDelete'>
               <mat-icon aria-label="Side nav toggle icon">delete</mat-icon>
             </button>
           </mat-card>

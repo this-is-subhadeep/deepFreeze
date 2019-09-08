@@ -1,8 +1,11 @@
 import { Product } from "./product-definition";
 
 export class SellingData {
+    enableDelete : boolean;
     constructor(public product: Product = new Product(),
-        public soldUnits: number = null) { }
+        public soldUnits: number = null) {
+            this.enableDelete = false;
+        }
 
     getSoldPrice(): number {
         let price = 0;

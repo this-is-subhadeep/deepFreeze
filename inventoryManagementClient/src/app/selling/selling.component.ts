@@ -3,10 +3,10 @@ import { InventoryService } from '../services/inventory.service';
 import { DateService } from '../services/date.service';
 import { Vendor } from '../definitions/vendor-definition';
 import { fadeInEffect, dropDownEffect } from '../animations';
-import { Product, ProductType } from '../definitions/product-definition';
+import { Product } from '../definitions/product-definition';
 import { Inventory, InventoryRow } from '../definitions/inventory-definition';
 import { SellingData } from '../definitions/selling-definition';
-import { NgModel, FormControl, RequiredValidator, Validators, AbstractControl } from '@angular/forms';
+import { NgModel, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -44,8 +44,10 @@ export class SellingComponent implements OnInit {
       startWith(''),
       map((value : any) => {
         if(value instanceof Product) {
-          if(this.sellingProductList.filter(sellData => sellData.product._id === value._id).length===0) {
-            this.sellingProductList.push(new SellingData(this.products.filter(prod => prod._id === value._id)[0]));
+          if(!this.sellingProductList.find(sellData => sellData.product._id === value._id)) {
+            let sellingDataRow = new SellingData(this.products.find(prod => prod._id === value._id));
+            sellingDataRow.enableDelete = true;
+            this.sellingProductList.push(sellingDataRow);
           }
           return `${value.name} - ${value.productType.name}`;
         } else {
@@ -76,7 +78,6 @@ export class SellingComponent implements OnInit {
     let date = this.dateService.date.toISOString();
     this.inventoryService.findInventoryObservable(date).subscribe(uiInventoryRows => {
       this.inventory = uiInventoryRows.inventories;
-      // this.savedProducts = uiInventoryRows.products;
       this.products = uiInventoryRows.products.map(prod => Product.cloneAnother(prod));
       this.vendors = uiInventoryRows.vendors;
       // console.log(this.products);
@@ -88,11 +89,6 @@ export class SellingComponent implements OnInit {
     this.selectedVendor = new Vendor();
     this.sellingProductList = new Array();
   }
-
-  // private get sellingProductId() {
-  //   // console.log("Here");
-  //   return '';
-  // }
 
   private get vendorDeposit() {
     if(this.inventory && this.inventory.vendorDeposits) {
@@ -110,29 +106,25 @@ export class SellingComponent implements OnInit {
     console.log(prod);
     console.log(this.inventory);
     return prod?`${prod.name} - ${prod.productType.name}`:'';
-    // return '';
   }
-
-  // private set sellingProductId(id: string) {
-  //   if (this.products !== undefined) {
-  //     let removalindex = -1;
-  //     for (let i = 0; i < this.products.length; i++) {
-  //       if (this.products[i]._id === id) {
-  //         removalindex = i;
-  //         this.sellingProductList.push(new SellingData(this.products[i]));
-  //         break;
-  //       }
-  //     }
-  //     this.products.splice(removalindex, 1);
-  //   }
-  // }
 
   private set selectedVendorId(id: string) {
     console.log(`selectedVendorId : ${id}`);
-    this.selectedVendor = this.vendors.filter(ven => ven._id === id)[0];
+    this.selectedVendor = this.vendors.find(ven => ven._id === id);
     this.savedVendor = Vendor.cloneAnother(this.selectedVendor);
-    // this.products = new Array();
-    // this.products = this.savedProducts.map(prod => Product.cloneAnother(prod));
+    this.fillSellingData();
+  }
+
+  private fillSellingData() {
+    this.sellingProductList = new Array<SellingData>();
+    for(let prodId in this.inventory.rows) {
+      console.log(prodId);
+      if(this.inventory.rows[prodId].vendorValue && this.inventory.rows[prodId].vendorValue[this.selectedVendor._id]) {
+        let sellingProductRow = new SellingData(this.products.find(product => product._id === prodId),
+                                                this.inventory.rows[prodId].vendorValue[this.selectedVendor._id].pieces);
+        this.sellingProductList.push(sellingProductRow);
+      }
+    }
   }
 
   private set vendorDeposit(amount: number) {
@@ -147,11 +139,6 @@ export class SellingComponent implements OnInit {
     }
     console.log('setting amount');
     this.inventory.vendorDeposits[this.selectedVendor._id] = amount;
-  }
-
-  private vendorSelected($event) {
-    console.log('Vendor Selected');
-
   }
 
   private isVendorSelected(): boolean {
@@ -211,25 +198,14 @@ export class SellingComponent implements OnInit {
     });
     console.log(`Final Inventory : ${JSON.stringify(this.inventory)}`);
 
-    let updateVendor = this.vendors.filter(ven => ven._id === this.selectedVendor._id)[0];
+    let updateVendor = this.vendors.find(ven => ven._id === this.selectedVendor._id);
     console.log(`${this.savedVendor.deposit} - ${this.selectedVendor.deposit}`);
-    // if(this.savedVendor.deposit!==this.selectedVendor.deposit) {
-    //   updateVendor.deposit = this.selectedVendor.deposit;
-    //   console.log(updateVendor);
-    //   this.inventoryService.saveInventoryFull(this.inventory, updateVendor, date).subscribe(resp => {
-    //     this.snackBar.open('Products', 'Sold', {
-    //       duration : environment.snackBarDuration
-    //     });
-    //     this.loadInventoryData();
-    //   });
-    // } else {
     this.inventoryService.saveInventory(this.inventory, date).subscribe(resp => {
       this.snackBar.open('Products', 'Sold', {
         duration : environment.snackBarDuration
       });
       this.loadInventoryData();
     });
-    // }
     
     this.refresh();
   }

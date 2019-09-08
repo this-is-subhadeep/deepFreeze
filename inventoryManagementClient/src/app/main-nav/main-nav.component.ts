@@ -11,7 +11,8 @@ import { MatSidenav } from '@angular/material';
   styleUrls: ['./main-nav.component.css']
 })
 export class MainNavComponent {
-  private title = " Inventory Management System";
+  private longTitle = "Inventory Management System";
+  private shortTitle = "IMS";
   private inventoryClass = "";
   private productClass = "";
   private vendorClass = "";
@@ -20,7 +21,7 @@ export class MainNavComponent {
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => {
-        console.log(result.matches);
+        console.log(`isHandset : ${result.matches}`);
         return result.matches;
       })
     );

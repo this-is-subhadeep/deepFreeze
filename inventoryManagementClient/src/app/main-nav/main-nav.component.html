@@ -32,10 +32,13 @@
         (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <!-- <span>{{title}}</span> -->
-      <span *ngIf="(isHandset$ | async)!.matches; else browserText">IMS</span>
+      <div class="icon-image-div">
+          <img class="icon-image" src="../../assets/appIcon.png" alt="icon-image">
+      </div>
+      <span class="spacer"></span>
+      <span *ngIf="(isHandset$ | async); else browserText">{{shortTitle}}</span>
       <ng-template #browserText>
-        {{title}}
+        {{longTitle}}
       </ng-template>
       <span class="fill-remaining-space"></span>
       <span>

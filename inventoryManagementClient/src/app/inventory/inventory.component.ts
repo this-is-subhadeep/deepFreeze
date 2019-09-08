@@ -207,12 +207,12 @@ export class InventoryComponent implements OnInit {
   }
 
   private syncTotalIn(invRow:UIInventoryRow) {
-    const prod: Product[] = this.prodList.filter(product => product._id === invRow.id);
-    if(prod && prod.length>0) {
+    const prod: Product = this.prodList.find(product => product._id === invRow.id);
+    if(prod) {
       if(invRow.stockSenIn && invRow.stockOthersIn) {
-        invRow.stockTotalIn = invRow.stockSenIn * prod[0].packageSize + invRow.stockOthersIn;
+        invRow.stockTotalIn = invRow.stockSenIn * prod.packageSize + invRow.stockOthersIn;
       } else if(invRow.stockSenIn && !invRow.stockOthersIn) {
-        invRow.stockTotalIn = invRow.stockSenIn * prod[0].packageSize;
+        invRow.stockTotalIn = invRow.stockSenIn * prod.packageSize;
       } else if(!invRow.stockSenIn && invRow.stockOthersIn) {
         invRow.stockTotalIn = invRow.stockOthersIn;
       }
@@ -221,20 +221,20 @@ export class InventoryComponent implements OnInit {
   }
 
   private syncTotalOut(invRow:UIInventoryRow) {
-    const prod: Product[] = this.prodList.filter(product => product._id === invRow.id);
-    if(prod && prod.length>0) {
-      if(invRow.vendorValue) {
-        let stockTotalOut = 0;
-        this.venList.forEach(ven => {
-          if(invRow.vendorValue[ven._id]) {
-            stockTotalOut = stockTotalOut + invRow.vendorValue[ven._id];
-          }
-        });
-        if(stockTotalOut) {
-          invRow.stockTotalOut = stockTotalOut;
+    // const prod: Product = this.prodList.find(product => product._id === invRow.id);
+    // if(prod) {
+    if(invRow.vendorValue) {
+      let stockTotalOut = 0;
+      this.venList.forEach(ven => {
+        if(invRow.vendorValue[ven._id]) {
+          stockTotalOut = stockTotalOut + invRow.vendorValue[ven._id];
         }
+      });
+      if(stockTotalOut) {
+        invRow.stockTotalOut = stockTotalOut;
       }
     }
+    // }
     this.syncBalance(invRow);
   }
 

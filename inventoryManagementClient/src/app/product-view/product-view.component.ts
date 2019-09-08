@@ -46,7 +46,7 @@ export class ProductViewComponent implements OnInit {
 
   set newProductTypeId(id) {
     this.service.productTypesObservable.subscribe(prodTyps => {
-      this.newProduct.productType=prodTyps.filter(prodTyp => prodTyp._id === id)[0];
+      this.newProduct.productType=prodTyps.find(prodTyp => prodTyp._id === id);
     });
   }
 
