@@ -1,0 +1,6 @@
+{
+    "S001" : "Server Error",
+    "B003" : "Input Data Missing",
+    "B004" : "File Too Large",
+    "B005" : "File Type not Supported"
+}

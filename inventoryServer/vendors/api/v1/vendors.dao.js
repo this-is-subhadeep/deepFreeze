@@ -22,6 +22,7 @@ const getCompleteVendorsFromList = (vendors, refDate) => {
                                 compVen.loanPayed = detail.loanPayed;
                                 compVen.openingDp = detail.openingDp;
                                 compVen.remarks = detail.remarks;
+                                compVen.dpFile = detail.dpFile;
                             }
                         });
                         compVens.push(compVen);
@@ -92,6 +93,7 @@ const getAllCompleteVendors = (refDate) => {
                                         }
                                         compVen.openingDp = detail.openingDp;
                                         compVen.remarks = detail.remarks;
+                                        compVen.dpFile = detail.dpFile;
                                         break;
                                     }
                                 }
@@ -139,7 +141,8 @@ const addCompleteVendor = (completeVendor, refDate) => {
                     loanAdded : completeVendor.loanAdded,
                     loanPayed : completeVendor.loanPayed,
                     openingDp : completeVendor.openingDp,
-                    remarks : completeVendor.remarks
+                    remarks : completeVendor.remarks,
+                    dpFile : completeVendor.dpFile
                 });
                 logger.debug(JSON.stringify(venModel));
                 venModel.save((err, addedVendor) => {
@@ -205,7 +208,8 @@ const updateCompleteVendor = (vendor, refDate) => {
                         loanAdded : vendor.loanAdded,
                         loanPayed : vendor.loanPayed,
                         openingDp : vendor.openingDp,
-                        remarks : vendor.remarks
+                        remarks : vendor.remarks,
+                        dpFile : vendor.dpFile
                     };
                     logger.debug(`newDet : ${JSON.stringify(newDet)}`);
                     for(let i=0; i<vendorFound.details.length; i++) {

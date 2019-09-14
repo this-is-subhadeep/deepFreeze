@@ -25,7 +25,8 @@ const productSchema = new mongoose.Schema({
         _id : Date,
         packageSize : Number,
         costPrice : Number,
-        sellingPrice : Number
+        sellingPrice : Number,
+        productIcon : String
     }]
 }, {
     versionKey : false

@@ -50,6 +50,14 @@ const setupMiddleware = (app) => {
         }
     }));
 
+    app.use('/file', httpProxy({
+        target : serverConfig.fileURL,
+        changeOrigin : true,
+        pathRewrite : {
+            '^/file' : '/api/v1'
+        }
+    }));
+
 };
 
 module.exports = {

@@ -21,7 +21,8 @@ const vendorSchema = new mongoose.Schema({
         loanAdded : Number,
         loanPayed : Number,
         openingDp : Number,
-        remarks : String
+        remarks : String,
+        dpFile : String
     }]
 }, {
     versionKey : false

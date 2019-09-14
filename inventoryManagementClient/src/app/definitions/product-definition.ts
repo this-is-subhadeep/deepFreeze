@@ -24,6 +24,7 @@ export class Product {
     packageSize:number;
     costPrice:number;
     sellingPrice:number;
+    productIcon:string;
     constructor() {
         this.productType = new ProductType();
     }
@@ -35,6 +36,7 @@ export class Product {
         newClone.packageSize = this.packageSize;
         newClone.costPrice = this.costPrice;
         newClone.sellingPrice = this.sellingPrice;
+        newClone.productIcon = this.productIcon;
         return newClone;
     }
     static cloneAnother (prod:Product):Product {
@@ -45,6 +47,7 @@ export class Product {
         newClone.packageSize = prod.packageSize;
         newClone.costPrice = prod.costPrice;
         newClone.sellingPrice = prod.sellingPrice;
+        newClone.productIcon = prod.productIcon;
         return newClone;
 
     }

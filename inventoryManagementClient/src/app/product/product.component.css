@@ -6,3 +6,10 @@
 .mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
     flex-basis: 0;
 }
+
+.icon-image {
+    height : 35px;
+    width : 35px;
+    border-radius: 35px;
+    vertical-align: middle;
+}

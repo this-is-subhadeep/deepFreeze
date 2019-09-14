@@ -1,82 +1,150 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Vendor } from '../definitions/vendor-definition';
+import { StandardResponse } from '../definitions/service-response-definition';
 import { VendorService } from '../services/vendor.service';
-import { DatePipe } from '@angular/common';
 import { DateService } from '../services/date.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { sizeValidator, priceValidator } from '../validators';
+import { priceValidator } from '../validators';
 import { MatExpansionPanel, MatSnackBar } from '@angular/material';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
+import { FilesService } from '../services/files.service';
+import { appConfigurations } from 'src/environments/conf';
+import { HttpErrorResponse } from '@angular/common/http';
+import { errorsDict } from '../errorCodeMapping';
 
 @Component({
   selector: 'app-vendor',
   templateUrl: './vendor.component.html',
   styleUrls: ['./vendor.component.css']
 })
-export class VendorComponent implements OnInit {
+export class VendorComponent {
 
-  @Input() vendor: Vendor;
-  @Input() editable: boolean;
-
+  venObj: Vendor;
   venForm: FormGroup;
+  @Input() editable: boolean;
+  dpToUpload = false;
+  panelStateOpened = false;
+  editingState = false;
+  dpFileSelected : File;
+  defaultVenDPImage = '../../assets/default_vendor_Image.png';
+
   constructor(private service: VendorService,
+    private fileService : FilesService,
     private dateService: DateService,
     private fb: FormBuilder,
     private snackBar : MatSnackBar) { }
 
-  ngOnInit() {
+  @Input()
+  set vendor (ven) {
+    this.venObj = ven;
+    this.setForm(ven);
+  }
+
+  private getVendorPic(vendor) {
+    let dpURL = environment.serverBase+appConfigurations.fileURL+'/images/';
+    return this.venObj.dpFile?dpURL+this.venObj.dpFile:this.defaultVenDPImage;
+  }
+
+  setForm(ven) {
     this.venForm = this.fb.group({
       name: [
-        this.vendor.name, [
+        ven.name, [
           Validators.required
         ]
       ],
       loanAdded: [
-        this.vendor.loanAdded, [
+        ven.loanAdded, [
           priceValidator
         ]
       ],
       loanPayed: [
-        this.vendor.loanPayed, [
+        ven.loanPayed, [
           priceValidator
         ]
       ],
       openingDp: [
-        this.vendor.openingDp, [
+        ven.openingDp, [
           priceValidator
         ]
       ],
       remarks: [
-        this.vendor.remarks
+        ven.remarks
       ]
     });
 
-    if (!this.editable) {
-      this.venForm.disable();
-    }
+    this.venForm.disable();
   }
 
   getFormattedtotalLoan(ven:Vendor) {
     return ven.totalLoan?Math.round(ven.totalLoan*100)/100:0;
   }
 
+  panelOpened() {
+    this.panelStateOpened = true;
+  }
+
+  panelClosed() {
+    this.dpToUpload = false;
+    this.panelStateOpened = false;
+    this.editingState = false;
+    this.setForm(this.venObj);
+  }
+
+  setEdit() {
+    this.editingState = true;
+    this.venForm.enable();
+  }
+
+  onImageClick(fileChooser) {
+    if(this.editingState) {
+      fileChooser.click();
+    }
+  }
+
+  onFileSelected(event) {
+    this.dpFileSelected = <File>event.target.files[0];
+    this.dpToUpload = true;
+  }
 
   onUpdate(exPanel: MatExpansionPanel) {
     let date = this.dateService.date.toISOString();
-    this.vendor.name = this.venForm.controls.name.value;
-    this.vendor.loanAdded = this.venForm.controls.loanAdded.value;
-    this.vendor.loanPayed = this.venForm.controls.loanPayed.value;
-    this.vendor.openingDp = this.venForm.controls.openingDp.value;
-    this.vendor.remarks = this.venForm.controls.remarks.value;
-    this.service.updateVendor(this.vendor, date).subscribe(resp => {
-      this.snackBar.open('Vendor', 'Updated', {
-        duration : environment.snackBarDuration
+    this.venObj.name = this.venForm.controls.name.value;
+    this.venObj.loanAdded = this.venForm.controls.loanAdded.value;
+    this.venObj.loanPayed = this.venForm.controls.loanPayed.value;
+    this.venObj.openingDp = this.venForm.controls.openingDp.value;
+    this.venObj.remarks = this.venForm.controls.remarks.value;
+    if(this.dpToUpload) {
+      this.fileService.uploadFile(this.dpFileSelected).subscribe((resp:StandardResponse) => {
+        this.venObj.dpFile = resp._id;
+        this.service.updateVendor(this.venObj, date).subscribe(resp => {
+          this.snackBar.open('Vendor', 'Updated', {
+            duration : environment.snackBarDuration
+          });
+          this.venObj.totalLoan = this.venObj.loanAdded - this.venObj.loanPayed;
+          exPanel.close();
+        });
+      }, (errorResp:HttpErrorResponse) => {
+        console.log('Error');
+        console.log(errorResp);
+        this.snackBar.open('Vendor', `Error ${errorsDict[errorResp.error[0].code]}`, {
+          duration : environment.snackBarDuration
+        });
+        exPanel.close();
       });
-      this.vendor.totalLoan = this.vendor.loanAdded - this.vendor.loanPayed;
-      // this.vendor.totalLoan = resp.totalLoan;
-      exPanel.close();
-    });
+    } else {
+      console.log('Update Only');
+      this.service.updateVendor(this.venObj, date).subscribe(resp => {
+        this.snackBar.open('Vendor', 'Updated', {
+          duration : environment.snackBarDuration
+        });
+        this.venObj.totalLoan = this.venObj.loanAdded - this.venObj.loanPayed;
+        exPanel.close();
+      });
+    }
   }
 
+  log(data) {
+    console.log(data);
+  }
 
 }

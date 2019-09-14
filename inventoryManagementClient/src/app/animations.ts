@@ -5,11 +5,11 @@ export let fadeInEffect = trigger("fadeIn",[
     transition(":enter",[
         animate(500)
     ])
-])
+]);
 
 export let dropDownEffect = trigger("dropDown",[
     state("void",style({transform : "translateY(-50px)"})),
     transition(":enter",[
         animate(500)
     ])
-])
+]);

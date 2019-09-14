@@ -1,16 +1,21 @@
-<mat-expansion-panel name='expansionPanel' #expansionPanel>
+<mat-expansion-panel name='expansionPanel' #expansionPanel (opened)='panelOpened()' (closed)='panelClosed()'>
   <mat-expansion-panel-header class='product-panel-header'>
     <mat-panel-title style="align-items: center">
-      <span>
-        {{product.name}}
-      </span>
+      <div>
+          <img class="icon-image" [src]="getProductPic(prodObj)" alt="icon-image" [hidden]='panelStateOpened'>
+        {{prodObj.name}}
+      </div>
     </mat-panel-title>
     <mat-panel-description>
-      {{product.productType.name}}
+      {{prodObj.productType.name}}
     </mat-panel-description>
   </mat-expansion-panel-header>
   <form [formGroup]='prodForm' (ngSubmit)='onUpdate(expansionPanel)'>
-    <mat-form-field *ngIf="editable">
+    <div>
+      <img class="icon-image" [src]="getProductPic(prodObj)" alt="icon-image" [hidden]='!panelStateOpened' (click)='onImageClick(fileChooser)'> 
+    </div>
+
+    <mat-form-field *ngIf="editingState">
       <input matInput formControlName='name' name="name" placeholder="Product Name">
       <mat-error *ngIf='prodForm.get("name").errors && prodForm.get("name").errors.required'>
         Please enter a product Name !!
@@ -47,8 +52,13 @@
       </mat-error>
     </mat-form-field>
 
+    <input type="file" #fileChooser hidden (change)='onFileSelected($event)'>
+
     <mat-action-row *ngIf='editable'>
-      <button mat-raised-button type='submit' color='primary' [disabled]="!prodForm.touched || prodForm.invalid">
+      <button mat-raised-button type='button' color='primary' *ngIf='!editingState' (click)='setEdit()'>
+        <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon">create</mat-icon>
+      </button>
+      <button mat-raised-button type='submit' color='primary' *ngIf='editingState'>
         Update
       </button>
     </mat-action-row>

@@ -104,6 +104,7 @@ const getCompleteProductsFromList = (products, refDate) => {
                                 compProd.packageSize = detail.packageSize;
                                 compProd.costPrice = detail.costPrice;
                                 compProd.sellingPrice = detail.sellingPrice;
+                                compProd.productIcon = detail.productIcon;
                             }
                         });
                         compProds.push(compProd);
@@ -165,6 +166,7 @@ const getAllCompleteProducts = (refDate) => {
                                         compProd.packageSize = detail.packageSize;
                                         compProd.costPrice = detail.costPrice;
                                         compProd.sellingPrice = detail.sellingPrice;
+                                        compProd.productIcon = detail.productIcon
                                         break;
                                     }
                                 }
@@ -242,7 +244,8 @@ const addCompleteProduct = (completeProduct, refDate) => {
                     _id : refDateObj,
                     packageSize : completeProduct.packageSize,
                     costPrice : completeProduct.costPrice,
-                    sellingPrice : completeProduct.sellingPrice
+                    sellingPrice : completeProduct.sellingPrice,
+                    productIcon : completeProduct.productIcon
                 });
                 logger.debug(JSON.stringify(prodModel));
                 prodModel.save((err, addedProduct) => {
@@ -352,7 +355,8 @@ const updateCompleteProduct = (completeProduct, refDate) => {
                         _id : refDateObj,
                         packageSize : completeProduct.packageSize,
                         costPrice : completeProduct.costPrice,
-                        sellingPrice : completeProduct.sellingPrice
+                        sellingPrice : completeProduct.sellingPrice,
+                        productIcon : completeProduct.productIcon
                     };
                     logger.debug(`newDet : ${JSON.stringify(newDet)}`);
                     for(let i=0; i<productFound.details.length; i++) {

@@ -1,15 +1,22 @@
-<mat-expansion-panel name='expansionPanel' #expansionPanel>
+<mat-expansion-panel name='expansionPanel' #expansionPanel (opened)='panelOpened()' (closed)='panelClosed()'>
   <mat-expansion-panel-header class='vendor-panel-header'>
     <mat-panel-title>
-      {{vendor.name}}
+      <div>
+        <img class="icon-image" [src]="getVendorPic(venObj)" alt="icon-image" [hidden]='panelStateOpened'>
+        {{venObj.name}}
+      </div>
     </mat-panel-title>
     <mat-panel-description>
-      {{getFormattedtotalLoan(vendor)}}
+      {{getFormattedtotalLoan(venObj)}}
     </mat-panel-description>
   </mat-expansion-panel-header>
   <form [formGroup]='venForm' (ngSubmit)='onUpdate(expansionPanel)'>
-    <mat-form-field *ngIf='editable'>
-      <input matInput formControlName='name' name='name' placeholder='Vendor Name'>
+    <div>
+      <img class="icon-image" [src]="getVendorPic(venObj)" alt="icon-image" [hidden]='!panelStateOpened' (click)='onImageClick(fileChooser)'> 
+    </div>
+
+    <mat-form-field *ngIf='editingState'>
+      <input matInput formControlName='name' name='name' placeholder='Vendor Name' >
       <mat-error *ngIf='venForm.get("name").errors && venForm.get("name").errors.required'>
         Please enter a Vendor Name !!
       </mat-error>
@@ -40,8 +47,13 @@
       <textarea matInput type='text' formControlName='remarks' name='remarks' placeholder='Remarks'></textarea>
     </mat-form-field>
 
-    <mat-action-row>
-      <button mat-raised-button type='submit' color='primary' [disabled]='!venForm.touched || venForm.invalid'>
+    <input type="file" #fileChooser hidden (change)='onFileSelected($event)'>
+
+    <mat-action-row *ngIf='editable'>
+      <button mat-raised-button type='button' color='primary' *ngIf='!editingState' (click)='setEdit()'>
+        <mat-icon aria-hidden="false" aria-label="Example thumbs up SVG icon">create</mat-icon>
+      </button>
+      <button mat-raised-button type='submit' color='primary' *ngIf='editingState'>
         Update
       </button>
     </mat-action-row>

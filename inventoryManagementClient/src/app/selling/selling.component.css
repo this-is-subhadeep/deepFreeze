@@ -10,7 +10,12 @@
 .header-row {
     margin: 2%;
     display: flex;
+    flex-flow: row;
     justify-content: space-between;
+}
+
+.ven-details {
+    width: 50%
 }
 
 .ven-value-card {

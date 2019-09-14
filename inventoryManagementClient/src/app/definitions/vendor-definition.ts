@@ -7,6 +7,7 @@ export class Vendor {
     openingDp:number;
     deposit:number;
     remarks:string;
+    dpFile:string;
     clone():Vendor {
         let newClone       = new Vendor();
         newClone._id        = this._id;
@@ -17,6 +18,7 @@ export class Vendor {
         newClone.openingDp = this.openingDp;
         newClone.deposit   = this.deposit;
         newClone.remarks   = this.remarks;
+        newClone.dpFile = this.dpFile;
         return newClone;
     }
     static cloneAnother (ven:Vendor):Vendor {
@@ -29,6 +31,7 @@ export class Vendor {
         newClone.openingDp = ven.openingDp;
         newClone.deposit   = ven.deposit;
         newClone.remarks   = ven.remarks;
+        newClone.dpFile = ven.dpFile;
         return newClone;
     }
 }
