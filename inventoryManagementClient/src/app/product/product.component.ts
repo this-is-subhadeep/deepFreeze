@@ -40,7 +40,7 @@ export class ProductComponent {
     this.setForm(prod);
   }
 
-  private getProductPic(vendor) {
+  get productPic() {
     let dpURL = environment.serverBase+appConfigurations.fileURL+'/images/';
     return this.prodObj.productIcon?dpURL+this.prodObj.productIcon:this.defaultProdDPImage;
   }

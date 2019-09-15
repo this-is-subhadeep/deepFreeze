@@ -2,7 +2,7 @@
   <mat-expansion-panel-header class='vendor-panel-header'>
     <mat-panel-title>
       <div>
-        <img class="icon-image" [src]="getVendorPic(venObj)" alt="icon-image" [hidden]='panelStateOpened'>
+        <img class="icon-image" [src]="vendorPic" alt="icon-image" [hidden]='panelStateOpened'>
         {{venObj.name}}
       </div>
     </mat-panel-title>
@@ -12,7 +12,7 @@
   </mat-expansion-panel-header>
   <form [formGroup]='venForm' (ngSubmit)='onUpdate(expansionPanel)'>
     <div>
-      <img class="icon-image" [src]="getVendorPic(venObj)" alt="icon-image" [hidden]='!panelStateOpened' (click)='onImageClick(fileChooser)'> 
+      <img class="icon-image" [src]="vendorPic" alt="icon-image" [hidden]='!panelStateOpened' (click)='onImageClick(fileChooser)'> 
     </div>
 
     <mat-form-field *ngIf='editingState'>

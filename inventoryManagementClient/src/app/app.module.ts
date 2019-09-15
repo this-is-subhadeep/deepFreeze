@@ -41,6 +41,7 @@ import { ProductViewComponent } from './product-view/product-view.component';
 import { ProductComponent } from './product/product.component';
 import { VendorViewComponent } from './vendor-view/vendor-view.component';
 import { VendorComponent } from './vendor/vendor.component';
+import { BuyingComponent } from './buying/buying.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +53,8 @@ import { VendorComponent } from './vendor/vendor.component';
     UnitValidatorDirective,
     DepositValidatorDirective,
     ProductComponent,
-    VendorComponent
+    VendorComponent,
+    BuyingComponent
   ],
   imports: [
     BrowserModule,
@@ -89,6 +91,10 @@ import { VendorComponent } from './vendor/vendor.component';
       {
         path: 'selling',
         component: SellingComponent
+      },
+      {
+        path: 'buying',
+        component: BuyingComponent
       }
    ]),
    MatCardModule,

@@ -18,9 +18,10 @@
     </mat-toolbar>
     <mat-nav-list>
       <a #inventory mat-list-item routerLink="/inventory" [ngClass]="inventoryClass" (click)="itemClicked('inventory',drawer)">Intentory</a>
+      <a #buying mat-list-item routerLink="/buying" [ngClass]="buyingClass" (click)="itemClicked('buying',drawer)">Buy</a>
+      <a #selling mat-list-item routerLink="/selling" [ngClass]="sellingClass" (click)="itemClicked('selling',drawer)">Sell</a>
       <a #products mat-list-item routerLink="/products" [ngClass]="productClass" (click)="itemClicked('products',drawer)">Products</a>
       <a #vendors mat-list-item routerLink="/vendors" [ngClass]="vendorClass" (click)="itemClicked('vendors',drawer)">Vendors</a>
-      <a #selling mat-list-item routerLink="/selling" [ngClass]="sellingClass" (click)="itemClicked('selling',drawer)">Sell</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

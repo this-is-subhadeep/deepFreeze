@@ -142,11 +142,11 @@ export class SellingComponent implements OnInit {
   }
 
   private isVendorSelected(): boolean {
-    return this.selectedVendor._id !== undefined && this.selectedVendor._id !== null && this.selectedVendor._id.startsWith('ven');
+    return this.selectedVendor._id && this.selectedVendor._id.startsWith('ven');
   }
 
   private hideProductTable(): boolean {
-    return !(this.sellingProductList != null && this.sellingProductList.length > 0 && this.isVendorSelected());
+    return !(this.sellingProductList && this.sellingProductList.length > 0 && this.isVendorSelected());
   }
 
   private getStockBalance(productId: string): number {
@@ -156,7 +156,7 @@ export class SellingComponent implements OnInit {
 
   private getTotalUnitsSold() {
     let totalUnitsSold = 0;
-    if (this.sellingProductList != undefined && this.sellingProductList.length > 0) {
+    if (this.sellingProductList && this.sellingProductList.length > 0) {
       this.sellingProductList.forEach(sellingProduct => {
         totalUnitsSold += sellingProduct.soldUnits;
       });
@@ -166,9 +166,9 @@ export class SellingComponent implements OnInit {
 
   private getTotalAmountSold() {
     let totalAmountSold = 0;
-    if (this.sellingProductList != undefined && this.sellingProductList.length > 0) {
+    if (this.sellingProductList && this.sellingProductList.length > 0) {
       this.sellingProductList.forEach(sellingProduct => {
-        totalAmountSold += sellingProduct.soldUnits * sellingProduct.product.sellingPrice.valueOf();
+        totalAmountSold += sellingProduct.getSoldPrice();
       });
     }
     return Math.round(totalAmountSold * 100) / 100;

@@ -40,7 +40,7 @@ export class VendorComponent {
     this.setForm(ven);
   }
 
-  private getVendorPic(vendor) {
+  get vendorPic() {
     let dpURL = environment.serverBase+appConfigurations.fileURL+'/images/';
     return this.venObj.dpFile?dpURL+this.venObj.dpFile:this.defaultVenDPImage;
   }
