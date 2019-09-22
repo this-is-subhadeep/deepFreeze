@@ -18,8 +18,7 @@ const inventorySchema = new mongoose.Schema({
             type : Number
         },
         pieces : {
-            type : Number,
-            require : [true, "Pieces Id must be present"]
+            type : Number
         }
     }],
     stockOut : [{
@@ -56,12 +55,31 @@ const inventorySchema = new mongoose.Schema({
     versionKey : false
 });
 
+inventoryOpeningSchema = new mongoose.Schema({
+    _id : {
+        type: Date
+    },
+    stockOpening : [{
+        _id : {
+            productId : String
+        },
+        packages : {
+            type : Number
+        },
+        pieces : {
+            type : Number
+        }
+    }]
+});
+
 inventorySchema.post('find', (inventoryList) => {
     inventoryList.sort((inv1, inv2) => inv1._id < inv2._id ? 1: -1 );
 });
 
 const InventoryModel = new mongoose.model('inventory', inventorySchema);
+const InventoryOpeningModel = new mongoose.model('inventory_opening', inventoryOpeningSchema);
 
 module.exports = {
-    InventoryModel
+    InventoryModel,
+    InventoryOpeningModel
 }

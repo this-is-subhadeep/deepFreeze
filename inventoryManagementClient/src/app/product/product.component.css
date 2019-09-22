@@ -3,7 +3,11 @@
     padding-bottom: 1.5vh;
 }
 
-.mat-expansion-panel-header-description, .mat-expansion-panel-header-title {
+.mat-expansion-panel-header-title {
+    flex-basis: 0;
+}
+
+.mat-expansion-panel-header-description {
     flex-basis: 0;
 }
 

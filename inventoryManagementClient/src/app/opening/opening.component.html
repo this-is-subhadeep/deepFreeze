@@ -1,0 +1,47 @@
+<div>
+  <div>
+    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
+      Save Opening
+    </button>
+  </div>
+  <div @fadeIn class="opening-table-div mat-elevation-z10">
+    <mat-table [dataSource]="dataSource" class="opening-table">
+      <ng-container matColumnDef="productId">
+        <mat-header-cell *matHeaderCellDef>Product Id</mat-header-cell>
+        <mat-cell *matCellDef="let inventoryOpeningRow">
+          {{ inventoryOpeningRow.id }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="productName" sticky>
+        <mat-header-cell class="inventory-name-colum" *matHeaderCellDef>Product Name</mat-header-cell>
+        <mat-cell
+          *matCellDef="let inventoryOpeningRow"
+          [ngClass]="getRowTypeClass(inventoryOpeningRow)">
+          <span [matTooltip]="getProdDetails(inventoryOpeningRow)">
+            {{ inventoryOpeningRow.name }}
+          </span>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="stockOpening" sticky>
+        <mat-header-cell *matHeaderCellDef>Stock<br>Opening</mat-header-cell>
+        <mat-cell
+          *matCellDef="let inventoryOpeningRow"
+          [ngClass]="getRowTypeClass(inventoryOpeningRow)" sticky>
+          <div *ngIf="isRowProductType(inventoryOpeningRow); else stockOpening"></div>
+          <ng-template #stockOpening>
+            <input
+              type="number"
+              matInput
+              [(ngModel)] = "inventoryOpeningRow.stockOpening"
+              name="stockOpening"
+              #stockOpening="ngModel"
+              id="stockOpening"
+              (blur)="validateStockOpening(inventoryOpeningRow)">
+          </ng-template>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+    </mat-table>
+  </div>
+</div>

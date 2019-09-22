@@ -20,7 +20,8 @@ import { MatTableModule,
          MatPaginatorModule,
          MatDatepickerModule,
          MatTooltipModule,
-         MatMenuModule
+         MatMenuModule,
+         MatSlideToggleModule
         } from '@angular/material';
 import { MatNativeDateModule } from '@angular/material'
 import { MatIconModule } from '@angular/material'
@@ -42,6 +43,7 @@ import { ProductComponent } from './product/product.component';
 import { VendorViewComponent } from './vendor-view/vendor-view.component';
 import { VendorComponent } from './vendor/vendor.component';
 import { BuyingComponent } from './buying/buying.component';
+import { OpeningComponent } from './opening/opening.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +56,8 @@ import { BuyingComponent } from './buying/buying.component';
     DepositValidatorDirective,
     ProductComponent,
     VendorComponent,
-    BuyingComponent
+    BuyingComponent,
+    OpeningComponent
   ],
   imports: [
     BrowserModule,
@@ -95,6 +98,10 @@ import { BuyingComponent } from './buying/buying.component';
       {
         path: 'buying',
         component: BuyingComponent
+      },
+      {
+        path: 'opening',
+        component: OpeningComponent
       }
    ]),
    MatCardModule,
@@ -105,7 +112,8 @@ import { BuyingComponent } from './buying/buying.component';
    MatExpansionModule,
    MatMenuModule,
    MatSnackBarModule,
-   MatAutocompleteModule
+   MatAutocompleteModule,
+   MatSlideToggleModule
   ],
   providers: [
     ProductService,

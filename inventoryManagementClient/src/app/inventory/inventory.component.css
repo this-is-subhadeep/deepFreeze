@@ -1,14 +1,48 @@
+.edit-slider-div {
+    margin-top: 1.5vw;
+    margin-left: 2.5vw;
+    margin-bottom: 1.5vw;
+    margin-right: 2.5vw;
+    display: flex;
+    justify-content: flex-start;
+    height : 30px;
+    width : 93%;
+}
+
+.edit-slider-div>mat-slide-toggle {
+    flex-grow: 1;
+    height :30px;
+}
+
+.save-button-div {
+    flex-grow: 8;
+}
+
+.save-button {
+    background: rgb(101, 193, 247);
+    margin-left: 1vw;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width: 100%;
+}
+
 .inventory-table-div {
     overflow: auto;
     height: 435px;
     width: 96%;
     margin: 2%;
 }
+
 .inventory-table {
     background: rgb(192, 230, 218);
     width: 1500px;
     /* height: 2000px ; */
 }
+
+.inventory-table>mat-header-row {
+    height: 70px;
+}
+
 .productType {
     background: rgb(98, 128, 156);
     font-style: italic;
@@ -45,12 +79,4 @@
 
 .vendorTooltip {
     background: red;
-}
-
-button.save-button {
-    background: rgb(101, 193, 247);
-    margin-top: 2%;
-    margin-left: 2%;
-    margin-right: 2%;
-    width: 96%;
 }

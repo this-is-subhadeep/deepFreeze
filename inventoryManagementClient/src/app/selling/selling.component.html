@@ -62,11 +62,11 @@
         </td>
         <td>
           <mat-card class='ven-value-card'>
-            <mat-form-field>
-              <input matInput required [unitValidator]='getStockBalance(sellingProduct.product.id)' type="number"
+            <mat-form-field class="ven-value-elem">
+              <input matInput required [unitValidator]='getStockBalance(sellingProduct.product._id)' type="number"
                 maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold"
                 (change)='deposit.control.updateValueAndValidity()'>
-              <span matSuffix>/{{getStockBalance(sellingProduct.product.id)}}</span>
+              <span matSuffix>/{{getStockBalance(sellingProduct.product._id)}}</span>
               <mat-error *ngIf="unitsSold.invalid && unitsSold.errors.required && (unitsSold.dirty || unitsSold.touched)">
                 Please provide a Unit Amount
               </mat-error>

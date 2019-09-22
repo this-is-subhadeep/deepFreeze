@@ -29,6 +29,7 @@ export class InventoryRow {
 }
 
 export class Inventory {
+    date: string;
     rows:{[id:string]:InventoryRow};
     vendorDeposits:{[id:string]:number};
     constructor() {
@@ -93,14 +94,66 @@ export class UIInventoryRow {
     }
 }
 
-export interface InventoryGetResult {
-    inventories : Inventory;
-    products : Product[];
-    productTypes : ProductType[];
-    vendors : Vendor[];
+export class InventoryOpeningRow {
+    packages:number;
+    pieces:number;
+    constructor() {}
+    clone() {
+        let newClone = new InventoryOpeningRow();
+        newClone.packages = this.packages;
+        newClone.pieces = this.pieces;
+        return newClone;
+    }
+    static cloneAnother (invRow:InventoryOpeningRow):InventoryOpeningRow {
+        let newClone = new InventoryOpeningRow();
+        newClone.packages = invRow.packages;
+        newClone.pieces = invRow.pieces;
+        return newClone;
+    }
 }
 
-export interface InventorySaveResult {
-    inventoryId : string,
-    vendorId : string
+export class InventoryOpening {
+    rows:{[id:string]:InventoryOpeningRow};
+    constructor() {
+        this.rows = {};
+    }
+    clone () {
+        let newClone = new InventoryOpening();
+        newClone.rows = this.rows;
+        return newClone;
+    }
+    static cloneAnother (inv:InventoryOpening):InventoryOpening {
+        let newClone = new InventoryOpening();
+        newClone.rows = inv.rows;
+        return newClone;
+    }
 }
+
+export class UIInventoryOpeningRow {
+    id:string;
+    name:string;
+    prodDets:Product;
+    stockOpening:number;
+    constructor() {}
+    clone() {
+        let newClone = new UIInventoryOpeningRow();
+        newClone.id = this.id;
+        newClone.name = this.name;
+        newClone.prodDets = this.prodDets;
+        newClone.stockOpening = this.stockOpening;
+        return newClone;
+    }
+    static cloneAnother (compInvRow:UIInventoryOpeningRow):UIInventoryOpeningRow {
+        let newClone = new UIInventoryOpeningRow();
+        newClone.id = compInvRow.id;
+        newClone.name = compInvRow.name;
+        newClone.prodDets = compInvRow.prodDets;
+        newClone.stockOpening = compInvRow.stockOpening;
+        return newClone;
+    }
+}
+
+export interface ProductOpening {
+    openingValues:{[id:string]: number}
+}
+

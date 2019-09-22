@@ -18,6 +18,7 @@ export class MainNavComponent {
   private vendorClass = "";
   private sellingClass = "";
   private buyingClass = "";
+  private openingClass = "";
   private datePickerClass = "datePicker";
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -58,12 +59,14 @@ export class MainNavComponent {
     this.vendorClass = "";
     this.sellingClass = "";
     this.buyingClass = "";
+    this.openingClass = "";
     switch (compName) {
       case 'inventory': this.inventoryClass = "active"; break;
       case 'products': this.productClass = "active"; break;
       case 'vendors': this.vendorClass = "active"; break;
       case 'selling': this.sellingClass = "active"; break;
       case 'buying': this.buyingClass = "active"; break;
+      case 'opening': this.openingClass = "active"; break;
     }
     drawer.close();
   }

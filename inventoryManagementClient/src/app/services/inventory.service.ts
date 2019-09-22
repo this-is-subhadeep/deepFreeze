@@ -1,49 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Inventory, InventoryGetResult, InventorySaveResult } from '../definitions/inventory-definition';
+import { Inventory, InventoryOpening, UIInventoryRow, ProductOpening } from '../definitions/inventory-definition';
 import { environment } from '../../environments/environment';
 import { appConfigurations } from '../../environments/conf'
-import { Product, ProductType } from '../definitions/product-definition';
-import { forkJoin, BehaviorSubject } from 'rxjs';
-import { Vendor } from '../definitions/vendor-definition';
+import { Observable } from 'rxjs';
+import { Product } from '../definitions/product-definition';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
   private getInventoryUrl=environment.serverBase+appConfigurations.inventoryURL;
-  private getProductURL=environment.serverBase+appConfigurations.productURL;
-  private getProductTypeURL=environment.serverBase+appConfigurations.productTypeURL;
-  private getVendorURL=environment.serverBase+appConfigurations.vendorURL;
-  private completeInventorySubject = new BehaviorSubject<InventoryGetResult>({
-    inventories : new Inventory(),
-    products : new Array<Product>(),
-    productTypes : new Array<ProductType>(),
-    vendors : new Array<Vendor>()
-  });
-  private inventoryUpdateSubject = new BehaviorSubject<InventorySaveResult>({
-    inventoryId : '',
-    vendorId : ''
-  });
 
   constructor(private http:HttpClient) { }
 
-  findInventoryObservable (refDate:string) : BehaviorSubject<InventoryGetResult> {
-    forkJoin([
-      this.http.get<Inventory>(this.getInventoryUrl+"/"+refDate),
-      this.http.get<Product[]>(this.getProductURL+"/"+refDate),
-      this.http.get<ProductType[]>(this.getProductTypeURL),
-      this.http.get<Vendor[]>(this.getVendorURL+"/"+refDate)
-    ]).subscribe(result => {
-      let resultObj : InventoryGetResult = {
-        inventories : result[0],
-        products : result[1],
-        productTypes : result[2],
-        vendors : result[3] 
-      }
-      this.completeInventorySubject.next(resultObj);
-    });
-    return this.completeInventorySubject
+  findInventoryObservable (refDate:string) : Observable<Inventory[]> {
+    let url = this.getInventoryUrl+"/"+refDate;
+    return this.http.get<Inventory[]>(this.getInventoryUrl+"/till-date/"+refDate);
+  }
+
+  findInventoryOpeningObservable (refDate:string) : Observable<InventoryOpening> {
+    console.log('findInventoryOpeningObservable');
+    let url = this.getInventoryUrl+"/opening/"+refDate;
+    return this.http.get<InventoryOpening>(url);
   }
 
   saveInventory(inventory:Inventory, refDate:string) {
@@ -51,18 +30,55 @@ export class InventoryService {
     return this.http.post(url,inventory);
   }
 
-  saveInventoryFull(inventory:Inventory, vendor:Vendor, refDate:string) {
-    // let url = this.getInventoryUrl+"/"+refDate;
-    forkJoin([
-      this.http.post<{_id:string}>(this.getInventoryUrl+"/"+refDate,inventory),
-      this.http.put<{_id:string}>(this.getVendorURL+"/"+refDate,vendor)
-    ]).subscribe(result => {
-      let resultObj:InventorySaveResult = {
-        inventoryId : result[0]._id,
-        vendorId : result[1]._id
-      }
-      this.inventoryUpdateSubject.next(resultObj);
-    });
-    return this.inventoryUpdateSubject;
+  saveInventoryOpening(inventoryOpening:InventoryOpening, refDate:string) {
+    let url = this.getInventoryUrl+"/opening/"+refDate;
+    return this.http.post(url,inventoryOpening);
   }
+
+  fillOpenings(inventoryOpening: InventoryOpening,
+    inventories: Inventory[],
+    products: Product[],
+    refDate: string,
+    withToday: boolean = false) : ProductOpening {
+    let productOpenings : ProductOpening = {
+      openingValues : {}
+    };
+    products.forEach(product => {
+      let opening = 0;
+      if(inventoryOpening && inventoryOpening.rows && inventoryOpening.rows[product._id]) {
+        opening+=inventoryOpening.rows[product._id].pieces;
+      }
+      if(inventories) {
+        inventories.forEach(inventory => {
+          if(inventory.rows && inventory.rows[product._id] && (inventory.date !== refDate || withToday)) {
+            let totalIn = 0;
+            if(inventory.rows[product._id].stockSenIn) {
+              totalIn += inventory.rows[product._id].stockSenIn * product.packageSize;
+            }
+            if(inventory.rows[product._id].stockOthersIn) {
+              totalIn += inventory.rows[product._id].stockOthersIn;
+            }
+            opening += totalIn;
+            let totalOut = 0;
+            if(inventory.rows[product._id].vendorValue) {
+              for (let venId in inventory.rows[product._id].vendorValue) {
+                if(inventory.rows[product._id].vendorValue[venId].packages) {
+                  totalOut += inventory.rows[product._id].vendorValue[venId].packages * product.packageSize;
+                }
+                if(inventory.rows[product._id].vendorValue[venId].pieces) {
+                  totalOut += inventory.rows[product._id].vendorValue[venId].pieces;
+                }
+              }
+            }
+            opening -= totalOut;
+          }
+        });
+      }
+      if(opening) {
+        productOpenings.openingValues[product._id] = opening;
+      }
+    });
+    return productOpenings;
+  }
+
 }

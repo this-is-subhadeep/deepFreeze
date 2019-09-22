@@ -6,8 +6,11 @@ import { fadeInEffect, dropDownEffect } from '../animations';
 import { UIInventoryRow, Inventory, InventoryRow } from '../definitions/inventory-definition';
 import { Vendor } from '../definitions/vendor-definition';
 import { Product } from '../definitions/product-definition';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSlideToggleChange } from '@angular/material';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
+import { ProductService } from '../services/product.service';
+import { VendorService } from '../services/vendor.service';
 
 const staticColumnsToDisplay=["productName",
                               "stockOpening",
@@ -26,18 +29,20 @@ const staticColumnsToDisplay=["productName",
 export class InventoryComponent implements OnInit {
   private dataSource:InventoryDataSource;
   private columnsToDisplay=[];
-  private pageSize=1000;
-  private pageIndex=0;
   private prodTypeClass="productType";
   private venList:Vendor[];
   private prodList:Product[];
+  private editSlider$: BehaviorSubject<boolean>;
 
   constructor(private service: InventoryService,
+    private productService: ProductService,
+    private vendorService: VendorService,
     private dateService:DateService,
     private snackBar : MatSnackBar) { }
 
   ngOnInit() {
-    this.dataSource = new InventoryDataSource(this.service);
+    this.editSlider$=new BehaviorSubject(false);
+    this.dataSource = new InventoryDataSource(this.service, this.productService, this.vendorService);
     this.loadInventoryData();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadInventoryData();
@@ -59,9 +64,14 @@ export class InventoryComponent implements OnInit {
     });
   }
 
+  sliderChanged(event:MatSlideToggleChange) {
+    console.log('Slider ',event.checked);
+    this.editSlider$.next(event.checked);
+  }
+
   private loadInventoryData() {
     let date = this.dateService.date.toISOString();
-    this.dataSource.loadInventory(date,this.pageSize,this.pageIndex+1);
+    this.dataSource.loadInventory(date);
   }
 
   private isRowProductType(inventoryRow:UIInventoryRow) {

@@ -1,8 +1,14 @@
 const router = require('express').Router();
 const controller = require('./inventory.controller');
 
-router.get('/:refDate', controller.getAllCompleteInventory);
+router.get('/:refDate', controller.getInventory);
 
-router.post('/:refDate', controller.addCompleteInventory);
+router.get('/till-date/:refDate', controller.getInventoriesTillDate);
+
+router.get('/opening/:refDate', controller.getInventoryOpening);
+
+router.post('/:refDate', controller.addInventory);
+
+router.post('/opening/:refDate', controller.addInventoryOpening);
 
 module.exports = router;

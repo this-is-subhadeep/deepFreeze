@@ -18,6 +18,7 @@
     </mat-toolbar>
     <mat-nav-list>
       <a #inventory mat-list-item routerLink="/inventory" [ngClass]="inventoryClass" (click)="itemClicked('inventory',drawer)">Intentory</a>
+      <a #opening mat-list-item routerLink="/opening" [ngClass]="openingClass" (click)="itemClicked('opening',drawer)">Stock Opening</a>
       <a #buying mat-list-item routerLink="/buying" [ngClass]="buyingClass" (click)="itemClicked('buying',drawer)">Buy</a>
       <a #selling mat-list-item routerLink="/selling" [ngClass]="sellingClass" (click)="itemClicked('selling',drawer)">Sell</a>
       <a #products mat-list-item routerLink="/products" [ngClass]="productClass" (click)="itemClicked('products',drawer)">Products</a>

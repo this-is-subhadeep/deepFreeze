@@ -1,0 +1,29 @@
+.save-button {
+    background: rgb(101, 193, 247);
+    margin-left: 2vw;
+    margin-top: 1vw;
+    margin-right: 2vw;
+    margin-bottom: 0px;
+    width: 96%;
+}
+
+.opening-table-div {
+    overflow: auto;
+    height: 35vw;
+    width: 96%;
+    margin: 2%;
+}
+
+.opening-table {
+    background: rgb(192, 230, 218);
+}
+
+.opening-table>mat-header-row {
+    height: 70px;
+}
+
+.productType {
+    background: rgb(98, 128, 156);
+    font-style: italic;
+    font-weight: bold; 
+}

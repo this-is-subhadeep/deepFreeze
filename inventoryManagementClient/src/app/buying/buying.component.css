@@ -1,4 +1,4 @@
-.selling-data-div {
+.buying-data-div {
     overflow: auto;
     margin: 2%;
     width: 96%
@@ -10,6 +10,10 @@
 .units-bought-card {
     padding-top: 0%;
     padding-bottom: 0%;
+}
+
+.units-bought-elem {
+    width: 8vw;
 }
 
 .price-card {

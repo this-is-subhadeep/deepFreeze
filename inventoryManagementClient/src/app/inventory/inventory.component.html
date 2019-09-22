@@ -1,8 +1,11 @@
 <div>
-  <div>
-    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
-      Save Inventory
-    </button>
+  <div class="edit-slider-div">
+    <mat-slide-toggle (change) = sliderChanged($event)>Edit Inventory</mat-slide-toggle>
+    <div class="save-button-div" [hidden]="!(editSlider$|async)">
+      <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
+        Save Inventory
+      </button>
+    </div>
   </div>
   <div @fadeIn class="inventory-table-div mat-elevation-z10">
     <mat-table [dataSource]="dataSource" class="inventory-table">
@@ -72,7 +75,11 @@
               name="stockSenIn"
               #stockSenIn="ngModel"
               id="stockSenIn"
-              (blur)="validateSenIn(inventoryRow);syncTotalIn(inventoryRow)">
+              (blur)="validateSenIn(inventoryRow);syncTotalIn(inventoryRow)"
+              *ngIf="editSlider$|async; else stockSeninStatic">
+            <ng-template #stockSeninStatic>
+              {{inventoryRow.stockSenIn}}
+            </ng-template>
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -94,7 +101,11 @@
               name="stockOthersIn"
               #stockOthersIn="ngModel"
               id="stockOthersIn"
-              (blur)="validateOthersIn(inventoryRow);syncTotalIn(inventoryRow)">
+              (blur)="validateOthersIn(inventoryRow);syncTotalIn(inventoryRow)"
+              *ngIf="editSlider$|async; else stockOthersinStatic">
+            <ng-template #stockOthersinStatic>
+              {{inventoryRow.stockOthersIn}}
+            </ng-template>
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -115,8 +126,7 @@
           <span [matTooltip]="getVenDetails(vendorData)" [matTooltipClass]="'vendorTooltip'">
             {{vendorData.name}}
             <br>
-            <!-- Deposit : {{vendorData.deposit}} -->
-            <mat-form-field>
+            <mat-form-field *ngIf="editSlider$|async; else depositStatic">
               <input
               matInput
               [(ngModel)] = "vendorData.deposit"
@@ -124,6 +134,9 @@
               #vendorDeposit="ngModel"
               id="vendorDeposit">
             </mat-form-field>
+            <ng-template #depositStatic>
+              Deposit : {{vendorData.deposit}}
+            </ng-template>
           </span>
         </mat-header-cell>
         <mat-cell
@@ -138,7 +151,11 @@
               name="vendorValue"
               #vendorValue="ngModel"
               id="vendorValue"
-              (blur)="validateVendorValue(inventoryRow, vendorData._id);syncTotalOut(inventoryRow)">
+              (blur)="validateVendorValue(inventoryRow, vendorData._id);syncTotalOut(inventoryRow)"
+              *ngIf="editSlider$|async; else vendorValueStatic">
+            <ng-template #vendorValueStatic>
+              {{inventoryRow.vendorValue[vendorData._id]}}
+            </ng-template>
           </ng-template>
         </mat-cell>
       </ng-container>

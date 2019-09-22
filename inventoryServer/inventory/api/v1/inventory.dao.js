@@ -1,4 +1,4 @@
-const { InventoryModel } = require('./inventory.entity');
+const { InventoryModel, InventoryOpeningModel } = require('./inventory.entity');
 const logger = require('../../log');
 
 const fillStock = (inv, compInv) => {
@@ -50,8 +50,8 @@ const fillStock = (inv, compInv) => {
     }
 };
 
-const getAllCompleteInventory = (refDate) => {
-    logger.info('dao getAllCompleteInventoryList');
+const getInventory = (refDate) => {
+    logger.info('dao getInventory');
     return new Promise((resolve, reject) => {
         const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
@@ -67,6 +67,7 @@ const getAllCompleteInventory = (refDate) => {
                     logger.debug(JSON.stringify(inventory));
                     const compInv = {};
                     if(inventory) {
+                        compInv.date = inventory._id;
                         fillStock(inventory, compInv);
                     }
                     resolve({
@@ -83,6 +84,119 @@ const getAllCompleteInventory = (refDate) => {
             logger.error('reference Date should be a valid Date');
         }
     });
+};
+
+const getInventoriesTillDate = (refDate) => {
+    logger.info('dao getInventoriesTillDate');
+    return new Promise((resolve, reject) => {
+        const refDateObj = new Date(refDate);
+        if(!isNaN(refDateObj.getTime())) {
+            logger.debug(`refDate : ${JSON.stringify(refDateObj)}`);
+            let refDateObjStart = new Date(refDateObj);
+            refDateObjStart.setDate(1);
+            logger.debug(`refDateStart : ${JSON.stringify(refDateObjStart)}`);
+            InventoryModel.find({
+                _id : {
+                    $gte : refDateObjStart
+                },
+                _id : {
+                    $lte : refDateObj
+                }}, (err, inventories) => {
+                if(err) {
+                    reject({
+                        status : 500,
+                        errorCode : 'S001'
+                    });
+                    logger.error('Server Error :', err);
+                } else {
+                    let compInvs = Array();
+                    if(inventories) {
+                        // logger.debug(JSON.stringify(inventories));
+                        inventories.forEach(inv => {
+                            let compInv = {};
+                            if(inv) {
+                                console.log(inv._id)
+                                compInv.date = inv._id;
+                                fillStock(inv, compInv);
+                            }
+                            compInvs.push(compInv);
+                        });
+                    }
+                    // const compInv = {};
+                    // if(inventory) {
+                    //     fillStock(inventory, compInv);
+                    // }
+                    resolve({
+                        status : 200,
+                        inventories : compInvs
+                    });
+                }
+            });
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B002"
+            });
+            logger.error('reference Date should be a valid Date');
+        }
+    });
+}
+
+const fillStockOpening = (invOpen, compInvOpen) => {
+    logger.debug('fillStockOpening');
+    if(invOpen) {
+        if(invOpen.stockOpening) {
+            logger.debug(JSON.stringify(invOpen.stockOpening));
+            invOpen.stockOpening.forEach(stockOpening => {
+                if(stockOpening && stockOpening._id) {
+                    logger.debug(JSON.stringify(stockOpening));
+                    if(!compInvOpen.rows) {
+                        compInvOpen.rows={};
+                    }
+                    compInvOpen.rows[stockOpening._id.productId] = {
+                        packages : stockOpening.packages,
+                        pieces : stockOpening.pieces
+                    };
+                }
+            });
+        }
+    }
+};
+
+const getInventoryOpening = (refDate) => {
+    logger.info('dao getInventoryOpening');
+    return new Promise((resolve, reject) => {
+        const refDateObj = new Date(refDate);
+        refDateObj.setDate(1);
+        if(!isNaN(refDateObj.getTime())) {
+            logger.debug(JSON.stringify(refDateObj));
+            InventoryOpeningModel.findById(refDateObj, (err, inventoryOpening) => {
+                if(err) {
+                    reject({
+                        status : 500,
+                        errorCode : 'S001'
+                    });
+                    logger.error('Server Error :', err);
+                } else {
+                    logger.debug(JSON.stringify(inventoryOpening));
+                    const compInvOpen = {};
+                    if(inventoryOpening) {
+                        fillStockOpening(inventoryOpening, compInvOpen);
+                    }
+                    resolve({
+                        status : 200,
+                        inventoryOpening : compInvOpen
+                    });
+                }
+            });
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B002"
+            });
+            logger.error('reference Date should be a valid Date');
+        }
+    });    
 };
 
 const saveStockIn = (compInv, inv) => {
@@ -137,8 +251,8 @@ const saveDeposits = (compInv, inv) => {
     }
 };
 
-const addCompleteInventory = (completeInventory, refDate) => {
-    logger.info('dao addCompleteInventory');
+const addInventory = (completeInventory, refDate) => {
+    logger.info('dao addInventory');
     return new Promise((resolve, reject) => {
         if(completeInventory) {
             const refDateObj = new Date(refDate);
@@ -189,7 +303,78 @@ const addCompleteInventory = (completeInventory, refDate) => {
     });
 };
 
+const saveStockOpening = (compInvOpen, invOpen) => {
+    logger.debug('saveStockOpening');
+    if(compInvOpen.rows) {
+        logger.debug(JSON.stringify(compInvOpen.rows));
+        for (prodId in compInvOpen.rows) {
+            logger.debug(prodId);
+            let stockOpening = {};
+            stockOpening._id = {
+                productId : prodId
+            }
+            stockOpening.packages = compInvOpen.rows[prodId].packages ? compInvOpen.rows[prodId].packages : 0;
+            stockOpening.pieces = compInvOpen.rows[prodId].pieces ? compInvOpen.rows[prodId].pieces : 0;
+            invOpen.stockOpening.push(stockOpening);
+        }
+    }
+};
+
+const addInventoryOpening = (completeInventoryOpening, refDate) => {
+    logger.info('dao addInventoryOpening');
+    return new Promise((resolve, reject) => {
+        if(completeInventoryOpening) {
+            const refDateObj = new Date(refDate);
+            refDateObj.setDate(1);
+            if(!isNaN(refDateObj.getTime())) {
+                InventoryOpeningModel.findByIdAndRemove(refDateObj, (err, invOpen) => {
+                    if(err) {
+                        reject({
+                            status : 500,
+                            errorCode : 'S001'
+                        });
+                        logger.error('Server Error :', err);
+                    }
+                });
+                const invOpenModel = new InventoryOpeningModel();
+                invOpenModel._id = refDateObj;
+                saveStockOpening(completeInventoryOpening, invOpenModel);
+                logger.debug(JSON.stringify(invOpenModel));
+                invOpenModel.save((err, addedInventoryOpening) => {
+                    if(err) {
+                        reject({
+                            status : 500,
+                            error : "S001"
+                        });
+                        logger.error('Opening not saved :', err);
+                    } else {
+                        resolve({
+                            status : 201,
+                            _id : addedInventoryOpening._id
+                        });
+                    }
+                });
+            } else {
+                reject({
+                    status : 400,
+                    errorCode : "B002"
+                });
+                logger.error('reference Date should be a valid Date');
+            }                
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B003"
+            });
+            logger.error('Inventory Opening should not be empty');           
+        }
+    });
+}; 
+
 module.exports = {
-    getAllCompleteInventory,
-    addCompleteInventory
+    getInventory,
+    getInventoriesTillDate,
+    getInventoryOpening,
+    addInventory,
+    addInventoryOpening
 }

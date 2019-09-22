@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { fadeInEffect, dropDownEffect } from '../animations';
 import { BuyingData } from '../definitions/buying-definition';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { Product } from '../definitions/product-definition';
-import { Inventory, InventoryRow } from '../definitions/inventory-definition';
+import { Inventory, InventoryRow, ProductOpening } from '../definitions/inventory-definition';
 import { FormControl, Validators } from '@angular/forms';
 import { InventoryService } from '../services/inventory.service';
 import { DateService } from '../services/date.service';
@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material';
 import { productTextValidator } from '../validators';
 import { startWith, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
+import { ProductService } from '../services/product.service';
 
 @Component({
   selector: 'app-buying',
@@ -22,10 +23,12 @@ export class BuyingComponent implements OnInit {
   private products: Product[];
   private buyingProductList: BuyingData[];
   private inventory: Inventory;
+  private productOpenings: ProductOpening;
   private productControl : FormControl;
-  private filteredProducts : Observable<Product[]>;
+  filteredProducts : Observable<Product[]>;
 
   constructor(private inventoryService: InventoryService,
+    private productService: ProductService,
     private dateService: DateService,
     private snackBar: MatSnackBar) { }
 
@@ -72,48 +75,97 @@ export class BuyingComponent implements OnInit {
 
   private loadInventoryData() {
     let date = this.dateService.date.toISOString();
-    this.inventoryService.findInventoryObservable(date).subscribe(uiInventoryRows => {
-      this.inventory = uiInventoryRows.inventories;
-      this.products = uiInventoryRows.products.map(prod => Product.cloneAnother(prod));
-      this.fillSellingData();
-      // console.log(this.products);
-    });
-    // console.log(this.dataSource);
+    this.productService.getAllProducts(date);
+    combineLatest(
+      this.inventoryService.findInventoryOpeningObservable(date),
+      this.inventoryService.findInventoryObservable(date),
+      this.productService.productObservable
+    ).subscribe(([inventoryOpening, inventories, products]) => {
+      this.productOpenings = this.inventoryService.fillOpenings(inventoryOpening, inventories, products, date, true);
+      this.inventory = inventories.find(inv => inv.date === date);
+      this.products = products.map(prod => Product.cloneAnother(prod));
+      this.fillBuyingData();
+    })
   }
 
   private refresh() {
     this.buyingProductList = new Array();
   }
 
-  private productNameDisp(prod:Product) {
+  productNameDisp(prod:Product) {
     console.log(prod);
     console.log(this.inventory);
     return prod?`${prod.name} - ${prod.productType.name}`:'';
   }
 
-  private fillSellingData() {
+  private fillBuyingData() {
     this.buyingProductList = new Array<BuyingData>();
-    for(let prodId in this.inventory.rows) {
-      console.log(prodId);
-      if(this.inventory.rows[prodId].vendorValue && (this.inventory.rows[prodId].stockSenIn || this.inventory.rows[prodId].stockOthersIn) ) {
-        let sellingProductRow = new BuyingData(this.products.find(product => product._id === prodId),
-                                                this.inventory.rows[prodId].stockSenIn,
-                                                this.inventory.rows[prodId].stockOthersIn);
-        this.buyingProductList.push(sellingProductRow);
+    if(this.inventory) {
+      for(let prodId in this.inventory.rows) {
+        console.log(prodId);
+        if(this.inventory.rows[prodId].vendorValue && (this.inventory.rows[prodId].stockSenIn || this.inventory.rows[prodId].stockOthersIn) ) {
+          let sellingProductRow = new BuyingData(this.products.find(product => product._id === prodId),
+                                                  this.inventory.rows[prodId].stockSenIn,
+                                                  this.inventory.rows[prodId].stockOthersIn);
+          this.buyingProductList.push(sellingProductRow);
+        }
       }
     }
   }
 
-  private hideProductTable(): boolean {
+  hideProductTable(): boolean {
     return !(this.buyingProductList != null && this.buyingProductList.length > 0);
   }
 
-  private getStockBalance(productId: string): number {
+  getStockSenBalance(productId: string): number {
     let balance = 0;
+    if(this.productOpenings && this.productOpenings.openingValues) {
+      balance = Math.floor(this.productOpenings.openingValues[productId]/this.products.find(prod => prod._id === productId).packageSize);
+    }
+    if(this.inventory
+      && this.inventory.rows
+      && this.inventory.rows[productId]
+      && this.inventory.rows[productId].stockSenIn) {
+      balance += this.inventory.rows[productId].stockSenIn; 
+    }
     return balance;
   }
 
-  private getTotalSenUnitsBought() {
+  getStockOthersBalance(productId: string): number {
+    let balance = 0;
+    if(this.productOpenings && this.productOpenings.openingValues) {
+      balance = this.productOpenings.openingValues[productId]%this.products.find(prod => prod._id === productId).packageSize;
+    }
+    if(this.inventory
+      && this.inventory.rows
+      && this.inventory.rows[productId]
+      && this.inventory.rows[productId].stockOthersIn) {
+      balance += this.inventory.rows[productId].stockOthersIn; 
+    }
+    return balance;
+  }
+
+  getStockBalance(productId: string): number {
+    let balance = 0;
+    if(this.productOpenings && this.productOpenings.openingValues) {
+      balance = this.productOpenings.openingValues[productId];
+    }
+    if(this.inventory
+      && this.inventory.rows
+      && this.inventory.rows[productId]
+      && this.inventory.rows[productId].stockSenIn) {
+      balance += this.inventory.rows[productId].stockSenIn * this.products.find(prod => prod._id === productId).packageSize; 
+    }
+    if(this.inventory
+      && this.inventory.rows
+      && this.inventory.rows[productId]
+      && this.inventory.rows[productId].stockOthersIn) {
+      balance += this.inventory.rows[productId].stockOthersIn; 
+    }
+    return balance;
+  }
+
+  getTotalSenUnitsBought() {
     let totalUnitsSold = 0;
     if (this.buyingProductList && this.buyingProductList.length > 0) {
       this.buyingProductList.forEach(buyingProduct => {
@@ -123,7 +175,7 @@ export class BuyingComponent implements OnInit {
     return totalUnitsSold;
   }
 
-  private getTotalOthersUnitsBought() {
+  getTotalOthersUnitsBought() {
     let totalUnitsSold = 0;
     if (this.buyingProductList && this.buyingProductList.length > 0) {
       this.buyingProductList.forEach(buyingProduct => {
@@ -133,7 +185,7 @@ export class BuyingComponent implements OnInit {
     return totalUnitsSold;
   }
 
-  private getTotalAmountBought() {
+  getTotalAmountBought() {
     let totalAmountSold = 0;
     if (this.buyingProductList && this.buyingProductList.length > 0) {
       this.buyingProductList.forEach(buyingProduct => {
@@ -143,7 +195,7 @@ export class BuyingComponent implements OnInit {
     return Math.round(totalAmountSold * 100) / 100;
   }
 
-  private saveButtonPressed() {
+  saveButtonPressed() {
     console.log('Save Button Pressed', this.buyingProductList);
     let date = this.dateService.date.toISOString();
     this.buyingProductList.forEach(soldRow => {
@@ -172,12 +224,12 @@ export class BuyingComponent implements OnInit {
     this.refresh();
   }
 
-  private saveAndBillButtonPressed() {
+  saveAndBillButtonPressed() {
     this.saveButtonPressed();
     console.log('Bill Button Pressed');
   }  
 
-  private deleteProductFromList(ind: number) {
+  deleteProductFromList(ind: number) {
     console.log('Deleting Product :', ind);
     this.buyingProductList.splice(ind, 1);
   }

@@ -1,17 +1,22 @@
 import { DataSource } from "@angular/cdk/table";
 import { UIInventoryRow, Inventory } from "../definitions/inventory-definition";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, combineLatest } from "rxjs";
 import { InventoryService } from "../services/inventory.service";
 import { CollectionViewer } from "@angular/cdk/collections";
 import { Vendor } from "../definitions/vendor-definition";
 import { Product } from "../definitions/product-definition";
+import { ProductService } from "../services/product.service";
+import { VendorService } from "../services/vendor.service";
 
 export class InventoryDataSource implements DataSource<UIInventoryRow> {
 
     private vendorSubject = new BehaviorSubject<Vendor []>([]);
     private productSubject = new BehaviorSubject<Product []>([]);
     private inventorySubject = new BehaviorSubject<UIInventoryRow []>([]);
-    constructor(private service: InventoryService) {}
+    constructor(private service: InventoryService,
+        private productService: ProductService,
+        private vendorService: VendorService
+    ) {}
     connect(): Observable<UIInventoryRow []> {
         return this.inventorySubject.asObservable();
     }
@@ -19,61 +24,65 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
         this.inventorySubject.complete();
     }
 
-    loadInventory(refDate:string, pageSize:number, pageNumber:number) {
+    loadInventory(refDate:string) {
         // console.log(refDate);
-        this.service.findInventoryObservable(refDate)
-        .subscribe(inventoryData => {
+        this.productService.getAllProducts(refDate);
+        this.vendorService.getAllVendors(refDate);
+        combineLatest(
+            this.service.findInventoryOpeningObservable(refDate),
+            this.service.findInventoryObservable(refDate),
+            this.productService.productTypesObservable,
+            this.productService.productObservable,
+            this.vendorService.vendorObservable
+        ).subscribe(([inventoryOpening, inventories, productTypes, products, vendors]) => {
             // console.log(`invs : ${JSON.stringify(inventoryData.inventories)}`);
-            if(inventoryData) {
-                if(inventoryData.productTypes) {
-                    let startIndex=(pageSize*(pageNumber-1)+1);
-                    let endIndex=startIndex+pageSize-1;
-                    let i=1;
-                    const uiInventoryRows = new Array<UIInventoryRow>();
-                    inventoryData.productTypes.forEach(productType => {
-                        if(i>=startIndex && i<=endIndex) {
-                            let uiInventoryRow = new UIInventoryRow();
-                            uiInventoryRow.id = productType._id;
-                            uiInventoryRow.name = productType.name;
-                            uiInventoryRows.push(uiInventoryRow);
-                            i++;
-                            inventoryData.products.filter(prod =>  prod.productType._id === productType._id).forEach(product => {
-                                if(i>=startIndex && i<=endIndex) {
-                                    uiInventoryRow = new UIInventoryRow();
-                                    uiInventoryRow.id = product._id;
-                                    uiInventoryRow.name = product.name;
-                                    uiInventoryRow.prodDets = product;
-                                    this.fillStockIn(inventoryData.inventories, product, uiInventoryRow);
-                                    this.fillStockOut(inventoryData.inventories, product, inventoryData.vendors , uiInventoryRow);
-                                    if(uiInventoryRow.stockTotalIn && uiInventoryRow.stockTotalOut) {
-                                        uiInventoryRow.stockBalance = uiInventoryRow.stockTotalIn - uiInventoryRow.stockTotalOut;
-                                    } else if(uiInventoryRow.stockTotalIn && !uiInventoryRow.stockTotalOut) {
-                                        uiInventoryRow.stockBalance = uiInventoryRow.stockTotalIn;
-                                    } else if(!uiInventoryRow.stockTotalIn && uiInventoryRow.stockTotalOut) {
-                                        uiInventoryRow.stockBalance = 0 - uiInventoryRow.stockTotalOut;
-                                    }
-                                    uiInventoryRows.push(uiInventoryRow);
-                                    i++;
-                                }
-                            });
+            let inventory = inventories.find(inv => inv.date === refDate);
+            let productOpenings = this.service.fillOpenings(inventoryOpening, inventories, products, refDate);
+            if(productTypes) {
+                const uiInventoryRows = new Array<UIInventoryRow>();
+                productTypes.forEach(productType => {
+                    let uiInventoryRow = new UIInventoryRow();
+                    uiInventoryRow.id = productType._id;
+                    uiInventoryRow.name = productType.name;
+                    uiInventoryRows.push(uiInventoryRow);
+                    products.filter(prod =>  prod.productType._id === productType._id).forEach(product => {
+                        uiInventoryRow = new UIInventoryRow();
+                        uiInventoryRow.id = product._id;
+                        uiInventoryRow.name = product.name;
+                        uiInventoryRow.prodDets = product;
+                        this.fillStockIn(inventory, product, uiInventoryRow);
+                        this.fillStockOut(inventory, product, vendors , uiInventoryRow);
+                        if(uiInventoryRow.stockTotalIn && uiInventoryRow.stockTotalOut) {
+                            uiInventoryRow.stockBalance = uiInventoryRow.stockTotalIn - uiInventoryRow.stockTotalOut;
+                        } else if(uiInventoryRow.stockTotalIn && !uiInventoryRow.stockTotalOut) {
+                            uiInventoryRow.stockBalance = uiInventoryRow.stockTotalIn;
+                        } else if(!uiInventoryRow.stockTotalIn && uiInventoryRow.stockTotalOut) {
+                            uiInventoryRow.stockBalance = 0 - uiInventoryRow.stockTotalOut;
                         }
+                        if(productOpenings && productOpenings.openingValues && productOpenings.openingValues[product._id]) {
+                            uiInventoryRow.stockOpening = productOpenings.openingValues[product._id];
+                            if(uiInventoryRow.stockBalance) {
+                                uiInventoryRow.stockBalance += uiInventoryRow.stockOpening;
+                            }
+                        }
+                        uiInventoryRows.push(uiInventoryRow);
                     });
-                    this.inventorySubject.next(uiInventoryRows);
-                    if(inventoryData.vendors) {
-                        if(inventoryData.inventories && inventoryData.inventories.vendorDeposits) {
-                            inventoryData.vendors.forEach(vendor => {
-                                if(inventoryData.inventories.vendorDeposits[vendor._id]) {
-                                    vendor.deposit = inventoryData.inventories.vendorDeposits[vendor._id];
-                                } else {
-                                    vendor.deposit = null;
-                                }
-                            });
-                        }
-                        this.vendorSubject.next(inventoryData.vendors);
+                });
+                this.inventorySubject.next(uiInventoryRows);
+                if(vendors) {
+                    if(inventory && inventory.vendorDeposits) {
+                        vendors.forEach(vendor => {
+                            if(inventory.vendorDeposits[vendor._id]) {
+                                vendor.deposit = inventory.vendorDeposits[vendor._id];
+                            } else {
+                                vendor.deposit = null;
+                            }
+                        });
                     }
-                    if(inventoryData.products) {
-                        this.productSubject.next(inventoryData.products);
-                    }
+                    this.vendorSubject.next(vendors);
+                }
+                if(products) {
+                    this.productSubject.next(products);
                 }
             }
         });

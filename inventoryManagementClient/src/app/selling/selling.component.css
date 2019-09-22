@@ -23,6 +23,10 @@
     padding-bottom: 0%;
 }
 
+.ven-value-elem {
+    width: 8vw;
+}
+
 .price-card {
     width: 30vh;
 }

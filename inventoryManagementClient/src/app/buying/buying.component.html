@@ -1,4 +1,4 @@
-<div @fadeIn class="selling-data-div mat-elevation-z10">
+<div @fadeIn class="buying-data-div mat-elevation-z10">
   <div class='inner-boundary'>
     <table [hidden]='hideProductTable()'>
       <tr>
@@ -34,10 +34,10 @@
         </td>
         <td>
           <mat-card class='units-bought-card'>
-            <mat-form-field>
+            <mat-form-field class='units-bought-elem'>
               <input matInput required type="number"
                 maxlength="5" [(ngModel)]="buyingProduct.packageUnits" #packageUnits="ngModel" name="packageUnits">
-              <span matSuffix>+{{getStockBalance(buyingProduct.product.id)}}</span>
+              <span matSuffix>+{{getStockSenBalance(buyingProduct.product._id)}}</span>
               <mat-error *ngIf="packageUnits.invalid && packageUnits.errors.required && (packageUnits.dirty || packageUnits.touched)">
                 Please provide a Unit Amount
               </mat-error>
@@ -46,10 +46,10 @@
         </td>
         <td>
           <mat-card class='units-bought-card'>
-            <mat-form-field>
+            <mat-form-field  class='units-bought-elem'>
               <input matInput required type="number"
                 maxlength="5" [(ngModel)]="buyingProduct.pieceUnits" #pieceUnits="ngModel" name="pieceUnits">
-              <span matSuffix>+{{getStockBalance(buyingProduct.product.id)}}</span>
+              <span matSuffix>+{{getStockOthersBalance(buyingProduct.product._id)}}</span>
               <mat-error *ngIf="pieceUnits.invalid && pieceUnits.errors.required && (pieceUnits.dirty || pieceUnits.touched)">
                 Please provide a Unit Amount
               </mat-error>
