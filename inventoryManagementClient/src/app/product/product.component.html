@@ -1,4 +1,4 @@
-<mat-expansion-panel name='expansionPanel' #expansionPanel (opened)='panelOpened()' (closed)='panelClosed()'>
+<mat-expansion-panel [@productChanged]='animationState' name='expansionPanel' #expansionPanel (opened)='panelOpened()' (closed)='panelClosed()'>
   <mat-expansion-panel-header class='product-panel-header'>
     <mat-panel-title style="align-items: center">
       <div>

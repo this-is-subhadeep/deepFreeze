@@ -3,7 +3,7 @@ import { trigger, state, transition, style, animate } from '@angular/animations'
 export let fadeInEffect = trigger("fadeIn",[
     state("void",style({opacity : 0})),
     transition(":enter",[
-        animate(500)
+        animate(1000)
     ])
 ]);
 

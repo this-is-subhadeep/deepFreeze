@@ -11,11 +11,22 @@ import { FilesService } from '../services/files.service';
 import { appConfigurations } from 'src/environments/conf';
 import { HttpErrorResponse } from '@angular/common/http';
 import { errorsDict } from '../errorCodeMapping';
+import { dropDownEffect } from '../animations';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-vendor',
   templateUrl: './vendor.component.html',
-  styleUrls: ['./vendor.component.css']
+  styleUrls: ['./vendor.component.css'],
+  animations: [trigger('vendorChanged', [
+    state('void', style({
+      backgroundColor : 'rgb(59, 215, 243)',
+      opacity : 0
+    })),
+    transition('*=>changed',[
+      animate(1000)
+    ])
+  ])]
 })
 export class VendorComponent {
 
@@ -27,6 +38,7 @@ export class VendorComponent {
   editingState = false;
   dpFileSelected : File;
   defaultVenDPImage = '../../assets/default_vendor_Image.png';
+  animationState='init';
 
   constructor(private service: VendorService,
     private fileService : FilesService,
@@ -38,6 +50,7 @@ export class VendorComponent {
   set vendor (ven) {
     this.venObj = ven;
     this.setForm(ven);
+    this.animationState = 'changed';
   }
 
   get vendorPic() {

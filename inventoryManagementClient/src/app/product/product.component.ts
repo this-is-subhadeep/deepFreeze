@@ -11,11 +11,21 @@ import { appConfigurations } from 'src/environments/conf';
 import { StandardResponse } from '../definitions/service-response-definition';
 import { HttpErrorResponse } from '@angular/common/http';
 import { errorsDict } from '../errorCodeMapping';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.css']
+  styleUrls: ['./product.component.css'],
+  animations: [trigger('productChanged', [
+    state('void', style({
+      backgroundColor : 'rgb(235, 172, 116)',
+      opacity : 0
+    })),
+    transition('*=>changed',[
+      animate(1000)
+    ])
+  ])]
 })
 export class ProductComponent {
 
@@ -27,6 +37,7 @@ export class ProductComponent {
   editingState = false;
   dpFileSelected : File;
   defaultProdDPImage = '../../assets/default_product_Image.png';
+  animationState='init';
 
   constructor(private service: ProductService,
     private fileService : FilesService,
@@ -38,6 +49,7 @@ export class ProductComponent {
   set product(prod) {
     this.prodObj = prod
     this.setForm(prod);
+    this.animationState = 'changed';
   }
 
   get productPic() {

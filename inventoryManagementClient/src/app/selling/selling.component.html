@@ -61,7 +61,7 @@
           <app-product [product]='sellingProduct.product' [editable]='false'></app-product>
         </td>
         <td>
-          <mat-card class='ven-value-card'>
+          <mat-card @fadeIn class='ven-value-card'>
             <mat-form-field class="ven-value-elem">
               <input matInput required [unitValidator]='getStockBalance(sellingProduct.product._id)' type="number"
                 maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold"
@@ -77,13 +77,14 @@
           </mat-card>
         </td>
         <td>
-          <mat-card class='price-card'>
+          <mat-card @fadeIn class='price-card'>
             <label>Price : {{sellingProduct.getSoldPrice()}}</label>
           </mat-card>
         </td>
         <td>
           <mat-card class='action-card'>
             <button
+              @fadeIn
               mat-button
               type='button'
               (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'
