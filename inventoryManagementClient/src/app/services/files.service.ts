@@ -10,11 +10,11 @@ import { StandardResponse } from '../definitions/service-response-definition';
 })
 export class FilesService {
 
-  private uploadFileUrl=environment.serverBase+appConfigurations.fileURL;
+  private uploadFileUrl = environment.serverBase + appConfigurations.fileURL;
 
   constructor(private http: HttpClient) { }
 
-  uploadFile(file: File) : Observable<StandardResponse>{
+  uploadFile(file: File): Observable<StandardResponse> {
     let url = this.uploadFileUrl + '/upload/'
     const fd = new FormData();
     fd.append('icon-image', file, file.name);

@@ -1,0 +1,12 @@
+.content {
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+@media screen {
+  :host {
+    display: none;
+  }
+}

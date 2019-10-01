@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   serverBase: 'http://localhost:8000',
-  snackBarDuration : 5000
+  snackBarDuration: 5000
 };
 
 /*

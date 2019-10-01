@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DateService } from '../services/date.service';
-import { MatSidenav } from '@angular/material';
+import { PrintService } from '../services/print.service';
 
 @Component({
   selector: 'main-nav',
@@ -11,36 +11,48 @@ import { MatSidenav } from '@angular/material';
   styleUrls: ['./main-nav.component.css']
 })
 export class MainNavComponent {
-  private longTitle = "Inventory Management System";
-  private shortTitle = "IMS";
-  private inventoryClass = "";
-  private productClass = "";
-  private vendorClass = "";
-  private sellingClass = "";
-  private buyingClass = "";
-  private openingClass = "";
-  private datePickerClass = "datePicker";
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(
-      map(result => {
-        console.log(`isHandset : ${result.matches}`);
-        return result.matches;
-      })
-    );
+  longTitle = "Inventory Management System";
+  shortTitle = "IMS";
+  datePickerClass = "datePicker";
+  routesList = [
+    {
+      route: '/inventory',
+      label: 'Inventory'
+    },
+    {
+      route: '/opening',
+      label: 'Stock Opening'
+    },
+    {
+      route: '/buying',
+      label: 'Buy'
+    },
+    {
+      route: '/selling',
+      label: 'Sell'
+    },
+    {
+      route: '/products',
+      label: 'Products'
+    },
+    {
+      route: '/vendors',
+      label: 'Vendors'
+    }
+  ];
 
-  constructor(private breakpointObserver: BreakpointObserver, private dateService: DateService) { }
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(map(result => result.matches));
 
-  log(data) {
-    console.log(this.dateSelected);
-    console.log(data);
-  }
+  constructor(private breakpointObserver: BreakpointObserver,
+    private dateService: DateService,
+    public printService: PrintService) { }
+
   get dateSelected() {
     return this.dateService.date;
   }
 
   set dateSelected(date: Date) {
-    // console.log(`dateSelected : ${JSON.stringify(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())))}`);
-    this.dateService.date=new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    this.dateService.date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     let today = new Date();
     if (today.getFullYear() === date.getFullYear()
       && today.getMonth() === date.getMonth()
@@ -52,22 +64,4 @@ export class MainNavComponent {
     this.dateService.dateChangeListener.next();
   }
 
-  itemClicked(compName: string, drawer: MatSidenav) {
-    console.log(drawer);
-    this.inventoryClass = "";
-    this.productClass = "";
-    this.vendorClass = "";
-    this.sellingClass = "";
-    this.buyingClass = "";
-    this.openingClass = "";
-    switch (compName) {
-      case 'inventory': this.inventoryClass = "active"; break;
-      case 'products': this.productClass = "active"; break;
-      case 'vendors': this.vendorClass = "active"; break;
-      case 'selling': this.sellingClass = "active"; break;
-      case 'buying': this.buyingClass = "active"; break;
-      case 'opening': this.openingClass = "active"; break;
-    }
-    drawer.close();
-  }
 }

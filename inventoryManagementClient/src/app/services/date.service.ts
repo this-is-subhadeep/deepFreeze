@@ -5,17 +5,17 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class DateService {
-  private _date:Date;
+  private _date: Date;
   private _dateChangeSubject = new Subject();
   constructor() {
-    let tmpDate=new Date();
-    this._date=new Date(Date.UTC(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()));
+    let tmpDate = new Date();
+    this._date = new Date(Date.UTC(tmpDate.getFullYear(), tmpDate.getMonth(), tmpDate.getDate()));
   }
-  get date()  {
+  get date() {
     return this._date;
   }
-  set date(date:Date) {
-    this._date=date;
+  set date(date: Date) {
+    this._date = date;
   }
   get dateChangeListener() {
     return this._dateChangeSubject;

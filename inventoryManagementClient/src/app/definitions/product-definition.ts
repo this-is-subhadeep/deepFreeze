@@ -1,15 +1,15 @@
 export class ProductType {
-    _id:string;
-    name:string;
-    showOrder:number;
-    clone():ProductType {
+    _id: string;
+    name: string;
+    showOrder: number;
+    clone(): ProductType {
         let newClone = new ProductType();
         newClone._id = this._id;
         newClone.name = this.name;
         newClone.showOrder = this.showOrder;
         return newClone;
     }
-    static cloneAnother (prodTyp:ProductType):ProductType {
+    static cloneAnother(prodTyp: ProductType): ProductType {
         let newClone = new ProductType();
         newClone._id = prodTyp._id;
         newClone.name = prodTyp.name;
@@ -18,13 +18,13 @@ export class ProductType {
     }
 }
 export class Product {
-    _id:string;
-    name:string;
-    productType:ProductType;
-    packageSize:number;
-    costPrice:number;
-    sellingPrice:number;
-    productIcon:string;
+    _id: string;
+    name: string;
+    productType: ProductType;
+    packageSize: number;
+    costPrice: number;
+    sellingPrice: number;
+    productIcon: string;
     constructor() {
         this.productType = new ProductType();
     }
@@ -39,7 +39,7 @@ export class Product {
         newClone.productIcon = this.productIcon;
         return newClone;
     }
-    static cloneAnother (prod:Product):Product {
+    static cloneAnother(prod: Product): Product {
         let newClone = new Product();
         newClone._id = prod._id;
         newClone.name = prod.name;

@@ -15,18 +15,18 @@ import { environment } from 'src/environments/environment';
   animations: [fadeInEffect, dropDownEffect]
 })
 export class OpeningComponent implements OnInit {
-  private dataSource:InventoryOpeningDataSource;
-  columnsToDisplay=["productName",
-                            "stockOpening"];
-  private prodTypeClass="productType";
+  private dataSource: InventoryOpeningDataSource;
+  columnsToDisplay = ["productName",
+    "stockOpening"];
+  private prodTypeClass = "productType";
 
   constructor(private service: InventoryService,
     private productService: ProductService,
     private dateService: DateService,
-    private snackBar : MatSnackBar) { }
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.dataSource = new InventoryOpeningDataSource(this.service,this.productService);
+    this.dataSource = new InventoryOpeningDataSource(this.service, this.productService);
     this.loadInventoryOpeningData();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadInventoryOpeningData();
@@ -38,17 +38,17 @@ export class OpeningComponent implements OnInit {
     this.dataSource.loadInventoryOpening(date);
   }
 
-  isRowProductType(inventoryOpeningRow:UIInventoryOpeningRow) {
+  isRowProductType(inventoryOpeningRow: UIInventoryOpeningRow) {
     return inventoryOpeningRow.id.startsWith("typ");
   }
 
-  getRowTypeClass(inventoryOpeningRow:UIInventoryOpeningRow) {
-    return this.isRowProductType(inventoryOpeningRow)?this.prodTypeClass:null;
+  getRowTypeClass(inventoryOpeningRow: UIInventoryOpeningRow) {
+    return this.isRowProductType(inventoryOpeningRow) ? this.prodTypeClass : null;
   }
 
-  getProdDetails(inventoryOpeningRow:UIInventoryOpeningRow) {
-    if(!this.isRowProductType(inventoryOpeningRow) && inventoryOpeningRow.prodDets!=undefined) {
-      return "Package Size : "+inventoryOpeningRow.prodDets.packageSize+" - Price : "+inventoryOpeningRow.prodDets.sellingPrice;
+  getProdDetails(inventoryOpeningRow: UIInventoryOpeningRow) {
+    if (!this.isRowProductType(inventoryOpeningRow) && inventoryOpeningRow.prodDets != undefined) {
+      return "Package Size : " + inventoryOpeningRow.prodDets.packageSize + " - Price : " + inventoryOpeningRow.prodDets.sellingPrice;
     }
     return "";
   }
@@ -59,7 +59,7 @@ export class OpeningComponent implements OnInit {
     let invOpn = new InventoryOpening();
     this.dataSource.connect().subscribe(uiInvOpnRows => {
       uiInvOpnRows.forEach(uiInvOpnRow => {
-        if(!uiInvOpnRow.id.startsWith('typ') && uiInvOpnRow.stockOpening) {
+        if (!uiInvOpnRow.id.startsWith('typ') && uiInvOpnRow.stockOpening) {
           const invOpnRow = new InventoryOpeningRow();
           invOpnRow.pieces = uiInvOpnRow.stockOpening;
           invOpn.rows[uiInvOpnRow.id] = invOpnRow;
@@ -69,21 +69,21 @@ export class OpeningComponent implements OnInit {
     console.log(invOpn);
     this.service.saveInventoryOpening(invOpn, date).subscribe(resp => {
       this.snackBar.open('Inventory', 'Saved', {
-        duration : environment.snackBarDuration
+        duration: environment.snackBarDuration
       });
       this.loadInventoryOpeningData();
     });
   }
 
-  validateStockOpening(invRow:UIInventoryOpeningRow) {
-    if(!this.validateValue(invRow.stockOpening)) {
+  validateStockOpening(invRow: UIInventoryOpeningRow) {
+    if (!this.validateValue(invRow.stockOpening)) {
       invRow.stockOpening = undefined;
     }
   }
 
-  private validateValue(val:Number) {
-    if(val!=undefined || val!=null) {
-      if(val <= 0 || (val.valueOf()-Math.round(val.valueOf()))!=0) {
+  private validateValue(val: Number) {
+    if (val != undefined || val != null) {
+      if (val <= 0 || (val.valueOf() - Math.round(val.valueOf())) != 0) {
         return false;
       }
     }

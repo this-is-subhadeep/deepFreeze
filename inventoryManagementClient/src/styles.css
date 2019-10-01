@@ -7,3 +7,9 @@ body {
 html, body {
     height: 100%
 }
+
+@media print {
+    .isPrinting>* {
+        display: none;
+    }
+}

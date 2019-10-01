@@ -1,4 +1,5 @@
-<mat-expansion-panel [@vendorChanged]='animationState' name='expansionPanel' #expansionPanel (opened)='panelOpened()' (closed)='panelClosed()'>
+<mat-expansion-panel [@vendorChanged]='animationState' name='expansionPanel' #expansionPanel (opened)='panelOpened()'
+  (closed)='panelClosed()'>
   <mat-expansion-panel-header class='vendor-panel-header'>
     <mat-panel-title>
       <div>
@@ -12,11 +13,12 @@
   </mat-expansion-panel-header>
   <form [formGroup]='venForm' (ngSubmit)='onUpdate(expansionPanel)'>
     <div>
-      <img class="icon-image" [src]="vendorPic" alt="icon-image" [hidden]='!panelStateOpened' (click)='onImageClick(fileChooser)'> 
+      <img class="icon-image" [src]="vendorPic" alt="icon-image" [hidden]='!panelStateOpened'
+        (click)='onImageClick(fileChooser)'>
     </div>
 
     <mat-form-field *ngIf='editingState'>
-      <input matInput formControlName='name' name='name' placeholder='Vendor Name' >
+      <input matInput formControlName='name' name='name' placeholder='Vendor Name'>
       <mat-error *ngIf='venForm.get("name").errors && venForm.get("name").errors.required'>
         Please enter a Vendor Name !!
       </mat-error>

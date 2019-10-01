@@ -25,5 +25,13 @@
 .productType {
     background: rgb(98, 128, 156);
     font-style: italic;
-    font-weight: bold; 
+    font-weight: bold;
+}
+
+.spinner-div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

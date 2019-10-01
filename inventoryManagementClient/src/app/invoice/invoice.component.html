@@ -1,0 +1,69 @@
+<div class='invoice'>
+  <table>
+    <thead>
+      <tr>
+        <td>
+          <div class="header-space">&nbsp;</div>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <table border="1">
+            <thead>
+              <tr>
+                <th colspan="3">{{printService.vendor?.name}}</th>
+              <tr>
+                <th>Product Name</th>
+                <th>Sold Units</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let sellingData of printService.sellingProductList'>
+                <td>{{ sellingData.product.name }} - {{ sellingData.product.productType.name }}</td>
+                <td class='numericData'>{{ sellingData.soldUnits }}</td>
+                <td class='numericData'>{{ getSoldAmount(sellingData) | number : '1.2-2' }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2">
+                  Total
+                </td>
+                <td class='numericData'>{{ totalAmount | number : '1.2-2' }}</td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  Deposit
+                </td>
+                <td class='numericData'>{{ printService.deposit | number : '1.2-2' }}</td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  To Pay
+                </td>
+                <td class='numericData'>{{ toPay | number : '1.2-2' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          <div class="footer-space">&nbsp;</div>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="header">
+    <h1>
+      Bill - {{date}}
+    </h1>
+  </div>
+  <div class="footer">Sign : </div>
+</div>

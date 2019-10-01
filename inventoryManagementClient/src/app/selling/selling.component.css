@@ -3,6 +3,7 @@
     margin: 2%;
     width: 96%
 }
+
 .inner-boundary {
     margin: 2%;
 }
@@ -44,14 +45,14 @@
 }
 
 .button-group {
-    width: 35vh; 
-    display:flex;
+    width: 35vh;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
 .button-group>button {
-    margin-top: 8vh; 
+    margin-top: 8vh;
     margin-bottom: 2vh;
 }
 

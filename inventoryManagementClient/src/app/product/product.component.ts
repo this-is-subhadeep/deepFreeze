@@ -19,10 +19,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./product.component.css'],
   animations: [trigger('productChanged', [
     state('void', style({
-      backgroundColor : 'rgb(235, 172, 116)',
-      opacity : 0
+      backgroundColor: 'rgb(235, 172, 116)',
+      opacity: 0
     })),
-    transition('*=>changed',[
+    transition('*=>changed', [
       animate(1000)
     ])
   ])]
@@ -35,12 +35,12 @@ export class ProductComponent {
   dpToUpload = false;
   panelStateOpened = false;
   editingState = false;
-  dpFileSelected : File;
+  dpFileSelected: File;
   defaultProdDPImage = '../../assets/default_product_Image.png';
-  animationState='init';
+  animationState = 'init';
 
   constructor(private service: ProductService,
-    private fileService : FilesService,
+    private fileService: FilesService,
     private dateService: DateService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar) { }
@@ -53,8 +53,8 @@ export class ProductComponent {
   }
 
   get productPic() {
-    let dpURL = environment.serverBase+appConfigurations.fileURL+'/images/';
-    return this.prodObj.productIcon?dpURL+this.prodObj.productIcon:this.defaultProdDPImage;
+    let dpURL = environment.serverBase + appConfigurations.fileURL + '/images/';
+    return this.prodObj.productIcon ? dpURL + this.prodObj.productIcon : this.defaultProdDPImage;
   }
 
   setForm(prod) {
@@ -105,7 +105,7 @@ export class ProductComponent {
   }
 
   onImageClick(fileChooser) {
-    if(this.editingState) {
+    if (this.editingState) {
       fileChooser.click();
     }
   }
@@ -121,25 +121,25 @@ export class ProductComponent {
     this.prodObj.packageSize = this.prodForm.controls.size.value;
     this.prodObj.costPrice = this.prodForm.controls.cp.value;
     this.prodObj.sellingPrice = this.prodForm.controls.sp.value;
-    if(this.dpToUpload) {
-      this.fileService.uploadFile(this.dpFileSelected).subscribe((resp:StandardResponse) => {
+    if (this.dpToUpload) {
+      this.fileService.uploadFile(this.dpFileSelected).subscribe((resp: StandardResponse) => {
         this.prodObj.productIcon = resp._id;
         this.service.updateProduct(this.prodObj, date).subscribe(resp => {
           this.snackBar.open('Product', 'Updated', {
-            duration : environment.snackBarDuration
+            duration: environment.snackBarDuration
           });
           exPanel.close();
         });
-      }, (errorResp:HttpErrorResponse) => {
+      }, (errorResp: HttpErrorResponse) => {
         this.snackBar.open('Product', `Error ${errorsDict[errorResp.error[0].code]}`, {
-          duration : environment.snackBarDuration
+          duration: environment.snackBarDuration
         });
         exPanel.close();
       });
     } else {
       this.service.updateProduct(this.prodObj, date).subscribe(resp => {
         this.snackBar.open('Product', 'Updated', {
-          duration : environment.snackBarDuration
+          duration: environment.snackBarDuration
         });
         exPanel.close();
       });

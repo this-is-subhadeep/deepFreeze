@@ -1,0 +1,25 @@
+.header, .header-space, .footer, .footer-space {
+    height: 100px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+}
+
+.numericData {
+    text-align: right;
+}
+
+.invoice {
+    page-break-after: always;
+}
+
+.invoice:last-child {
+    page-break-after: avoid;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+}

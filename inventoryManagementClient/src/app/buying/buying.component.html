@@ -35,10 +35,11 @@
         <td>
           <mat-card class='units-bought-card'>
             <mat-form-field class='units-bought-elem'>
-              <input matInput required type="number"
-                maxlength="5" [(ngModel)]="buyingProduct.packageUnits" #packageUnits="ngModel" name="packageUnits">
+              <input matInput required type="number" maxlength="5" [(ngModel)]="buyingProduct.packageUnits"
+                #packageUnits="ngModel" name="packageUnits">
               <span matSuffix>+{{getStockSenBalance(buyingProduct.product._id)}}</span>
-              <mat-error *ngIf="packageUnits.invalid && packageUnits.errors.required && (packageUnits.dirty || packageUnits.touched)">
+              <mat-error
+                *ngIf="packageUnits.invalid && packageUnits.errors.required && (packageUnits.dirty || packageUnits.touched)">
                 Please provide a Unit Amount
               </mat-error>
             </mat-form-field>
@@ -46,11 +47,12 @@
         </td>
         <td>
           <mat-card class='units-bought-card'>
-            <mat-form-field  class='units-bought-elem'>
-              <input matInput required type="number"
-                maxlength="5" [(ngModel)]="buyingProduct.pieceUnits" #pieceUnits="ngModel" name="pieceUnits">
+            <mat-form-field class='units-bought-elem'>
+              <input matInput required type="number" maxlength="5" [(ngModel)]="buyingProduct.pieceUnits"
+                #pieceUnits="ngModel" name="pieceUnits">
               <span matSuffix>+{{getStockOthersBalance(buyingProduct.product._id)}}</span>
-              <mat-error *ngIf="pieceUnits.invalid && pieceUnits.errors.required && (pieceUnits.dirty || pieceUnits.touched)">
+              <mat-error
+                *ngIf="pieceUnits.invalid && pieceUnits.errors.required && (pieceUnits.dirty || pieceUnits.touched)">
                 Please provide a Unit Amount
               </mat-error>
             </mat-form-field>
@@ -63,10 +65,7 @@
         </td>
         <td>
           <mat-card class='action-card'>
-            <button
-              mat-button
-              type='button'
-              (click)='deleteProductFromList(i)'
+            <button mat-button type='button' (click)='deleteProductFromList(i)'
               [disabled]='!buyingProduct.enableDelete'>
               <mat-icon aria-label="Side nav toggle icon">delete</mat-icon>
             </button>
@@ -77,16 +76,8 @@
     <div>
       <div class="product-action-row">
         <mat-form-field appearance="outline">
-          <input type="text"
-            matInput
-            required
-            #productList
-            name="buyingProduct"
-            id="productList"
-            placeholder="Product"
-            [formControl]="productControl"
-            [matAutocomplete]="autoList"
-            (click) = "productList.select()">
+          <input type="text" matInput required #productList name="buyingProduct" id="productList" placeholder="Product"
+            [formControl]="productControl" [matAutocomplete]="autoList" (click)="productList.select()">
           <mat-autocomplete autoActiveFirstOption #autoList="matAutocomplete" [displayWith]="productNameDisp">
             <mat-option *ngFor="let product of filteredProducts | async" [value]="product">
               {{product.name + ' - ' + product.productType.name}}

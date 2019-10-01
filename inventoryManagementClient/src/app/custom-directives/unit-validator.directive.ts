@@ -15,7 +15,7 @@ export class UnitValidatorDirective implements Validator {
 
   @Input() unitValidator: number;
 
-  validate(c: FormControl): {[key: string]: boolean} {
-    return c.value <= this.unitValidator? null : { unitValidator: true };
+  validate(c: FormControl): { [key: string]: boolean } {
+    return c.value <= this.unitValidator ? null : { unitValidator: true };
   }
 }

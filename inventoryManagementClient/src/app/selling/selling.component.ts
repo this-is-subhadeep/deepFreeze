@@ -9,11 +9,12 @@ import { SellingData } from '../definitions/selling-definition';
 import { NgModel, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { environment } from 'src/environments/environment';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { productTextValidator } from '../validators';
 import { ProductService } from '../services/product.service';
 import { VendorService } from '../services/vendor.service';
+import { PrintService } from '../services/print.service';
 
 @Component({
   selector: 'app-selling',
@@ -28,27 +29,28 @@ export class SellingComponent implements OnInit {
   private inventory: Inventory;
   private selectedVendor: Vendor;
   private productOpenings: ProductOpening;
-  private productControl : FormControl;
-  filteredProducts : Observable<Product[]>;
+  private productControl: FormControl;
+  filteredProducts: Observable<Product[]>;
 
   constructor(private inventoryService: InventoryService,
     private productService: ProductService,
     private vendorService: VendorService,
     private dateService: DateService,
+    public printService: PrintService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.productControl = new FormControl('',{
-      validators : [
+    this.productControl = new FormControl('', {
+      validators: [
         Validators.required,
         productTextValidator
       ]
     });
     this.filteredProducts = this.productControl.valueChanges.pipe(
       startWith(''),
-      map((value : any) => {
-        if(value instanceof Product) {
-          if(!this.sellingProductList.find(sellData => sellData.product._id === value._id)) {
+      map((value: any) => {
+        if (value instanceof Product) {
+          if (!this.sellingProductList.find(sellData => sellData.product._id === value._id)) {
             let sellingDataRow = new SellingData(this.products.find(prod => prod._id === value._id));
             sellingDataRow.enableDelete = true;
             this.sellingProductList.push(sellingDataRow);
@@ -68,9 +70,8 @@ export class SellingComponent implements OnInit {
     });
   }
 
-  private filterProductList(prodName: string):Product[] {
-    console.log(`prodName : ${JSON.stringify(prodName)}`);
-    if(typeof prodName === 'string') {
+  private filterProductList(prodName: string): Product[] {
+    if (typeof prodName === 'string') {
       const filteredProd = prodName.toLowerCase();
       return this.products.filter(product => (`${product.name} - ${product.productType.name}`).toLowerCase().indexOf(filteredProd) === 0);
     } else {
@@ -82,7 +83,7 @@ export class SellingComponent implements OnInit {
     let date = this.dateService.date.toISOString();
     this.productService.getAllProducts(date);
     this.vendorService.getAllVendors(date);
-    combineLatest(
+    forkJoin(
       this.inventoryService.findInventoryOpeningObservable(date),
       this.inventoryService.findInventoryObservable(date),
       this.productService.productObservable,
@@ -100,59 +101,53 @@ export class SellingComponent implements OnInit {
     this.sellingProductList = new Array();
   }
 
-  private get vendorDeposit() {
-    if(this.inventory && this.inventory.vendorDeposits) {
+  get vendorDeposit() {
+    if (this.inventory && this.inventory.vendorDeposits) {
       return this.inventory.vendorDeposits[this.selectedVendor._id];
     } else {
       return null;
     }
   }
 
-  private get selectedVendorId() {
+  get selectedVendorId() {
     return this.selectedVendor._id;
   }
 
-  private productNameDisp(prod:Product) {
-    console.log(prod);
-    console.log(this.inventory);
-    return prod?`${prod.name} - ${prod.productType.name}`:'';
-  }
-
-  private set selectedVendorId(id: string) {
-    console.log(`selectedVendorId : ${id}`);
-    this.selectedVendor = this.vendors.find(ven => ven._id === id);
-    this.fillSellingData();
-  }
-
-  private fillSellingData() {
-    this.sellingProductList = new Array<SellingData>();
-    if(this.inventory) {
-      for(let prodId in this.inventory.rows) {
-        console.log(prodId);
-        if(this.inventory.rows[prodId].vendorValue && this.inventory.rows[prodId].vendorValue[this.selectedVendor._id]) {
-          let sellingProductRow = new SellingData(this.products.find(product => product._id === prodId),
-                                                  this.inventory.rows[prodId].vendorValue[this.selectedVendor._id].pieces);
-          this.sellingProductList.push(sellingProductRow);
-        }
-      }
-    }
-  }
-
-  private set vendorDeposit(amount: number) {
-    console.log(amount);
-    if(this.inventory) {
-      if(!this.inventory.vendorDeposits) {
+  set vendorDeposit(amount: number) {
+    if (this.inventory) {
+      if (!this.inventory.vendorDeposits) {
         this.inventory.vendorDeposits = {};
       }
     } else {
       this.inventory = new Inventory();
       this.inventory.vendorDeposits = {};
     }
-    console.log('setting amount');
     this.inventory.vendorDeposits[this.selectedVendor._id] = amount;
   }
 
-  private isVendorSelected(): boolean {
+  set selectedVendorId(id: string) {
+    this.selectedVendor = this.vendors.find(ven => ven._id === id);
+    this.fillSellingData();
+  }
+
+  productNameDisp(prod: Product) {
+    return prod ? `${prod.name} - ${prod.productType.name}` : '';
+  }
+
+  private fillSellingData() {
+    this.sellingProductList = new Array<SellingData>();
+    if (this.inventory) {
+      for (let prodId in this.inventory.rows) {
+        if (this.inventory.rows[prodId].vendorValue && this.inventory.rows[prodId].vendorValue[this.selectedVendor._id]) {
+          let sellingProductRow = new SellingData(this.products.find(product => product._id === prodId),
+            this.inventory.rows[prodId].vendorValue[this.selectedVendor._id].pieces);
+          this.sellingProductList.push(sellingProductRow);
+        }
+      }
+    }
+  }
+
+  isVendorSelected(): boolean {
     return this.selectedVendor._id && this.selectedVendor._id.startsWith('ven');
   }
 
@@ -162,16 +157,16 @@ export class SellingComponent implements OnInit {
 
   getStockBalance(productId: string): number {
     let balance = 0;
-    if(this.productOpenings && this.productOpenings.openingValues) {
+    if (this.productOpenings && this.productOpenings.openingValues) {
       balance = this.productOpenings.openingValues[productId];
     }
-    if(this.inventory
+    if (this.inventory
       && this.inventory.rows
       && this.inventory.rows[productId]
       && this.inventory.rows[productId].vendorValue
       && this.inventory.rows[productId].vendorValue[this.selectedVendor._id]
       && this.inventory.rows[productId].vendorValue[this.selectedVendor._id].pieces) {
-      balance += this.inventory.rows[productId].vendorValue[this.selectedVendor._id].pieces; 
+      balance += this.inventory.rows[productId].vendorValue[this.selectedVendor._id].pieces;
     }
     return balance;
   }
@@ -196,57 +191,51 @@ export class SellingComponent implements OnInit {
     return Math.round(totalAmountSold * 100) / 100;
   }
 
-  saveButtonPressed() {
+  saveButtonPressed(print = false) {
     console.log('Save Button Pressed', this.sellingProductList);
     let date = this.dateService.date.toISOString();
     this.sellingProductList.forEach(soldRow => {
-      console.log(soldRow);
-      // console.log(this.inventory);
-      if(!this.inventory.rows) {
+      if (!this.inventory.rows) {
         this.inventory.rows = {};
       }
-      if(!this.inventory.rows[soldRow.product._id]) {
-        console.log(`Creating row : ${soldRow.product._id}`);
+      if (!this.inventory.rows[soldRow.product._id]) {
         this.inventory.rows[soldRow.product._id] = new InventoryRow();
       }
-      console.log(this.inventory);
-      if(!this.inventory.rows[soldRow.product._id].vendorValue) {
+      if (!this.inventory.rows[soldRow.product._id].vendorValue) {
         this.inventory.rows[soldRow.product._id].vendorValue = {};
       }
       this.inventory.rows[soldRow.product._id].vendorValue[this.selectedVendor._id] = {
-        packages : 0,
-        pieces : soldRow.soldUnits
+        packages: 0,
+        pieces: soldRow.soldUnits
       };
     });
-    console.log(`Final Inventory : ${JSON.stringify(this.inventory)}`);
-
-    let updateVendor = this.vendors.find(ven => ven._id === this.selectedVendor._id);
+    let tempVenId = this.selectedVendor._id;
     this.inventoryService.saveInventory(this.inventory, date).subscribe(resp => {
       this.snackBar.open('Products', 'Sold', {
-        duration : environment.snackBarDuration
+        duration: environment.snackBarDuration
       });
       this.loadInventoryData();
+      if (print) {
+        this.printService.printDocument(tempVenId);
+      }
     });
-    
+
     this.refresh();
   }
 
   saveAndBillButtonPressed() {
-    this.saveButtonPressed();
     console.log('Bill Button Pressed');
-  }  
+    this.saveButtonPressed(true);
+    // this.printService.printDocument(this.selectedVendor._id);
+  }
 
- deleteProductFromList(ind: number) {
+  deleteProductFromList(ind: number) {
     console.log('Deleting Product :', ind);
     this.sellingProductList.splice(ind, 1);
   }
 
-  private isUnitInvalid(id:number, soldUnitEle:NgModel) {
-    console.log('id :',id,'soldUnitEle :',soldUnitEle);
-    // if(soldUnitEle.value>10) {
-    //   soldUnitEle.invalid = true;
-    // }
-    return soldUnitEle.invalid;
+  isSellingDataPresent(): boolean {
+    return this.getTotalUnitsSold() > 0
   }
 
   private log(data) {

@@ -1,4 +1,4 @@
-<div>
+<div *ngIf='dataSource.fetchComplete|async; else spinner'>
   <div @fadeIn>
     <div class="products-table-div mat-elevation-z10">
       <mat-accordion>
@@ -12,16 +12,16 @@
           </mat-expansion-panel-header>
 
           <mat-form-field>
-            <input matInput required maxlength="20" [(ngModel)]="newProduct.name" name="productName" #productName="ngModel"
-              id="productName" placeholder="Product Name">
+            <input matInput required maxlength="20" [(ngModel)]="newProduct.name" name="productName"
+              #productName="ngModel" id="productName" placeholder="Product Name">
             <mat-hint>Name of the Product</mat-hint>
             <mat-error *ngIf="productName.invalid && productName.errors.required">
               Please enter a product Name !!
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <mat-select required [(ngModel)]="newProductTypeId" name="productTypeList" #productTypeList="ngModel" id="productTypeList"
-              placeholder="Product Type">
+            <mat-select required [(ngModel)]="newProductTypeId" name="productTypeList" #productTypeList="ngModel"
+              id="productTypeList" placeholder="Product Type">
               <mat-option *ngFor="let productType of productTypes | async" [value]="productType._id">
                 {{productType.name}}
               </mat-option>
@@ -44,8 +44,8 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newProduct.costPrice" name="costPrice"
-              #costPrice="ngModel" id="costPrice" type="number" placeholder="Cost Price">
+            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newProduct.costPrice"
+              name="costPrice" #costPrice="ngModel" id="costPrice" type="number" placeholder="Cost Price">
             <mat-error *ngIf="costPrice.invalid && costPrice.errors.required">
               Cost Price is Required
             </mat-error>
@@ -54,8 +54,8 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newProduct.sellingPrice" name="sellingPrice"
-              #sellingPrice="ngModel" id="sellingPrice" type="number" placeholder="Selling Price">
+            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newProduct.sellingPrice"
+              name="sellingPrice" #sellingPrice="ngModel" id="sellingPrice" type="number" placeholder="Selling Price">
             <mat-error *ngIf="sellingPrice.invalid && sellingPrice.errors.required">
               Selling Price is Required
             </mat-error>
@@ -78,3 +78,8 @@
     </div>
   </div>
 </div>
+<ng-template #spinner>
+  <div class="spinner-div">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

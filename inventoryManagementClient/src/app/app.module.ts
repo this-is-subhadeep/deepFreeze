@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
+// import { RouterModule } from '@angular/router';
 
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -9,20 +9,22 @@ import { DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 
-import { MatTableModule,
-         MatButtonModule,
-         MatInputModule,
-         MatSelectModule,
-         MatToolbarModule,
-         MatSidenavModule,
-         MatListModule,
-         MatCardModule,
-         MatPaginatorModule,
-         MatDatepickerModule,
-         MatTooltipModule,
-         MatMenuModule,
-         MatSlideToggleModule
-        } from '@angular/material';
+import {
+  MatTableModule,
+  MatButtonModule,
+  MatInputModule,
+  MatSelectModule,
+  MatToolbarModule,
+  MatSidenavModule,
+  MatListModule,
+  MatCardModule,
+  MatPaginatorModule,
+  MatDatepickerModule,
+  MatTooltipModule,
+  MatMenuModule,
+  MatSlideToggleModule,
+  MatProgressSpinnerModule
+} from '@angular/material';
 import { MatNativeDateModule } from '@angular/material'
 import { MatIconModule } from '@angular/material'
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -44,6 +46,9 @@ import { VendorViewComponent } from './vendor-view/vendor-view.component';
 import { VendorComponent } from './vendor/vendor.component';
 import { BuyingComponent } from './buying/buying.component';
 import { OpeningComponent } from './opening/opening.component';
+import { AppRoutingModule } from './app-routing.module';
+import { PrintLayoutComponent } from './print-layout/print-layout.component';
+import { InvoiceComponent } from './invoice/invoice.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +62,9 @@ import { OpeningComponent } from './opening/opening.component';
     ProductComponent,
     VendorComponent,
     BuyingComponent,
-    OpeningComponent
+    OpeningComponent,
+    PrintLayoutComponent,
+    InvoiceComponent
   ],
   imports: [
     BrowserModule,
@@ -74,46 +81,18 @@ import { OpeningComponent } from './opening/opening.component';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    RouterModule.forRoot([
-      {
-        path: '',
-        component: InventoryComponent
-      },
-      {
-        path: 'inventory',
-        component: InventoryComponent
-      },
-      {
-        path: 'products',
-        component: ProductViewComponent
-      },
-      {
-        path: 'vendors',
-        component: VendorViewComponent
-      },
-      {
-        path: 'selling',
-        component: SellingComponent
-      },
-      {
-        path: 'buying',
-        component: BuyingComponent
-      },
-      {
-        path: 'opening',
-        component: OpeningComponent
-      }
-   ]),
-   MatCardModule,
-   MatPaginatorModule,
-   MatDatepickerModule,
-   MatNativeDateModule,
-   MatTooltipModule,
-   MatExpansionModule,
-   MatMenuModule,
-   MatSnackBarModule,
-   MatAutocompleteModule,
-   MatSlideToggleModule
+    AppRoutingModule,
+    MatCardModule,
+    MatPaginatorModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTooltipModule,
+    MatExpansionModule,
+    MatMenuModule,
+    MatSnackBarModule,
+    MatAutocompleteModule,
+    MatSlideToggleModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     ProductService,

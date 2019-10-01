@@ -1,41 +1,26 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    #drawer
-    class="sidenav"
-    fixedInViewport="false"
-    [attr.role]="isHandset$ ? 'dialog' : 'navigation'"
-    mode="over"
-    [opened]="false">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="false" [attr.role]="isHandset$ ? 'dialog' : 'navigation'"
+    mode="over" [opened]="false">
     <mat-toolbar color="primary">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       Menu
     </mat-toolbar>
     <mat-nav-list>
-      <a #inventory mat-list-item routerLink="/inventory" [ngClass]="inventoryClass" (click)="itemClicked('inventory',drawer)">Intentory</a>
-      <a #opening mat-list-item routerLink="/opening" [ngClass]="openingClass" (click)="itemClicked('opening',drawer)">Stock Opening</a>
-      <a #buying mat-list-item routerLink="/buying" [ngClass]="buyingClass" (click)="itemClicked('buying',drawer)">Buy</a>
-      <a #selling mat-list-item routerLink="/selling" [ngClass]="sellingClass" (click)="itemClicked('selling',drawer)">Sell</a>
-      <a #products mat-list-item routerLink="/products" [ngClass]="productClass" (click)="itemClicked('products',drawer)">Products</a>
-      <a #vendors mat-list-item routerLink="/vendors" [ngClass]="vendorClass" (click)="itemClicked('vendors',drawer)">Vendors</a>
+      <a mat-list-item *ngFor="let routes of routesList" [routerLink]="routes.route" routerLinkActive="active"
+        (click)="drawer.close()">
+        {{ routes.label }}
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()">
+    <mat-toolbar [class.isPrinting]='printService.isPrinting' color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <div class="icon-image-div">
-          <img class="icon-image" src="../../assets/appIcon.png" alt="icon-image">
+        <img class="icon-image" src="../../assets/appIcon.png" alt="icon-image">
       </div>
       <span class="spacer"></span>
       <span *ngIf="(isHandset$ | async); else browserText">{{shortTitle}}</span>
@@ -45,7 +30,8 @@
       <span class="fill-remaining-space"></span>
       <span>
         <mat-form-field class="datePicker">
-          <input matInput [ngClass]="datePickerClass" [(ngModel)]="dateSelected" [matDatepicker]="picker" disabled #mainDatePicked="ngModel">
+          <input matInput [ngClass]="datePickerClass" [(ngModel)]="dateSelected" [matDatepicker]="picker" disabled
+            #mainDatePicked="ngModel">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker disabled="false"></mat-datepicker>
         </mat-form-field>

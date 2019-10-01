@@ -4,46 +4,42 @@ import { ProductType, Product } from '../definitions/product-definition';
 import { environment } from '../../environments/environment';
 import { appConfigurations } from 'src/environments/conf';
 import { map } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private productBehaviorSubject = new BehaviorSubject<Product[]>(new Array<Product>());
-  private productTypeBehaviorSubject = new BehaviorSubject<ProductType[]>(new Array<ProductType>());
-  private getProductTypesUrl=environment.serverBase+appConfigurations.productTypeURL;
-  private getProductUrl=environment.serverBase+appConfigurations.productURL;
-  constructor(private http:HttpClient) {}
+  private product$ = new Observable<Product[]>();
+  private productType$ = new Observable<ProductType[]>();
+  private getProductTypesUrl = environment.serverBase + appConfigurations.productTypeURL;
+  private getProductUrl = environment.serverBase + appConfigurations.productURL;
+  constructor(private http: HttpClient) { }
 
-  get productTypesObservable() : Observable<ProductType[]> {
-    return this.productTypeBehaviorSubject.asObservable();
+  get productTypesObservable(): Observable<ProductType[]> {
+    return this.productType$;
   }
 
-  get productObservable() : Observable<Product[]> {
-    return this.productBehaviorSubject.asObservable();
+  get productObservable(): Observable<Product[]> {
+    return this.product$;
   }
 
-  getAllProducts (refDate:string) {
-    let url = this.getProductUrl+"/"+refDate;
-    this.http.get<Product[]>(url).subscribe(prods => {
-      let products = prods.sort((prod1, prod2) => prod1.productType.showOrder - prod2.productType.showOrder).
-                           map(prod => Product.cloneAnother(prod));
-      this.productBehaviorSubject.next(products);
-    });
-    this.http.get<ProductType[]>(this.getProductTypesUrl).subscribe(prodTyps => {
-      let productTypes = prodTyps.map(prodTyp => ProductType.cloneAnother(prodTyp));
-      this.productTypeBehaviorSubject.next(productTypes);
-    })
+  getAllProducts(refDate: string) {
+    let url = this.getProductUrl + "/" + refDate;
+    this.product$ = this.http.get<Product[]>(url)
+      .pipe(map(prods => prods.sort((prod1, prod2) => prod1.productType.showOrder - prod2.productType.showOrder)
+        .map(prod => Product.cloneAnother(prod))));
+    this.productType$ = this.http.get<ProductType[]>(this.getProductTypesUrl)
+      .pipe(map(prodTyps => prodTyps.map(prodTyp => ProductType.cloneAnother(prodTyp))));
   }
 
-  addProduct(newProduct:Product, refDate:string) {
-    let url = this.getProductUrl+"/"+refDate;
-    return this.http.post(url,newProduct);
+  addProduct(newProduct: Product, refDate: string) {
+    let url = this.getProductUrl + "/" + refDate;
+    return this.http.post(url, newProduct);
   }
 
-  updateProduct(newProduct:Product, refDate:string) {
-    let url = this.getProductUrl+"/"+refDate;
-    return this.http.put(url,newProduct);
+  updateProduct(newProduct: Product, refDate: string) {
+    let url = this.getProductUrl + "/" + refDate;
+    return this.http.put(url, newProduct);
   }
 }

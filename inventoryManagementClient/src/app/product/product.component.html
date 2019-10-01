@@ -1,4 +1,5 @@
-<mat-expansion-panel [@productChanged]='animationState' name='expansionPanel' #expansionPanel (opened)='panelOpened()' (closed)='panelClosed()'>
+<mat-expansion-panel [@productChanged]='animationState' name='expansionPanel' #expansionPanel (opened)='panelOpened()'
+  (closed)='panelClosed()'>
   <mat-expansion-panel-header class='product-panel-header'>
     <mat-panel-title style="align-items: center">
       <div>
@@ -12,7 +13,8 @@
   </mat-expansion-panel-header>
   <form [formGroup]='prodForm' (ngSubmit)='onUpdate(expansionPanel)'>
     <div>
-      <img class="icon-image" [src]="productPic" alt="icon-image" [hidden]='!panelStateOpened' (click)='onImageClick(fileChooser)'> 
+      <img class="icon-image" [src]="productPic" alt="icon-image" [hidden]='!panelStateOpened'
+        (click)='onImageClick(fileChooser)'>
     </div>
 
     <mat-form-field *ngIf="editingState">
@@ -43,7 +45,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput formControlName='sp' type='number' name="sellingPrice"placeholder="Selling">
+      <input matInput formControlName='sp' type='number' name="sellingPrice" placeholder="Selling">
       <mat-error *ngIf='prodForm.get("sp").errors && prodForm.get("sp").errors.required'>
         Please enter a Package Size
       </mat-error>

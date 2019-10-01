@@ -1,4 +1,4 @@
-<div>
+<div *ngIf='dataSource.fetchComplete|async; else spinner'>
   <div>
     <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
       Save Opening
@@ -14,9 +14,7 @@
       </ng-container>
       <ng-container matColumnDef="productName" sticky>
         <mat-header-cell class="inventory-name-colum" *matHeaderCellDef>Product Name</mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryOpeningRow"
-          [ngClass]="getRowTypeClass(inventoryOpeningRow)">
+        <mat-cell *matCellDef="let inventoryOpeningRow" [ngClass]="getRowTypeClass(inventoryOpeningRow)">
           <span [matTooltip]="getProdDetails(inventoryOpeningRow)">
             {{ inventoryOpeningRow.name }}
           </span>
@@ -24,19 +22,11 @@
       </ng-container>
       <ng-container matColumnDef="stockOpening" sticky>
         <mat-header-cell *matHeaderCellDef>Stock<br>Opening</mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryOpeningRow"
-          [ngClass]="getRowTypeClass(inventoryOpeningRow)" sticky>
+        <mat-cell *matCellDef="let inventoryOpeningRow" [ngClass]="getRowTypeClass(inventoryOpeningRow)" sticky>
           <div *ngIf="isRowProductType(inventoryOpeningRow); else stockOpening"></div>
           <ng-template #stockOpening>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryOpeningRow.stockOpening"
-              name="stockOpening"
-              #stockOpening="ngModel"
-              id="stockOpening"
-              (blur)="validateStockOpening(inventoryOpeningRow)">
+            <input type="number" matInput [(ngModel)]="inventoryOpeningRow.stockOpening" name="stockOpening"
+              #stockOpening="ngModel" id="stockOpening" (blur)="validateStockOpening(inventoryOpeningRow)">
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -45,3 +35,8 @@
     </mat-table>
   </div>
 </div>
+<ng-template #spinner>
+  <div class="spinner-div">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

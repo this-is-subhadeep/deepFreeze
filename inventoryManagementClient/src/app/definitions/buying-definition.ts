@@ -1,12 +1,12 @@
 import { Product } from "./product-definition";
 
 export class BuyingData {
-    enableDelete : boolean;
+    enableDelete: boolean;
     constructor(public product: Product = new Product(),
         public packageUnits: number = null,
         public pieceUnits: number = null) {
-            this.enableDelete = false;
-        }
+        this.enableDelete = false;
+    }
 
     getBoughtPrice(): number {
         let price = 0;
@@ -16,6 +16,6 @@ export class BuyingData {
         if (this.pieceUnits && this.product.costPrice) {
             price += this.product.costPrice.valueOf() * this.pieceUnits;
         }
-        return Math.round(price*100)/100;
+        return Math.round(price * 100) / 100;
     }
 }

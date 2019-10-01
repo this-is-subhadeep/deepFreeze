@@ -1,6 +1,6 @@
-<div>
+<div *ngIf='dataSource.fetchComplete|async; else spinner'>
   <div class="edit-slider-div">
-    <mat-slide-toggle (change) = sliderChanged($event)>Edit Inventory</mat-slide-toggle>
+    <mat-slide-toggle (change)=sliderChanged($event)>Edit Inventory</mat-slide-toggle>
     <div class="save-button-div" [hidden]="!(editSlider$|async)">
       <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
         Save Inventory
@@ -17,9 +17,7 @@
       </ng-container>
       <ng-container matColumnDef="productName" sticky>
         <mat-header-cell class="inventory-name-colum" *matHeaderCellDef>Product Name</mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <span [matTooltip]="getProdDetails(inventoryRow)">
             {{ inventoryRow.name }}
           </span>
@@ -27,9 +25,7 @@
       </ng-container>
       <ng-container matColumnDef="stockOpening" sticky>
         <mat-header-cell *matHeaderCellDef>Stock<br>Opening</mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)" sticky>
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)" sticky>
           {{ inventoryRow.stockOpening }}
         </mat-cell>
       </ng-container>
@@ -39,9 +35,7 @@
             Balance
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           {{ inventoryRow.stockBalance }}
         </mat-cell>
       </ng-container>
@@ -51,9 +45,7 @@
             Total<br>In
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           {{ inventoryRow.stockTotalIn }}
         </mat-cell>
       </ng-container>
@@ -63,19 +55,11 @@
             Sen<br>In
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else stockSenIn"></div>
           <ng-template #stockSenIn>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryRow.stockSenIn"
-              name="stockSenIn"
-              #stockSenIn="ngModel"
-              id="stockSenIn"
-              (blur)="validateSenIn(inventoryRow);syncTotalIn(inventoryRow)"
+            <input type="number" matInput [(ngModel)]="inventoryRow.stockSenIn" name="stockSenIn" #stockSenIn="ngModel"
+              id="stockSenIn" (blur)="validateSenIn(inventoryRow);syncTotalIn(inventoryRow)"
               *ngIf="editSlider$|async; else stockSeninStatic">
             <ng-template #stockSeninStatic>
               {{inventoryRow.stockSenIn}}
@@ -89,18 +73,11 @@
             Others<br>In
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else stockOthersIn"></div>
           <ng-template #stockOthersIn>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryRow.stockOthersIn"
-              name="stockOthersIn"
-              #stockOthersIn="ngModel"
-              id="stockOthersIn"
+            <input type="number" matInput [(ngModel)]="inventoryRow.stockOthersIn" name="stockOthersIn"
+              #stockOthersIn="ngModel" id="stockOthersIn"
               (blur)="validateOthersIn(inventoryRow);syncTotalIn(inventoryRow)"
               *ngIf="editSlider$|async; else stockOthersinStatic">
             <ng-template #stockOthersinStatic>
@@ -115,42 +92,30 @@
             Total<br>Out
           </span>
         </mat-header-cell>
-        <mat-cell 
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           {{ inventoryRow.stockTotalOut }}
         </mat-cell>
       </ng-container>
-      <ng-container *ngFor="let vendorData of (dataSource.vendorObservable|async); trackBy: vendorTrackBy" [matColumnDef]="vendorData._id">
+      <ng-container *ngFor="let vendorData of (dataSource.vendorObservable|async); trackBy: vendorTrackBy"
+        [matColumnDef]="vendorData._id">
         <mat-header-cell *matHeaderCellDef>
           <span [matTooltip]="getVenDetails(vendorData)" [matTooltipClass]="'vendorTooltip'">
             {{vendorData.name}}
             <br>
             <mat-form-field *ngIf="editSlider$|async; else depositStatic">
-              <input
-              matInput
-              [(ngModel)] = "vendorData.deposit"
-              name="vendorDeposit"
-              #vendorDeposit="ngModel"
-              id="vendorDeposit">
+              <input matInput [(ngModel)]="vendorData.deposit" name="vendorDeposit" #vendorDeposit="ngModel"
+                id="vendorDeposit">
             </mat-form-field>
             <ng-template #depositStatic>
               Deposit : {{vendorData.deposit}}
             </ng-template>
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else productData"></div>
           <ng-template #productData>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryRow.vendorValue[vendorData._id]"
-              name="vendorValue"
-              #vendorValue="ngModel"
-              id="vendorValue"
+            <input type="number" matInput [(ngModel)]="inventoryRow.vendorValue[vendorData._id]" name="vendorValue"
+              #vendorValue="ngModel" id="vendorValue"
               (blur)="validateVendorValue(inventoryRow, vendorData._id);syncTotalOut(inventoryRow)"
               *ngIf="editSlider$|async; else vendorValueStatic">
             <ng-template #vendorValueStatic>
@@ -164,3 +129,8 @@
     </mat-table>
   </div>
 </div>
+<ng-template #spinner>
+  <div class="spinner-div">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

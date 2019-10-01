@@ -20,10 +20,10 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./vendor.component.css'],
   animations: [trigger('vendorChanged', [
     state('void', style({
-      backgroundColor : 'rgb(59, 215, 243)',
-      opacity : 0
+      backgroundColor: 'rgb(59, 215, 243)',
+      opacity: 0
     })),
-    transition('*=>changed',[
+    transition('*=>changed', [
       animate(1000)
     ])
   ])]
@@ -36,26 +36,26 @@ export class VendorComponent {
   dpToUpload = false;
   panelStateOpened = false;
   editingState = false;
-  dpFileSelected : File;
+  dpFileSelected: File;
   defaultVenDPImage = '../../assets/default_vendor_Image.png';
-  animationState='init';
+  animationState = 'init';
 
   constructor(private service: VendorService,
-    private fileService : FilesService,
+    private fileService: FilesService,
     private dateService: DateService,
     private fb: FormBuilder,
-    private snackBar : MatSnackBar) { }
+    private snackBar: MatSnackBar) { }
 
   @Input()
-  set vendor (ven) {
+  set vendor(ven) {
     this.venObj = ven;
     this.setForm(ven);
     this.animationState = 'changed';
   }
 
   get vendorPic() {
-    let dpURL = environment.serverBase+appConfigurations.fileURL+'/images/';
-    return this.venObj.dpFile?dpURL+this.venObj.dpFile:this.defaultVenDPImage;
+    let dpURL = environment.serverBase + appConfigurations.fileURL + '/images/';
+    return this.venObj.dpFile ? dpURL + this.venObj.dpFile : this.defaultVenDPImage;
   }
 
   setForm(ven) {
@@ -88,8 +88,8 @@ export class VendorComponent {
     this.venForm.disable();
   }
 
-  getFormattedtotalLoan(ven:Vendor) {
-    return ven.totalLoan?Math.round(ven.totalLoan*100)/100:0;
+  getFormattedtotalLoan(ven: Vendor) {
+    return ven.totalLoan ? Math.round(ven.totalLoan * 100) / 100 : 0;
   }
 
   panelOpened() {
@@ -109,7 +109,7 @@ export class VendorComponent {
   }
 
   onImageClick(fileChooser) {
-    if(this.editingState) {
+    if (this.editingState) {
       fileChooser.click();
     }
   }
@@ -126,29 +126,26 @@ export class VendorComponent {
     this.venObj.loanPayed = this.venForm.controls.loanPayed.value;
     this.venObj.openingDp = this.venForm.controls.openingDp.value;
     this.venObj.remarks = this.venForm.controls.remarks.value;
-    if(this.dpToUpload) {
-      this.fileService.uploadFile(this.dpFileSelected).subscribe((resp:StandardResponse) => {
+    if (this.dpToUpload) {
+      this.fileService.uploadFile(this.dpFileSelected).subscribe((resp: StandardResponse) => {
         this.venObj.dpFile = resp._id;
         this.service.updateVendor(this.venObj, date).subscribe(resp => {
           this.snackBar.open('Vendor', 'Updated', {
-            duration : environment.snackBarDuration
+            duration: environment.snackBarDuration
           });
           this.venObj.totalLoan = this.venObj.loanAdded - this.venObj.loanPayed;
           exPanel.close();
         });
-      }, (errorResp:HttpErrorResponse) => {
-        console.log('Error');
-        console.log(errorResp);
+      }, (errorResp: HttpErrorResponse) => {
         this.snackBar.open('Vendor', `Error ${errorsDict[errorResp.error[0].code]}`, {
-          duration : environment.snackBarDuration
+          duration: environment.snackBarDuration
         });
         exPanel.close();
       });
     } else {
-      console.log('Update Only');
       this.service.updateVendor(this.venObj, date).subscribe(resp => {
         this.snackBar.open('Vendor', 'Updated', {
-          duration : environment.snackBarDuration
+          duration: environment.snackBarDuration
         });
         this.venObj.totalLoan = this.venObj.loanAdded - this.venObj.loanPayed;
         exPanel.close();
