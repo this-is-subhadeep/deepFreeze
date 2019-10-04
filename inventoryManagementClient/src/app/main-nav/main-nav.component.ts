@@ -6,14 +6,14 @@ import { DateService } from '../services/date.service';
 import { PrintService } from '../services/print.service';
 
 @Component({
-  selector: 'main-nav',
+  selector: 'app-main-nav',
   templateUrl: './main-nav.component.html',
   styleUrls: ['./main-nav.component.css']
 })
 export class MainNavComponent {
-  longTitle = "Inventory Management System";
-  shortTitle = "IMS";
-  datePickerClass = "datePicker";
+  longTitle = 'Inventory Management System';
+  shortTitle = 'IMS';
+  datePickerClass = 'datePicker';
   routesList = [
     {
       route: '/inventory',
@@ -53,13 +53,13 @@ export class MainNavComponent {
 
   set dateSelected(date: Date) {
     this.dateService.date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    let today = new Date();
+    const today = new Date();
     if (today.getFullYear() === date.getFullYear()
       && today.getMonth() === date.getMonth()
       && today.getDate() === date.getDate()) {
-      this.datePickerClass = "datePicker";
+      this.datePickerClass = 'datePicker';
     } else {
-      this.datePickerClass = "datePickerDiff";
+      this.datePickerClass = 'datePickerDiff';
     }
     this.dateService.dateChangeListener.next();
   }

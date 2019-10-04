@@ -4,4 +4,4 @@ export const appConfigurations = {
     vendorURL: '/vendor',
     inventoryURL: '/inventory',
     fileURL: '/file'
-}
+};

@@ -8,6 +8,7 @@ import { forkJoin } from 'rxjs';
 import { InventoryService } from './inventory.service';
 import { ProductService } from './product.service';
 import { VendorService } from './vendor.service';
+import { RouteService } from './route.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,15 +24,11 @@ export class PrintService {
   constructor(private inventoryService: InventoryService,
     private productService: ProductService,
     private vendorService: VendorService,
-    private router: Router) { }
+    private routeService: RouteService) { }
 
   printDocument(documentData: string) {
     this.isPrinting = true;
-    this.router.navigate(['selling', {
-      outlets: {
-        'print': ['print', documentData]
-      }
-    }]);
+    this.routeService.routeToPrint(documentData);
   }
 
   get sellingProductList() {
@@ -69,9 +66,9 @@ export class PrintService {
       if (inv.vendorDeposits) {
         this._deposit = inv.vendorDeposits[venId];
       }
-      for (let prodId in inv.rows) {
+      for (const prodId in inv.rows) {
         if (inv.rows[prodId].vendorValue && inv.rows[prodId].vendorValue[venId]) {
-          let sellingProductRow = new SellingData(prods.find(product => product._id === prodId),
+          const sellingProductRow = new SellingData(prods.find(product => product._id === prodId),
             inv.rows[prodId].vendorValue[venId].pieces);
           this._sellingProductList.push(sellingProductRow);
         }
@@ -83,7 +80,7 @@ export class PrintService {
     setTimeout(() => {
       window.print();
       this.isPrinting = false;
-      this.router.navigate(['selling']);
+      this.routeService.routeToSelling();
     });
   }
 }

@@ -21,7 +21,7 @@ export class PrintLayoutComponent implements OnInit {
   }
 
   private loadInvoiceData() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.printService.loadInvoiceData(date, this.vendorId);
   }
 }

@@ -6,9 +6,10 @@ import { fadeInEffect, dropDownEffect } from '../animations';
 import { MatSnackBar } from '@angular/material';
 import { environment } from 'src/environments/environment';
 import { VendorDataSource } from './vendor-view-datasource';
+import { RouteService } from '../services/route.service';
 
 @Component({
-  selector: 'vendor-view',
+  selector: 'app-vendor-view',
   templateUrl: './vendor-view.component.html',
   styleUrls: ['./vendor-view.component.css'],
   animations: [fadeInEffect, dropDownEffect]
@@ -19,10 +20,11 @@ export class VendorViewComponent implements OnInit {
 
   constructor(private service: VendorService,
     private dateService: DateService,
+    private routeService: RouteService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.dataSource = new VendorDataSource(this.service);
+    this.dataSource = new VendorDataSource(this.service, this.routeService);
     this.loadVendorData();
     this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
@@ -44,14 +46,16 @@ export class VendorViewComponent implements OnInit {
   }
 
   addButtonPressed() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.newVendor._id = null;
     this.service.addVendor(this.newVendor, date).subscribe(resp => {
       this.snackBar.open('Vendor', 'Saved', {
         duration: environment.snackBarDuration
       });
       this.loadVendorData();
-    })
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S004' : 'S001');
+    });
     this.refresh();
   }
 
@@ -59,7 +63,7 @@ export class VendorViewComponent implements OnInit {
     this.refresh();
   }
   private loadVendorData() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.dataSource.loadVendors(date);
   }
 }

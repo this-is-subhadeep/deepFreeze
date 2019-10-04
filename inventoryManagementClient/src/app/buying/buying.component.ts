@@ -12,6 +12,7 @@ import { productTextValidator } from '../validators';
 import { startWith, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
 import { ProductService } from '../services/product.service';
+import { RouteService } from '../services/route.service';
 
 @Component({
   selector: 'app-buying',
@@ -30,6 +31,7 @@ export class BuyingComponent implements OnInit {
   constructor(private inventoryService: InventoryService,
     private productService: ProductService,
     private dateService: DateService,
+    private routeService: RouteService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit() {
@@ -44,7 +46,7 @@ export class BuyingComponent implements OnInit {
       map((value: any) => {
         if (value instanceof Product) {
           if (!this.buyingProductList.find(buyData => buyData.product._id === value._id)) {
-            let buyingDataRow = new BuyingData(this.products.find(prod => prod._id === value._id));
+            const buyingDataRow = new BuyingData(this.products.find(prod => prod._id === value._id));
             buyingDataRow.enableDelete = true;
             this.buyingProductList.push(buyingDataRow);
           }
@@ -64,7 +66,6 @@ export class BuyingComponent implements OnInit {
   }
 
   private filterProductList(prodName: string): Product[] {
-    console.log(`prodName : ${JSON.stringify(prodName)}`);
     if (typeof prodName === 'string') {
       const filteredProd = prodName.toLowerCase();
       return this.products.filter(product => (`${product.name} - ${product.productType.name}`).toLowerCase().indexOf(filteredProd) === 0);
@@ -74,7 +75,7 @@ export class BuyingComponent implements OnInit {
   }
 
   private loadInventoryData() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.productService.getAllProducts(date);
     forkJoin(
       this.inventoryService.findInventoryOpeningObservable(date),
@@ -85,7 +86,9 @@ export class BuyingComponent implements OnInit {
       this.inventory = inventories.find(inv => inv.date === date);
       this.products = products.map(prod => Product.cloneAnother(prod));
       this.fillBuyingData();
-    })
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S005' : 'S001');
+    });
   }
 
   private refresh() {
@@ -93,18 +96,16 @@ export class BuyingComponent implements OnInit {
   }
 
   productNameDisp(prod: Product) {
-    console.log(prod);
-    console.log(this.inventory);
     return prod ? `${prod.name} - ${prod.productType.name}` : '';
   }
 
   private fillBuyingData() {
     this.buyingProductList = new Array<BuyingData>();
     if (this.inventory) {
-      for (let prodId in this.inventory.rows) {
-        console.log(prodId);
-        if (this.inventory.rows[prodId].vendorValue && (this.inventory.rows[prodId].stockSenIn || this.inventory.rows[prodId].stockOthersIn)) {
-          let sellingProductRow = new BuyingData(this.products.find(product => product._id === prodId),
+      for (const prodId in this.inventory.rows) {
+        if (this.inventory.rows[prodId].vendorValue
+          && (this.inventory.rows[prodId].stockSenIn || this.inventory.rows[prodId].stockOthersIn)) {
+          const sellingProductRow = new BuyingData(this.products.find(product => product._id === prodId),
             this.inventory.rows[prodId].stockSenIn,
             this.inventory.rows[prodId].stockOthersIn);
           this.buyingProductList.push(sellingProductRow);
@@ -196,29 +197,25 @@ export class BuyingComponent implements OnInit {
   }
 
   saveButtonPressed() {
-    console.log('Save Button Pressed', this.buyingProductList);
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.buyingProductList.forEach(soldRow => {
-      console.log(soldRow);
-      // console.log(this.inventory);
       if (!this.inventory.rows) {
         this.inventory.rows = {};
       }
       if (!this.inventory.rows[soldRow.product._id]) {
-        console.log(`Creating row : ${soldRow.product._id}`);
         this.inventory.rows[soldRow.product._id] = new InventoryRow();
       }
       this.inventory.rows[soldRow.product._id].stockSenIn = soldRow.packageUnits;
       this.inventory.rows[soldRow.product._id].stockOthersIn = soldRow.pieceUnits;
-      console.log(this.inventory);
     });
-    console.log(`Final Inventory : ${JSON.stringify(this.inventory)}`);
 
     this.inventoryService.saveInventory(this.inventory, date).subscribe(resp => {
       this.snackBar.open('Products', 'Bought', {
         duration: environment.snackBarDuration
       });
       this.loadInventoryData();
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S002' : 'S001');
     });
 
     this.refresh();
@@ -226,11 +223,9 @@ export class BuyingComponent implements OnInit {
 
   saveAndBillButtonPressed() {
     this.saveButtonPressed();
-    console.log('Bill Button Pressed');
   }
 
   deleteProductFromList(ind: number) {
-    console.log('Deleting Product :', ind);
     this.buyingProductList.splice(ind, 1);
   }
 

@@ -10,9 +10,9 @@ import { environment } from 'src/environments/environment';
 import { FilesService } from '../services/files.service';
 import { appConfigurations } from 'src/environments/conf';
 import { HttpErrorResponse } from '@angular/common/http';
-import { errorsDict } from '../errorCodeMapping';
-import { dropDownEffect } from '../animations';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ErrorService } from '../services/error.service';
+import { RouteService } from '../services/route.service';
 
 @Component({
   selector: 'app-vendor',
@@ -43,6 +43,8 @@ export class VendorComponent {
   constructor(private service: VendorService,
     private fileService: FilesService,
     private dateService: DateService,
+    private errorService: ErrorService,
+    private routeService: RouteService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar) { }
 
@@ -54,7 +56,7 @@ export class VendorComponent {
   }
 
   get vendorPic() {
-    let dpURL = environment.serverBase + appConfigurations.fileURL + '/images/';
+    const dpURL = environment.serverBase + appConfigurations.fileURL + '/images/';
     return this.venObj.dpFile ? dpURL + this.venObj.dpFile : this.defaultVenDPImage;
   }
 
@@ -120,7 +122,7 @@ export class VendorComponent {
   }
 
   onUpdate(exPanel: MatExpansionPanel) {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.venObj.name = this.venForm.controls.name.value;
     this.venObj.loanAdded = this.venForm.controls.loanAdded.value;
     this.venObj.loanPayed = this.venForm.controls.loanPayed.value;
@@ -129,15 +131,17 @@ export class VendorComponent {
     if (this.dpToUpload) {
       this.fileService.uploadFile(this.dpFileSelected).subscribe((resp: StandardResponse) => {
         this.venObj.dpFile = resp._id;
-        this.service.updateVendor(this.venObj, date).subscribe(resp => {
+        this.service.updateVendor(this.venObj, date).subscribe(respVen => {
           this.snackBar.open('Vendor', 'Updated', {
             duration: environment.snackBarDuration
           });
           this.venObj.totalLoan = this.venObj.loanAdded - this.venObj.loanPayed;
           exPanel.close();
+        }, error => {
+          this.routeService.routeToError(error.status === 504 ? 'S004' : 'S001');
         });
       }, (errorResp: HttpErrorResponse) => {
-        this.snackBar.open('Vendor', `Error ${errorsDict[errorResp.error[0].code]}`, {
+        this.snackBar.open('Vendor', `Error ${this.errorService.getErrorDescription(errorResp.error[0].code)}`, {
           duration: environment.snackBarDuration
         });
         exPanel.close();
@@ -149,6 +153,8 @@ export class VendorComponent {
         });
         this.venObj.totalLoan = this.venObj.loanAdded - this.venObj.loanPayed;
         exPanel.close();
+      }, error => {
+        this.routeService.routeToError(error.status === 504 ? 'S004' : 'S001');
       });
     }
   }

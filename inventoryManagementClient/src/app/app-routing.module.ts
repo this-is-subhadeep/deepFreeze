@@ -8,6 +8,7 @@ import { BuyingComponent } from './buying/buying.component';
 import { OpeningComponent } from './opening/opening.component';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { InvoiceComponent } from './invoice/invoice.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,10 @@ const routes: Routes = [
   {
     path: 'opening',
     component: OpeningComponent
+  },
+  {
+    path: 'error/:code',
+    component: ErrorPageComponent
   }
 ];
 

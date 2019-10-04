@@ -1,4 +1,4 @@
-import { Product } from "./product-definition";
+import { Product } from './product-definition';
 
 export class BuyingData {
     enableDelete: boolean;

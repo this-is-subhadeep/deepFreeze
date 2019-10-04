@@ -1,12 +1,13 @@
-import { DataSource } from "@angular/cdk/table";
-import { UIInventoryRow, Inventory } from "../definitions/inventory-definition";
-import { Observable, BehaviorSubject, forkJoin } from "rxjs";
-import { InventoryService } from "../services/inventory.service";
-import { CollectionViewer } from "@angular/cdk/collections";
-import { Vendor } from "../definitions/vendor-definition";
-import { Product } from "../definitions/product-definition";
-import { ProductService } from "../services/product.service";
-import { VendorService } from "../services/vendor.service";
+import { DataSource } from '@angular/cdk/table';
+import { UIInventoryRow, Inventory } from '../definitions/inventory-definition';
+import { Observable, BehaviorSubject, forkJoin } from 'rxjs';
+import { InventoryService } from '../services/inventory.service';
+import { CollectionViewer } from '@angular/cdk/collections';
+import { Vendor } from '../definitions/vendor-definition';
+import { Product } from '../definitions/product-definition';
+import { ProductService } from '../services/product.service';
+import { VendorService } from '../services/vendor.service';
+import { RouteService } from '../services/route.service';
 
 export class InventoryDataSource implements DataSource<UIInventoryRow> {
 
@@ -16,7 +17,8 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
     private fetchComplete$ = new BehaviorSubject<boolean>(false);
     constructor(private service: InventoryService,
         private productService: ProductService,
-        private vendorService: VendorService
+        private vendorService: VendorService,
+        private routeService: RouteService
     ) { }
     connect(): Observable<UIInventoryRow[]> {
         return this.inventorySubject.asObservable();
@@ -37,8 +39,8 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
             this.vendorService.vendorObservable
         ).subscribe(([inventoryOpening, inventories, productTypes, products, vendors]) => {
             // console.log(`invs : ${JSON.stringify(inventoryData.inventories)}`);
-            let inventory = inventories.find(inv => inv.date === refDate);
-            let productOpenings = this.service.fillOpenings(inventoryOpening, inventories, products, refDate);
+            const inventory = inventories.find(inv => inv.date === refDate);
+            const productOpenings = this.service.fillOpenings(inventoryOpening, inventories, products, refDate);
             if (productTypes) {
                 const uiInventoryRows = new Array<UIInventoryRow>();
                 productTypes.forEach(productType => {
@@ -86,7 +88,9 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
                     this.productSubject.next(products);
                 }
             }
-        }, error => { }, () => {
+        }, error => {
+            this.routeService.routeToError(error.status === 504 ? 'S005' : 'S001');
+        }, () => {
             this.fetchComplete$.next(true);
         });
     }
@@ -114,20 +118,22 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
         if (invs && invs.rows) {
             const inventoryRow = invs.rows[prod._id];
             if (inventoryRow && inventoryRow.vendorValue) {
-                for (let venValue in inventoryRow.vendorValue) {
-                    if (inventoryRow.vendorValue[venValue].packages) {
-                        uiInvRow.vendorValue[venValue] = inventoryRow.vendorValue[venValue].packages * prod.packageSize;
-                    }
-                    if (inventoryRow.vendorValue[venValue].pieces) {
-                        if (!uiInvRow.vendorValue[venValue]) {
-                            uiInvRow.vendorValue[venValue] = 0;
+                for (const venValue in inventoryRow.vendorValue) {
+                    if (inventoryRow.vendorValue.hasOwnProperty(venValue)) {
+                        if (inventoryRow.vendorValue[venValue].packages) {
+                            uiInvRow.vendorValue[venValue] = inventoryRow.vendorValue[venValue].packages * prod.packageSize;
                         }
-                        uiInvRow.vendorValue[venValue] += inventoryRow.vendorValue[venValue].pieces;
+                        if (inventoryRow.vendorValue[venValue].pieces) {
+                            if (!uiInvRow.vendorValue[venValue]) {
+                                uiInvRow.vendorValue[venValue] = 0;
+                            }
+                            uiInvRow.vendorValue[venValue] += inventoryRow.vendorValue[venValue].pieces;
+                        }
+                        if (!uiInvRow.stockTotalOut) {
+                            uiInvRow.stockTotalOut = 0;
+                        }
+                        uiInvRow.stockTotalOut += uiInvRow.vendorValue[venValue];
                     }
-                    if (!uiInvRow.stockTotalOut) {
-                        uiInvRow.stockTotalOut = 0;
-                    }
-                    uiInvRow.stockTotalOut += uiInvRow.vendorValue[venValue];
                 }
             }
         }

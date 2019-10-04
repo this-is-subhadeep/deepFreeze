@@ -25,8 +25,8 @@ import {
   MatSlideToggleModule,
   MatProgressSpinnerModule
 } from '@angular/material';
-import { MatNativeDateModule } from '@angular/material'
-import { MatIconModule } from '@angular/material'
+import { MatNativeDateModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
@@ -49,6 +49,8 @@ import { OpeningComponent } from './opening/opening.component';
 import { AppRoutingModule } from './app-routing.module';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { InvoiceComponent } from './invoice/invoice.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,7 +66,8 @@ import { InvoiceComponent } from './invoice/invoice.component';
     BuyingComponent,
     OpeningComponent,
     PrintLayoutComponent,
-    InvoiceComponent
+    InvoiceComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,

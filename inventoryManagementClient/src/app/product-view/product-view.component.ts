@@ -6,9 +6,10 @@ import { fadeInEffect, dropDownEffect } from '../animations';
 import { MatSnackBar } from '@angular/material';
 import { environment } from 'src/environments/environment.prod';
 import { ProductDataSource } from './product-view-datasource';
+import { RouteService } from '../services/route.service';
 
 @Component({
-  selector: 'product-view',
+  selector: 'app-product-view',
   templateUrl: './product-view.component.html',
   styleUrls: ['./product-view.component.css'],
   animations: [fadeInEffect, dropDownEffect]
@@ -18,10 +19,11 @@ export class ProductViewComponent implements OnInit {
   private newProduct: Product;
   constructor(private service: ProductService,
     private dateService: DateService,
+    private routeService: RouteService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.dataSource = new ProductDataSource(this.service);
+    this.dataSource = new ProductDataSource(this.service, this.routeService);
     this.loadProductData();
     this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
@@ -53,20 +55,21 @@ export class ProductViewComponent implements OnInit {
   }
 
   addButtonPressed() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.newProduct._id = null;
     this.service.addProduct(this.newProduct, date).subscribe(resp => {
       this.snackBar.open('Products', 'Saved', {
         duration: environment.snackBarDuration
       });
       this.loadProductData();
-    })
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S003' : 'S001');
+    });
     this.refresh();
   }
 
   private loadProductData() {
-    let date = this.dateService.date.toISOString();
-    // this.service.getAllProducts(date);
+    const date = this.dateService.date.toISOString();
     this.dataSource.loadProducts(date);
   }
 }

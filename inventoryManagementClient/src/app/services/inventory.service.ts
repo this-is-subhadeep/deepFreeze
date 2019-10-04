@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Inventory, InventoryOpening, UIInventoryRow, ProductOpening } from '../definitions/inventory-definition';
+import { Inventory, InventoryOpening, ProductOpening } from '../definitions/inventory-definition';
 import { environment } from '../../environments/environment';
-import { appConfigurations } from '../../environments/conf'
+import { appConfigurations } from '../../environments/conf';
 import { Observable } from 'rxjs';
 import { Product } from '../definitions/product-definition';
 
@@ -15,23 +15,22 @@ export class InventoryService {
   constructor(private http: HttpClient) { }
 
   findInventoryObservable(refDate: string): Observable<Inventory[]> {
-    let url = this.getInventoryUrl + "/" + refDate;
-    return this.http.get<Inventory[]>(this.getInventoryUrl + "/till-date/" + refDate);
+    return this.http.get<Inventory[]>(this.getInventoryUrl + '/till-date/' + refDate);
   }
 
   findInventoryOpeningObservable(refDate: string): Observable<InventoryOpening> {
     console.log('findInventoryOpeningObservable');
-    let url = this.getInventoryUrl + "/opening/" + refDate;
+    const url = this.getInventoryUrl + '/opening/' + refDate;
     return this.http.get<InventoryOpening>(url);
   }
 
   saveInventory(inventory: Inventory, refDate: string) {
-    let url = this.getInventoryUrl + "/" + refDate;
+    const url = this.getInventoryUrl + '/' + refDate;
     return this.http.post(url, inventory);
   }
 
   saveInventoryOpening(inventoryOpening: InventoryOpening, refDate: string) {
-    let url = this.getInventoryUrl + "/opening/" + refDate;
+    const url = this.getInventoryUrl + '/opening/' + refDate;
     return this.http.post(url, inventoryOpening);
   }
 
@@ -40,7 +39,7 @@ export class InventoryService {
     products: Product[],
     refDate: string,
     withToday: boolean = false): ProductOpening {
-    let productOpenings: ProductOpening = {
+    const productOpenings: ProductOpening = {
       openingValues: {}
     };
     products.forEach(product => {
@@ -61,12 +60,14 @@ export class InventoryService {
             opening += totalIn;
             let totalOut = 0;
             if (inventory.rows[product._id].vendorValue) {
-              for (let venId in inventory.rows[product._id].vendorValue) {
-                if (inventory.rows[product._id].vendorValue[venId].packages) {
-                  totalOut += inventory.rows[product._id].vendorValue[venId].packages * product.packageSize;
-                }
-                if (inventory.rows[product._id].vendorValue[venId].pieces) {
-                  totalOut += inventory.rows[product._id].vendorValue[venId].pieces;
+              for (const venId in inventory.rows[product._id].vendorValue) {
+                if (inventory.rows[product._id].vendorValue.hasOwnProperty(venId)) {
+                  if (inventory.rows[product._id].vendorValue[venId].packages) {
+                    totalOut += inventory.rows[product._id].vendorValue[venId].packages * product.packageSize;
+                  }
+                  if (inventory.rows[product._id].vendorValue[venId].pieces) {
+                    totalOut += inventory.rows[product._id].vendorValue[venId].pieces;
+                  }
                 }
               }
             }

@@ -1,4 +1,4 @@
-import { Product } from "./product-definition";
+import { Product } from './product-definition';
 
 export class SellingData {
     enableDelete: boolean;
@@ -9,7 +9,7 @@ export class SellingData {
 
     getSoldPrice(): number {
         let price = 0;
-        if (this.soldUnits != null && this.product.sellingPrice != undefined && this.product.sellingPrice != null) {
+        if (this.soldUnits !== null && this.product.sellingPrice !== undefined && this.product.sellingPrice !== null) {
             price = this.product.sellingPrice.valueOf() * this.soldUnits;
         }
         return Math.round(price * 100) / 100;

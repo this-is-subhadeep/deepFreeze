@@ -1,3 +1,3 @@
 export interface StandardResponse {
-    _id: string
+    _id: string;
 }

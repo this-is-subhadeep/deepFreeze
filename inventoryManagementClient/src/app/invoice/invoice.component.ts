@@ -24,7 +24,7 @@ export class InvoiceComponent implements OnInit {
 
   get totalAmount(): number {
     if (this.printService.sellingProductList) {
-      let totAmt = this.printService.sellingProductList.reduce<number>((acc, sellData) => acc + this.getSoldAmount(sellData), 0);
+      const totAmt = this.printService.sellingProductList.reduce<number>((acc, sellData) => acc + this.getSoldAmount(sellData), 0);
       return Math.round(totAmt * 100) / 100;
     } else {
       return 0;

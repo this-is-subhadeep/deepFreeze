@@ -15,7 +15,7 @@ export class FilesService {
   constructor(private http: HttpClient) { }
 
   uploadFile(file: File): Observable<StandardResponse> {
-    let url = this.uploadFileUrl + '/upload/'
+    const url = this.uploadFileUrl + '/upload/';
     const fd = new FormData();
     fd.append('icon-image', file, file.name);
     return this.http.post<StandardResponse>(url, fd);

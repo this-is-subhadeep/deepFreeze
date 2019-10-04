@@ -10,8 +10,9 @@ import { FilesService } from '../services/files.service';
 import { appConfigurations } from 'src/environments/conf';
 import { StandardResponse } from '../definitions/service-response-definition';
 import { HttpErrorResponse } from '@angular/common/http';
-import { errorsDict } from '../errorCodeMapping';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { ErrorService } from '../services/error.service';
+import { RouteService } from '../services/route.service';
 
 @Component({
   selector: 'app-product',
@@ -42,18 +43,20 @@ export class ProductComponent {
   constructor(private service: ProductService,
     private fileService: FilesService,
     private dateService: DateService,
+    private errorService: ErrorService,
+    private routeService: RouteService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar) { }
 
   @Input()
   set product(prod) {
-    this.prodObj = prod
+    this.prodObj = prod;
     this.setForm(prod);
     this.animationState = 'changed';
   }
 
   get productPic() {
-    let dpURL = environment.serverBase + appConfigurations.fileURL + '/images/';
+    const dpURL = environment.serverBase + appConfigurations.fileURL + '/images/';
     return this.prodObj.productIcon ? dpURL + this.prodObj.productIcon : this.defaultProdDPImage;
   }
 
@@ -116,7 +119,7 @@ export class ProductComponent {
   }
 
   onUpdate(exPanel: MatExpansionPanel) {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.prodObj.name = this.prodForm.controls.name.value;
     this.prodObj.packageSize = this.prodForm.controls.size.value;
     this.prodObj.costPrice = this.prodForm.controls.cp.value;
@@ -124,14 +127,16 @@ export class ProductComponent {
     if (this.dpToUpload) {
       this.fileService.uploadFile(this.dpFileSelected).subscribe((resp: StandardResponse) => {
         this.prodObj.productIcon = resp._id;
-        this.service.updateProduct(this.prodObj, date).subscribe(resp => {
+        this.service.updateProduct(this.prodObj, date).subscribe(respProd => {
           this.snackBar.open('Product', 'Updated', {
             duration: environment.snackBarDuration
           });
           exPanel.close();
+        }, error => {
+          this.routeService.routeToError(error.status === 504 ? 'S003' : 'S001');
         });
       }, (errorResp: HttpErrorResponse) => {
-        this.snackBar.open('Product', `Error ${errorsDict[errorResp.error[0].code]}`, {
+        this.snackBar.open('Product', `Error ${this.errorService.getErrorDescription(errorResp.error[0].code)}`, {
           duration: environment.snackBarDuration
         });
         exPanel.close();
@@ -142,6 +147,8 @@ export class ProductComponent {
           duration: environment.snackBarDuration
         });
         exPanel.close();
+      }, error => {
+        this.routeService.routeToError(error.status === 504 ? 'S003' : 'S001');
       });
     }
   }

@@ -1,0 +1,14 @@
+.error-div {
+    width: 100vw;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-card {
+    margin: 2vw;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: rgb(248, 71, 71)
+}

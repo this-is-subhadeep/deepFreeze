@@ -21,18 +21,18 @@ export class VendorService {
   }
 
   getAllVendors(refDate: string) {
-    let url = this.getVendorUrl + "/" + refDate;
+    const url = this.getVendorUrl + '/' + refDate;
     this.vendor$ = this.http.get<Vendor[]>(url)
       .pipe(map(vens => vens.map(ven => Vendor.cloneAnother(ven))));
   }
 
   addVendor(newVendor: Vendor, refDate: string) {
-    let url = this.getVendorUrl + "/" + refDate;
+    const url = this.getVendorUrl + '/' + refDate;
     return this.http.post(url, newVendor);
   }
 
   updateVendor(newVendor: Vendor, refDate: string) {
-    let url = this.getVendorUrl + "/" + refDate;
+    const url = this.getVendorUrl + '/' + refDate;
     return this.http.put(url, newVendor);
   }
 

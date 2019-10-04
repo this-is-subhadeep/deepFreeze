@@ -15,6 +15,7 @@ import { productTextValidator } from '../validators';
 import { ProductService } from '../services/product.service';
 import { VendorService } from '../services/vendor.service';
 import { PrintService } from '../services/print.service';
+import { RouteService } from '../services/route.service';
 
 @Component({
   selector: 'app-selling',
@@ -37,6 +38,7 @@ export class SellingComponent implements OnInit {
     private vendorService: VendorService,
     private dateService: DateService,
     public printService: PrintService,
+    private routeService: RouteService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit() {
@@ -51,7 +53,7 @@ export class SellingComponent implements OnInit {
       map((value: any) => {
         if (value instanceof Product) {
           if (!this.sellingProductList.find(sellData => sellData.product._id === value._id)) {
-            let sellingDataRow = new SellingData(this.products.find(prod => prod._id === value._id));
+            const sellingDataRow = new SellingData(this.products.find(prod => prod._id === value._id));
             sellingDataRow.enableDelete = true;
             this.sellingProductList.push(sellingDataRow);
           }
@@ -80,7 +82,7 @@ export class SellingComponent implements OnInit {
   }
 
   private loadInventoryData() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.productService.getAllProducts(date);
     this.vendorService.getAllVendors(date);
     forkJoin(
@@ -93,6 +95,8 @@ export class SellingComponent implements OnInit {
       this.inventory = inventories.find(inv => inv.date === date);
       this.products = products.map(prod => Product.cloneAnother(prod));
       this.vendors = vendors;
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S005' : 'S001');
     });
   }
 
@@ -137,9 +141,9 @@ export class SellingComponent implements OnInit {
   private fillSellingData() {
     this.sellingProductList = new Array<SellingData>();
     if (this.inventory) {
-      for (let prodId in this.inventory.rows) {
+      for (const prodId in this.inventory.rows) {
         if (this.inventory.rows[prodId].vendorValue && this.inventory.rows[prodId].vendorValue[this.selectedVendor._id]) {
-          let sellingProductRow = new SellingData(this.products.find(product => product._id === prodId),
+          const sellingProductRow = new SellingData(this.products.find(product => product._id === prodId),
             this.inventory.rows[prodId].vendorValue[this.selectedVendor._id].pieces);
           this.sellingProductList.push(sellingProductRow);
         }
@@ -192,8 +196,7 @@ export class SellingComponent implements OnInit {
   }
 
   saveButtonPressed(print = false) {
-    console.log('Save Button Pressed', this.sellingProductList);
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.sellingProductList.forEach(soldRow => {
       if (!this.inventory.rows) {
         this.inventory.rows = {};
@@ -209,7 +212,7 @@ export class SellingComponent implements OnInit {
         pieces: soldRow.soldUnits
       };
     });
-    let tempVenId = this.selectedVendor._id;
+    const tempVenId = this.selectedVendor._id;
     this.inventoryService.saveInventory(this.inventory, date).subscribe(resp => {
       this.snackBar.open('Products', 'Sold', {
         duration: environment.snackBarDuration
@@ -218,28 +221,23 @@ export class SellingComponent implements OnInit {
       if (print) {
         this.printService.printDocument(tempVenId);
       }
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S002' : 'S001');
     });
 
     this.refresh();
   }
 
   saveAndBillButtonPressed() {
-    console.log('Bill Button Pressed');
     this.saveButtonPressed(true);
-    // this.printService.printDocument(this.selectedVendor._id);
   }
 
   deleteProductFromList(ind: number) {
-    console.log('Deleting Product :', ind);
     this.sellingProductList.splice(ind, 1);
   }
 
   isSellingDataPresent(): boolean {
-    return this.getTotalUnitsSold() > 0
-  }
-
-  private log(data) {
-    console.log('Log :', data);
+    return this.getTotalUnitsSold() > 0;
   }
 
 }

@@ -7,6 +7,7 @@ import { fadeInEffect, dropDownEffect } from '../animations';
 import { UIInventoryOpeningRow, InventoryOpening, InventoryOpeningRow } from '../definitions/inventory-definition';
 import { MatSnackBar } from '@angular/material';
 import { environment } from 'src/environments/environment';
+import { RouteService } from '../services/route.service';
 
 @Component({
   selector: 'app-opening',
@@ -16,17 +17,18 @@ import { environment } from 'src/environments/environment';
 })
 export class OpeningComponent implements OnInit {
   private dataSource: InventoryOpeningDataSource;
-  columnsToDisplay = ["productName",
-    "stockOpening"];
-  private prodTypeClass = "productType";
+  columnsToDisplay = ['productName',
+    'stockOpening'];
+  private prodTypeClass = 'productType';
 
   constructor(private service: InventoryService,
     private productService: ProductService,
     private dateService: DateService,
+    private routeService: RouteService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.dataSource = new InventoryOpeningDataSource(this.service, this.productService);
+    this.dataSource = new InventoryOpeningDataSource(this.service, this.productService, this.routeService);
     this.loadInventoryOpeningData();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadInventoryOpeningData();
@@ -34,12 +36,12 @@ export class OpeningComponent implements OnInit {
   }
 
   private loadInventoryOpeningData() {
-    let date = this.dateService.date.toISOString();
+    const date = this.dateService.date.toISOString();
     this.dataSource.loadInventoryOpening(date);
   }
 
   isRowProductType(inventoryOpeningRow: UIInventoryOpeningRow) {
-    return inventoryOpeningRow.id.startsWith("typ");
+    return inventoryOpeningRow.id.startsWith('typ');
   }
 
   getRowTypeClass(inventoryOpeningRow: UIInventoryOpeningRow) {
@@ -47,16 +49,15 @@ export class OpeningComponent implements OnInit {
   }
 
   getProdDetails(inventoryOpeningRow: UIInventoryOpeningRow) {
-    if (!this.isRowProductType(inventoryOpeningRow) && inventoryOpeningRow.prodDets != undefined) {
-      return "Package Size : " + inventoryOpeningRow.prodDets.packageSize + " - Price : " + inventoryOpeningRow.prodDets.sellingPrice;
+    if (!this.isRowProductType(inventoryOpeningRow) && inventoryOpeningRow.prodDets) {
+      return 'Package Size : ' + inventoryOpeningRow.prodDets.packageSize + ' - Price : ' + inventoryOpeningRow.prodDets.sellingPrice;
     }
-    return "";
+    return '';
   }
 
   private saveButtonPressed() {
-    console.log('saveButtonPressed');
-    let date = this.dateService.date.toISOString();
-    let invOpn = new InventoryOpening();
+    const date = this.dateService.date.toISOString();
+    const invOpn = new InventoryOpening();
     this.dataSource.connect().subscribe(uiInvOpnRows => {
       uiInvOpnRows.forEach(uiInvOpnRow => {
         if (!uiInvOpnRow.id.startsWith('typ') && uiInvOpnRow.stockOpening) {
@@ -64,14 +65,15 @@ export class OpeningComponent implements OnInit {
           invOpnRow.pieces = uiInvOpnRow.stockOpening;
           invOpn.rows[uiInvOpnRow.id] = invOpnRow;
         }
-      })
+      });
     });
-    console.log(invOpn);
     this.service.saveInventoryOpening(invOpn, date).subscribe(resp => {
-      this.snackBar.open('Inventory', 'Saved', {
+      this.snackBar.open('Inventory Opening', 'Saved', {
         duration: environment.snackBarDuration
       });
       this.loadInventoryOpeningData();
+    }, error => {
+      this.routeService.routeToError(error.status === 504 ? 'S002' : 'S001');
     });
   }
 
@@ -82,8 +84,8 @@ export class OpeningComponent implements OnInit {
   }
 
   private validateValue(val: Number) {
-    if (val != undefined || val != null) {
-      if (val <= 0 || (val.valueOf() - Math.round(val.valueOf())) != 0) {
+    if (val || val === 0) {
+      if (val <= 0 || (val.valueOf() - Math.round(val.valueOf())) !== 0) {
         return false;
       }
     }

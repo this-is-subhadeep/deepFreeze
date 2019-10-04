@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http';
 import { ProductType, Product } from '../definitions/product-definition';
 import { environment } from '../../environments/environment';
 import { appConfigurations } from 'src/environments/conf';
@@ -25,7 +25,7 @@ export class ProductService {
   }
 
   getAllProducts(refDate: string) {
-    let url = this.getProductUrl + "/" + refDate;
+    const url = this.getProductUrl + '/' + refDate;
     this.product$ = this.http.get<Product[]>(url)
       .pipe(map(prods => prods.sort((prod1, prod2) => prod1.productType.showOrder - prod2.productType.showOrder)
         .map(prod => Product.cloneAnother(prod))));
@@ -34,12 +34,12 @@ export class ProductService {
   }
 
   addProduct(newProduct: Product, refDate: string) {
-    let url = this.getProductUrl + "/" + refDate;
+    const url = this.getProductUrl + '/' + refDate;
     return this.http.post(url, newProduct);
   }
 
   updateProduct(newProduct: Product, refDate: string) {
-    let url = this.getProductUrl + "/" + refDate;
+    const url = this.getProductUrl + '/' + refDate;
     return this.http.put(url, newProduct);
   }
 }
