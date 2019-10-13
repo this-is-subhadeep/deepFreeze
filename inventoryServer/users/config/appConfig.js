@@ -12,7 +12,8 @@ const dbConfig = {
 }
 
 const authentication = {
-    jwtSecret: 'd33pfr33z3'
+    jwtSecret: 'd33pfr33z3',
+    tokenExpiresIn: '10m'
 }
 
 module.exports = {

@@ -7,13 +7,15 @@ const errorsDict = {
   S004: 'Vendor Server Down. Please restart it.',
   S005: 'One or More Servers Down. Please restart them.',
   S006: 'Client Error.',
+  S007: 'User Server Down. Please restart it.',
   B001: 'Data not Found in DB.',
   B002: 'Reference Date is invalid or empty.',
   B003: 'Input Data Missing.',
   B004: 'File Too Large.',
   B005: 'File Type not Supported.',
   B006: 'User Already Exist. Please Choose another name.',
-  B007: 'Username or Password invalid.'
+  B007: 'Username or Password invalid.',
+  B008: 'Session Expired. Please re-login.'
 };
 
 @Injectable({

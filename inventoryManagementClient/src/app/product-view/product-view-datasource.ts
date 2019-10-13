@@ -1,6 +1,6 @@
-import { ProductService } from '../services/product.service';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { Product, ProductType } from '../definitions/product-definition';
+import { ProductService } from '../services/product.service';
 import { RouteService } from '../services/route.service';
 
 export class ProductDataSource {

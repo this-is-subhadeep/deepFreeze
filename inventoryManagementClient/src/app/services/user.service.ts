@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { appConfigurations } from 'src/environments/conf';
-import { LoginUserRequest, LoginUserResponse } from '../definitions/user-definition';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { appConfigurations } from 'src/environments/conf';
+import { environment } from 'src/environments/environment';
+import { LoginUserRequest, LoginUserResponse } from '../definitions/user-definition';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,8 @@ export class UserService {
 
   isUserAuthenticated(token): Observable<boolean> {
     const url = this.userUrl + '/authenticate';
-    return this.http.post<{isUserAuthenticated : boolean}>(url, {}, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${token}`)
+    return this.http.post<{ isUserAuthenticated: boolean }>(url, {}, {
+      headers: new HttpHeaders().set('Authorization', `Bearer ${token}`)
     }).pipe(map(res => res.isUserAuthenticated));
   }
 
@@ -34,5 +34,11 @@ export class UserService {
 
   get bearerToken() {
     return localStorage.getItem(this.localToken);
+  }
+
+  get authHeader(): { headers: HttpHeaders } {
+    return {
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.bearerToken}`)
+    }
   }
 }

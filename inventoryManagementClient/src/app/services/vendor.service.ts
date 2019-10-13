@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Vendor } from '../definitions/vendor-definition';
-import { appConfigurations } from 'src/environments/conf';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { appConfigurations } from 'src/environments/conf';
+import { environment } from '../../environments/environment';
+import { Vendor } from '../definitions/vendor-definition';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -23,23 +23,18 @@ export class VendorService {
 
   getAllVendors(refDate: string) {
     const url = this.getVendorUrl + '/' + refDate;
-    this.vendor$ = this.http.get<Vendor[]>(url, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    }).pipe(map(vens => vens.map(ven => Vendor.cloneAnother(ven))));
+    this.vendor$ = this.http.get<Vendor[]>(url, this.userService.authHeader)
+      .pipe(map(vens => vens.map(ven => Vendor.cloneAnother(ven))));
   }
 
   addVendor(newVendor: Vendor, refDate: string) {
     const url = this.getVendorUrl + '/' + refDate;
-    return this.http.post(url, newVendor, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    });
+    return this.http.post(url, newVendor, this.userService.authHeader);
   }
 
   updateVendor(newVendor: Vendor, refDate: string) {
     const url = this.getVendorUrl + '/' + refDate;
-    return this.http.put(url, newVendor, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    });
+    return this.http.put(url, newVendor, this.userService.authHeader);
   }
 
 }

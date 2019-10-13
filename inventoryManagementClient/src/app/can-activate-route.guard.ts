@@ -17,10 +17,10 @@ export class CanActivateRouteGuard implements CanActivate {
         const isAuthenticated = this.userService.isUserAuthenticated(this.userService.bearerToken);
         isAuthenticated.subscribe(response => {
             if(!response) {
-                this.routeService.routeToLogin();
+                this.routeService.routeToError('B008');
             }
         }, error => {
-            this.routeService.routeToLogin();
+            this.routeService.routeToError('B008');
         });
         return isAuthenticated;
     }

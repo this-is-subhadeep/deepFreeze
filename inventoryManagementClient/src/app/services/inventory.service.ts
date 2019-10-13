@@ -1,9 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Inventory, InventoryOpening, ProductOpening } from '../definitions/inventory-definition';
-import { environment } from '../../environments/environment';
-import { appConfigurations } from '../../environments/conf';
 import { Observable } from 'rxjs';
+import { appConfigurations } from '../../environments/conf';
+import { environment } from '../../environments/environment';
+import { Inventory, InventoryOpening, ProductOpening } from '../definitions/inventory-definition';
 import { Product } from '../definitions/product-definition';
 import { UserService } from './user.service';
 
@@ -16,31 +16,23 @@ export class InventoryService {
   constructor(private http: HttpClient, private userService: UserService) { }
 
   findInventoryObservable(refDate: string): Observable<Inventory[]> {
-    return this.http.get<Inventory[]>(this.getInventoryUrl + '/till-date/' + refDate, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    });
+    return this.http.get<Inventory[]>(this.getInventoryUrl + '/till-date/' + refDate, this.userService.authHeader);
   }
 
   findInventoryOpeningObservable(refDate: string): Observable<InventoryOpening> {
     console.log('findInventoryOpeningObservable');
     const url = this.getInventoryUrl + '/opening/' + refDate;
-    return this.http.get<InventoryOpening>(url, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    });
+    return this.http.get<InventoryOpening>(url, this.userService.authHeader);
   }
 
   saveInventory(inventory: Inventory, refDate: string) {
     const url = this.getInventoryUrl + '/' + refDate;
-    return this.http.post(url, inventory, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    });
+    return this.http.post(url, inventory, this.userService.authHeader);
   }
 
   saveInventoryOpening(inventoryOpening: InventoryOpening, refDate: string) {
     const url = this.getInventoryUrl + '/opening/' + refDate;
-    return this.http.post(url, inventoryOpening, {
-      headers : new HttpHeaders().set('Authorization', `Bearer ${this.userService.bearerToken}`)
-    });
+    return this.http.post(url, inventoryOpening, this.userService.authHeader);
   }
 
   fillOpenings(inventoryOpening: InventoryOpening,

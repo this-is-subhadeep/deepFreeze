@@ -35,7 +35,7 @@ const login = (user) => {
                             _id : user._id,
                             email : user.email
                         }, authentication.jwtSecret, {
-                            expiresIn : '10m'
+                            expiresIn : authentication.tokenExpiresIn
                         }, (err, token) => {
                             if(err) {
                                 reject({

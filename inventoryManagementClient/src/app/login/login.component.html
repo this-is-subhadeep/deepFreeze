@@ -1,15 +1,28 @@
 <form [formGroup]="userFormGroup" (ngSubmit)="onSubmit()">
-  <div class="login-div">
+  <div @fadeIn class="login-div">
     <mat-card class="login-card">
       <h3>Login</h3>
       <mat-form-field>
         <input matInput placeholder="User Name" formControlName="_id">
+        <mat-error *ngIf="userFormGroup.controls._id.invalid && userFormGroup.controls._id.errors.required">
+          Please enter your User ID !!
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput type="password" placeholder="Password" formControlName="password">
-        <mat-icon matSuffix>visibility</mat-icon>
+        <input matInput [type]="showPassword? 'text': 'password'" placeholder="Password" formControlName="password">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" type="button" (click)="visbilityToggle()">
+          <span *ngIf='!showPassword; else visibilityOff'>
+            <mat-icon>visibility</mat-icon>
+          </span>
+          <ng-template #visibilityOff>
+            <mat-icon>visibility_off</mat-icon>
+          </ng-template>
+        </button>
+        <mat-error *ngIf="userFormGroup.controls.password.invalid && userFormGroup.controls.password.errors.required">
+          Please enter your password !!
+        </mat-error>
       </mat-form-field>
-      <button mat-flat-button color="primary" type="submit">Submit</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!userFormGroup.valid">Submit</button>
     </mat-card>
   </div>
 </form>

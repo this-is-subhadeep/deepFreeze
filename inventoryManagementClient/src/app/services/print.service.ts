@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { Inventory } from '../definitions/inventory-definition';
 import { Product } from '../definitions/product-definition';
-import { Vendor } from '../definitions/vendor-definition';
 import { SellingData } from '../definitions/selling-definition';
-import { forkJoin } from 'rxjs';
+import { Vendor } from '../definitions/vendor-definition';
 import { InventoryService } from './inventory.service';
 import { ProductService } from './product.service';
-import { VendorService } from './vendor.service';
 import { RouteService } from './route.service';
+import { VendorService } from './vendor.service';
 
 @Injectable({
   providedIn: 'root'

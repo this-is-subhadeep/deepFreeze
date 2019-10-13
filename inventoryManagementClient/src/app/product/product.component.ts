@@ -1,18 +1,18 @@
-import { Component, Input } from '@angular/core';
-import { Product } from '../definitions/product-definition';
-import { FormGroup, Validators, AbstractControl, FormBuilder, NgModel } from '@angular/forms';
-import { DateService } from '../services/date.service';
-import { ProductService } from '../services/product.service';
-import { MatExpansionPanel, MatSnackBar } from '@angular/material';
-import { sizeValidator, priceValidator } from '../validators';
-import { environment } from 'src/environments/environment';
-import { FilesService } from '../services/files.service';
-import { appConfigurations } from 'src/environments/conf';
-import { StandardResponse } from '../definitions/service-response-definition';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatExpansionPanel, MatSnackBar } from '@angular/material';
+import { appConfigurations } from 'src/environments/conf';
+import { environment } from 'src/environments/environment';
+import { Product } from '../definitions/product-definition';
+import { StandardResponse } from '../definitions/service-response-definition';
+import { DateService } from '../services/date.service';
 import { ErrorService } from '../services/error.service';
+import { FilesService } from '../services/files.service';
+import { ProductService } from '../services/product.service';
 import { RouteService } from '../services/route.service';
+import { priceValidator, sizeValidator } from '../validators';
 
 @Component({
   selector: 'app-product',

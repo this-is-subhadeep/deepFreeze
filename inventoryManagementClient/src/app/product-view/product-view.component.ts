@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from '../definitions/product-definition';
-import { ProductService } from '../services/product.service';
-import { DateService } from '../services/date.service';
-import { fadeInEffect, dropDownEffect } from '../animations';
 import { MatSnackBar } from '@angular/material';
 import { environment } from 'src/environments/environment.prod';
-import { ProductDataSource } from './product-view-datasource';
+import { dropDownEffect, fadeInEffect } from '../animations';
+import { Product } from '../definitions/product-definition';
+import { DateService } from '../services/date.service';
+import { ProductService } from '../services/product.service';
 import { RouteService } from '../services/route.service';
+import { ProductDataSource } from './product-view-datasource';
 
 @Component({
   selector: 'app-product-view',
