@@ -1,6 +1,8 @@
 const { ProductModel, ProductTypeModel } = require('./products.entity');
 const logger = require('../../log');
 const uuidv1 = require('uuid/v1');
+const jwt = require('jsonwebtoken');
+const { authentication } = require('../../config').appConfig;
 
 const getProductsByType = (productType) => {
     logger.info('dao getProductsByType');
@@ -208,7 +210,7 @@ const addProductType = (productType) => {
                 if(err) {
                     reject({
                         status : 500,
-                        error : "S001"
+                        errorCode : "S001"
                     });
                     logger.error('Product Type not saved :', err);
                 } else {
@@ -252,7 +254,7 @@ const addCompleteProduct = (completeProduct, refDate) => {
                     if(err) {
                         reject({
                             status : 500,
-                            error : "S001"
+                            errorCode : "S001"
                         });
                         logger.error('Product not saved :', err);
                     } else {
@@ -392,6 +394,32 @@ const updateCompleteProduct = (completeProduct, refDate) => {
     });
 };
 
+const isUserAuthenticated = (token) => {
+    logger.info('dao isUserAuthenticated');
+    return new Promise((resolve, reject) => {
+        if(token) {
+            jwt.verify(token, authentication.jwtSecret, (err, decoded) => {
+                if(err || !decoded) {
+                    resolve({
+                        isAuthenticated : false,
+                        status : 200
+                    });
+                } else {
+                    resolve({
+                        isAuthenticated : true,
+                        status : 200
+                    });
+                }
+            });
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B003"
+            });
+        }
+    });
+}
+
 module.exports = {
     getProductsByType,
     getAllProductTypes,
@@ -401,5 +429,6 @@ module.exports = {
     addProductType,
     addCompleteProduct,
     updateProductType,
-    updateCompleteProduct
+    updateCompleteProduct,
+    isUserAuthenticated
 }

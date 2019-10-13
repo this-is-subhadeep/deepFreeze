@@ -9,6 +9,8 @@ import { OpeningComponent } from './opening/opening.component';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { InvoiceComponent } from './invoice/invoice.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { LoginComponent } from './login/login.component';
+import { CanActivateRouteGuard } from './can-activate-route.guard';
 
 const routes: Routes = [
   {
@@ -17,20 +19,28 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
     path: 'inventory',
-    component: InventoryComponent
+    component: InventoryComponent,
+    canActivate: [CanActivateRouteGuard]
   },
   {
     path: 'products',
-    component: ProductViewComponent
+    component: ProductViewComponent,
+    canActivate: [CanActivateRouteGuard]
   },
   {
     path: 'vendors',
-    component: VendorViewComponent
+    component: VendorViewComponent,
+    canActivate: [CanActivateRouteGuard]
   },
   {
     path: 'selling',
     component: SellingComponent,
+    canActivate: [CanActivateRouteGuard],
     children: [
       {
         path: 'print/:vendorId',
@@ -41,11 +51,13 @@ const routes: Routes = [
   },
   {
     path: 'buying',
-    component: BuyingComponent
+    component: BuyingComponent,
+    canActivate: [CanActivateRouteGuard]
   },
   {
     path: 'opening',
-    component: OpeningComponent
+    component: OpeningComponent,
+    canActivate: [CanActivateRouteGuard]
   },
   {
     path: 'error/:code',

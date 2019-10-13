@@ -8,6 +8,14 @@ export class RouteService {
 
   constructor(private router: Router) { }
 
+  routeToLogin() {
+    this.router.navigate(['login']);
+  }
+
+  routeToAppStart() {
+    this.router.navigate(['']);
+  }
+
   routeToError(code) {
     this.router.navigate(['error', code]);
   }

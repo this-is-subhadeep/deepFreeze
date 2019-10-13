@@ -50,6 +50,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { PrintLayoutComponent } from './print-layout/print-layout.component';
 import { InvoiceComponent } from './invoice/invoice.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     OpeningComponent,
     PrintLayoutComponent,
     InvoiceComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

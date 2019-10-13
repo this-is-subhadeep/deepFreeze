@@ -6,6 +6,11 @@ const serverConfig = {
     logLocation : process.env.SERVER_LOGS || './logs'
 }
 
+const authentication = {
+    jwtSecret : 'd33pfr33z3'
+}
+
 module.exports = {
-    serverConfig
+    serverConfig,
+    authentication
 }

@@ -90,7 +90,7 @@ export class InventoryComponent implements OnInit {
     return '';
   }
 
-  private getBalance() {
+  getBalance() {
     let total = 0;
     this.dataSource.connect().subscribe(invRows => {
       invRows.forEach(invRow => {
@@ -103,7 +103,7 @@ export class InventoryComponent implements OnInit {
     return 'Total : ' + total;
   }
 
-  private getTotalIn() {
+  getTotalIn() {
     let total = 0;
     this.dataSource.connect().subscribe(invRows => {
       invRows.forEach(invRow => {
@@ -116,7 +116,7 @@ export class InventoryComponent implements OnInit {
     return 'Total : ' + total;
   }
 
-  private getTotalSenIn() {
+  getTotalSenIn() {
     let total = 0;
     this.dataSource.connect().subscribe(invRows => {
       invRows.forEach(invRow => {
@@ -129,7 +129,7 @@ export class InventoryComponent implements OnInit {
     return 'Total : ' + total;
   }
 
-  private getTotalOthersIn() {
+  getTotalOthersIn() {
     let total = 0;
     this.dataSource.connect().subscribe(invRows => {
       invRows.forEach(invRow => {
@@ -142,7 +142,7 @@ export class InventoryComponent implements OnInit {
     return 'Total : ' + total;
   }
 
-  private getTotalOut() {
+  getTotalOut() {
     let total = 0;
     let value = 0;
     this.dataSource.connect().subscribe(invRows => {
@@ -159,7 +159,7 @@ export class InventoryComponent implements OnInit {
     return 'Total : ' + total + ' - Value : ' + value;
   }
 
-  private getVenDetails(ven: Vendor) {
+  getVenDetails(ven: Vendor) {
     let infoText = '';
     if (ven.totalLoan) {
       infoText += `Total Loan : ${ven.totalLoan}`;
@@ -177,11 +177,11 @@ export class InventoryComponent implements OnInit {
     console.log(data);
   }
 
-  private vendorTrackBy(index, ven: Vendor) {
+  vendorTrackBy(index, ven: Vendor) {
     return ven._id;
   }
 
-  private saveButtonPressed() {
+  saveButtonPressed() {
     const date = this.dateService.date.toISOString();
     const inv = new Inventory();
     this.dataSource.connect().subscribe(uiInvRows => {
@@ -221,7 +221,7 @@ export class InventoryComponent implements OnInit {
     });
   }
 
-  private syncTotalIn(invRow: UIInventoryRow) {
+  syncTotalIn(invRow: UIInventoryRow) {
     const prod: Product = this.prodList.find(product => product._id === invRow.id);
     if (prod) {
       if (invRow.stockSenIn && invRow.stockOthersIn) {
@@ -235,7 +235,7 @@ export class InventoryComponent implements OnInit {
     this.syncBalance(invRow);
   }
 
-  private syncTotalOut(invRow: UIInventoryRow) {
+  syncTotalOut(invRow: UIInventoryRow) {
     // const prod: Product = this.prodList.find(product => product._id === invRow.id);
     // if(prod) {
     if (invRow.vendorValue) {
@@ -253,7 +253,7 @@ export class InventoryComponent implements OnInit {
     this.syncBalance(invRow);
   }
 
-  private syncBalance(invRow: UIInventoryRow) {
+  syncBalance(invRow: UIInventoryRow) {
     if (invRow.stockTotalIn && invRow.stockTotalOut) {
       invRow.stockBalance = invRow.stockTotalIn - invRow.stockTotalOut;
     } else if (invRow.stockTotalIn && !invRow.stockTotalOut) {
@@ -263,19 +263,19 @@ export class InventoryComponent implements OnInit {
     }
   }
 
-  private validateVendorValue(invRow: UIInventoryRow, venId: string) {
+  validateVendorValue(invRow: UIInventoryRow, venId: string) {
     if (!this.validateValue(invRow.vendorValue[venId])) {
       invRow.vendorValue[venId] = undefined;
     }
   }
 
-  private validateSenIn(invRow: UIInventoryRow) {
+  validateSenIn(invRow: UIInventoryRow) {
     if (!this.validateValue(invRow.stockSenIn)) {
       invRow.stockSenIn = undefined;
     }
   }
 
-  private validateOthersIn(invRow: UIInventoryRow) {
+  validateOthersIn(invRow: UIInventoryRow) {
     if (!this.validateValue(invRow.stockOthersIn)) {
       invRow.stockOthersIn = undefined;
     }

@@ -38,7 +38,7 @@ export class InventoryDataSource implements DataSource<UIInventoryRow> {
             this.productService.productObservable,
             this.vendorService.vendorObservable
         ).subscribe(([inventoryOpening, inventories, productTypes, products, vendors]) => {
-            // console.log(`invs : ${JSON.stringify(inventoryData.inventories)}`);
+            // console.log(`invs : ${JSON.stringify(inventories)}`);
             const inventory = inventories.find(inv => inv.date === refDate);
             const productOpenings = this.service.fillOpenings(inventoryOpening, inventories, products, refDate);
             if (productTypes) {

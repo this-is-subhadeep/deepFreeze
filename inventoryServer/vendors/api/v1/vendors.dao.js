@@ -1,6 +1,8 @@
 const { VendorModel } = require('./vendors.entity');
 const logger = require('../../log');
 const uuidv1 = require('uuid/v1');
+const jwt = require('jsonwebtoken');
+const { authentication } = require('../../config').appConfig;
 
 const getCompleteVendorsFromList = (vendors, refDate) => {
     logger.info('dao getAllCompleteVendor');
@@ -149,7 +151,7 @@ const addCompleteVendor = (completeVendor, refDate) => {
                     if(err) {
                         reject({
                             status : 500,
-                            error : "S001"
+                            errorCode : "S001"
                         });
                         logger.error('Vendor not saved :', err);
                     } else {
@@ -245,9 +247,36 @@ const updateCompleteVendor = (vendor, refDate) => {
     });
 };
 
+const isUserAuthenticated = (token) => {
+    logger.info('dao isUserAuthenticated');
+    return new Promise((resolve, reject) => {
+        if(token) {
+            jwt.verify(token, authentication.jwtSecret, (err, decoded) => {
+                if(err || !decoded) {
+                    resolve({
+                        isAuthenticated : false,
+                        status : 200
+                    });
+                } else {
+                    resolve({
+                        isAuthenticated : true,
+                        status : 200
+                    });
+                }
+            });
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B003"
+            });
+        }
+    });
+}
+
 module.exports = {
     getAllCompleteVendors,
     getCompleteVendorsFromList,
     addCompleteVendor,
-    updateCompleteVendor
+    updateCompleteVendor,
+    isUserAuthenticated
 }

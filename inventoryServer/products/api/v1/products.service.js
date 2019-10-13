@@ -46,6 +46,11 @@ const updateCompleteProduct = (compProd, refDate) => {
     return dao.updateCompleteProduct(compProd, refDate);
 };
 
+const isUserAuthenticated = (token) => {
+    logger.info('service isUserAuthenticated');
+    return dao.isUserAuthenticated(token);
+};
+
 module.exports = {
     getProductsByType,
     getAllProductTypes,
@@ -55,5 +60,6 @@ module.exports = {
     addProductType,
     addCompleteProduct,
     updateProductType,
-    updateCompleteProduct
+    updateCompleteProduct,
+    isUserAuthenticated
 }

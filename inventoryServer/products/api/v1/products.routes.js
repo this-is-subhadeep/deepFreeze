@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const controller = require('./products.controller');
 
+router.use(controller.isUserAuthenticated);
+
 router.get('/product-types', controller.getAllProductTypes);
 
 router.get('/product-type', controller.getProductType);

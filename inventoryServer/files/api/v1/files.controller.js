@@ -14,6 +14,34 @@ const upload = (req, res) => {
     });
 }
 
+const isUserAuthenticated = (req, res, next) => {
+    logger.info('controller isUserAuthenticated');
+    const bearerAutherization = req.get('Authorization');
+    if (!bearerAutherization) {
+        res.status(403).send([{
+            code: 'S006'
+        }]);
+    } else {
+        service.isUserAuthenticated(bearerAutherization.replace('Bearer ', '')).then((response) => {
+            logger.debug({response});
+            if (response.isAuthenticated) {
+                if(next) {
+                    next();
+                }
+            } else {
+                res.status(403).send([{
+                    code: 'B007'
+                }]);
+            }
+        }).catch((reject) => {
+            res.status(reject.status).send([{
+                code: reject.errorCode
+            }]);
+        });
+    }
+};
+
 module.exports = {
-    upload
+    upload,
+    isUserAuthenticated
 }

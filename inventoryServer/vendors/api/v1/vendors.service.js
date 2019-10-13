@@ -21,9 +21,15 @@ const updateCompleteVendor = (compVen, refDate) => {
     return dao.updateCompleteVendor(compVen, refDate);
 };
 
+const isUserAuthenticated = (token) => {
+    logger.info('service isUserAuthenticated');
+    return dao.isUserAuthenticated(token);
+};
+
 module.exports = {
     getAllCompleteVendors,
     getCompleteVendorsFromList,
     addCompleteVendor,
-    updateCompleteVendor
+    updateCompleteVendor,
+    isUserAuthenticated
 }

@@ -2,6 +2,8 @@ const logger = require('../../log');
 const multer = require('multer');
 const path = require('path');
 const uuidv1 = require('uuid/v1');
+const jwt = require('jsonwebtoken');
+const { authentication } = require('../../config').appConfig;
 
 const storage = multer.diskStorage({
     destination : './uploads',
@@ -66,18 +68,6 @@ const upload = (req, res) => {
                             errorCode : "S001"
                         });
                 }
-                // if(err.code && err.code === "LIMIT_FILE_SIZE") {
-                //     reject({
-                //         status : 400,
-                //         errorCode : "B004"
-                //     });
-                // } else {
-                //     reject({
-                //         status : 400,
-                //         errorCode : "S001"
-                //     });
-                // }
-                // res.status(404).json({err});
             } else if (!req.file) {
                 logger.warn('No file received');
                 reject({
@@ -96,6 +86,33 @@ const upload = (req, res) => {
     });
 };
 
+const isUserAuthenticated = (token) => {
+    logger.info('service isUserAuthenticated');
+    return new Promise((resolve, reject) => {
+        if(token) {
+            jwt.verify(token, authentication.jwtSecret, (err, decoded) => {
+                if(err || !decoded) {
+                    resolve({
+                        isAuthenticated : false,
+                        status : 200
+                    });
+                } else {
+                    resolve({
+                        isAuthenticated : true,
+                        status : 200
+                    });
+                }
+            });
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B003"
+            });
+        }
+    });
+}
+
 module.exports = {
-    upload
+    upload,
+    isUserAuthenticated
 }

@@ -1,0 +1,15 @@
+<form [formGroup]="userFormGroup" (ngSubmit)="onSubmit()">
+  <div class="login-div">
+    <mat-card class="login-card">
+      <h3>Login</h3>
+      <mat-form-field>
+        <input matInput placeholder="User Name" formControlName="_id">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput type="password" placeholder="Password" formControlName="password">
+        <mat-icon matSuffix>visibility</mat-icon>
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">Submit</button>
+    </mat-card>
+  </div>
+</form>

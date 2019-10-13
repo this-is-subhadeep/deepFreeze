@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const controller = require('./inventory.controller');
 
+router.use(controller.isUserAuthenticated);
+
 router.get('/:refDate', controller.getInventory);
 
 router.get('/till-date/:refDate', controller.getInventoriesTillDate);

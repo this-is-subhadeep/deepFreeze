@@ -11,7 +11,12 @@ const dbConfig = {
     dbName : 'deepFreeze'
 }
 
+const authentication = {
+    jwtSecret : 'd33pfr33z3'
+}
+
 module.exports = {
     serverConfig,
-    dbConfig
+    dbConfig,
+    authentication
 }

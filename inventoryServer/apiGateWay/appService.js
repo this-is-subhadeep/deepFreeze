@@ -58,6 +58,14 @@ const setupMiddleware = (app) => {
         }
     }));
 
+    app.use('/user', httpProxy({
+        target : serverConfig.userURL,
+        changeOrigin : true,
+        pathRewrite : {
+            '^/user' : '/api/v1'
+        }
+    }));
+
 };
 
 module.exports = {

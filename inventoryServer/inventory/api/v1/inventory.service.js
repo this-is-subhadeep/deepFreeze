@@ -26,10 +26,16 @@ const addInventoryOpening = (compInv, refDate) => {
     return dao.addInventoryOpening(compInv, refDate);
 };
 
+const isUserAuthenticated = (token) => {
+    logger.info('service isUserAuthenticated');
+    return dao.isUserAuthenticated(token);
+};
+
 module.exports = {
     getInventory,
     getInventoriesTillDate,
     getInventoryOpening,
     addInventory,
-    addInventoryOpening
+    addInventoryOpening,
+    isUserAuthenticated
 }

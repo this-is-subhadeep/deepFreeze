@@ -1,4 +1,7 @@
 cd inventoryServer
+cd users
+start "User Server" npm start
+cd..
 cd products
 start "Product Server" npm start
 cd..

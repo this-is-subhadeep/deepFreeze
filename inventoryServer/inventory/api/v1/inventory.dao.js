@@ -1,14 +1,14 @@
 const { InventoryModel, InventoryOpeningModel } = require('./inventory.entity');
 const logger = require('../../log');
+const jwt = require('jsonwebtoken');
+const { authentication } = require('../../config').appConfig;
 
 const fillStock = (inv, compInv) => {
     logger.debug('fillStockIn');
     if(inv) {
         if(inv.stockIn) {
-            logger.debug(JSON.stringify(inv.stockIn));
             inv.stockIn.forEach(stockIn => {
                 if(stockIn && stockIn._id) {
-                    logger.debug(JSON.stringify(stockIn));
                     if(!compInv.rows) {
                         compInv.rows={};
                     }
@@ -20,9 +20,7 @@ const fillStock = (inv, compInv) => {
             });
         }
         if(inv.stockOut) {
-            logger.debug('fillStockOut');
             inv.stockOut.forEach(stockOut => {
-                logger.debug(stockOut);
                 if(stockOut && stockOut._id) {
                     if(!compInv.rows) {
                         compInv.rows={};
@@ -38,10 +36,8 @@ const fillStock = (inv, compInv) => {
             });
         }
         if(inv.deposits) {
-            logger.debug('fillDeposits');
             compInv.vendorDeposits = {};
             inv.deposits.forEach(deposit => {
-                logger.debug(deposit);
                 if(deposit && deposit._id) {
                     compInv.vendorDeposits[deposit._id.vendorId] = deposit.amount;
                 }
@@ -55,7 +51,6 @@ const getInventory = (refDate) => {
     return new Promise((resolve, reject) => {
         const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
-            logger.debug(JSON.stringify(refDateObj));
             InventoryModel.findById(refDateObj, (err, inventory) => {
                 if(err) {
                     reject({
@@ -64,7 +59,6 @@ const getInventory = (refDate) => {
                     });
                     logger.error('Server Error :', err);
                 } else {
-                    logger.debug(JSON.stringify(inventory));
                     const compInv = {};
                     if(inventory) {
                         compInv.date = inventory._id;
@@ -91,10 +85,8 @@ const getInventoriesTillDate = (refDate) => {
     return new Promise((resolve, reject) => {
         const refDateObj = new Date(refDate);
         if(!isNaN(refDateObj.getTime())) {
-            logger.debug(`refDate : ${JSON.stringify(refDateObj)}`);
             let refDateObjStart = new Date(refDateObj);
             refDateObjStart.setDate(1);
-            logger.debug(`refDateStart : ${JSON.stringify(refDateObjStart)}`);
             InventoryModel.find({
                 _id : {
                     $gte : refDateObjStart
@@ -146,10 +138,8 @@ const fillStockOpening = (invOpen, compInvOpen) => {
     logger.debug('fillStockOpening');
     if(invOpen) {
         if(invOpen.stockOpening) {
-            logger.debug(JSON.stringify(invOpen.stockOpening));
             invOpen.stockOpening.forEach(stockOpening => {
                 if(stockOpening && stockOpening._id) {
-                    logger.debug(JSON.stringify(stockOpening));
                     if(!compInvOpen.rows) {
                         compInvOpen.rows={};
                     }
@@ -169,7 +159,6 @@ const getInventoryOpening = (refDate) => {
         const refDateObj = new Date(refDate);
         refDateObj.setDate(1);
         if(!isNaN(refDateObj.getTime())) {
-            logger.debug(JSON.stringify(refDateObj));
             InventoryOpeningModel.findById(refDateObj, (err, inventoryOpening) => {
                 if(err) {
                     reject({
@@ -178,7 +167,6 @@ const getInventoryOpening = (refDate) => {
                     });
                     logger.error('Server Error :', err);
                 } else {
-                    logger.debug(JSON.stringify(inventoryOpening));
                     const compInvOpen = {};
                     if(inventoryOpening) {
                         fillStockOpening(inventoryOpening, compInvOpen);
@@ -202,9 +190,7 @@ const getInventoryOpening = (refDate) => {
 const saveStockIn = (compInv, inv) => {
     logger.debug('saveStockIn');
     if(compInv.rows) {
-        logger.debug(JSON.stringify(compInv.rows));
         for (prodId in compInv.rows) {
-            logger.debug(prodId);
             let stockIn = {};
             stockIn._id = {
                 productId : prodId,
@@ -220,10 +206,7 @@ const saveStockIn = (compInv, inv) => {
 const saveStockOut = (compInv, inv) => {
     logger.debug('saveStockOut');
     for (prodId in compInv.rows) {
-        logger.debug(JSON.stringify(compInv.rows[prodId].vendorValue));
         for(venId in compInv.rows[prodId].vendorValue) {
-            logger.debug(venId);
-            logger.debug(JSON.stringify(compInv.rows[prodId].vendorValue[venId]));
             let stockOut = {};
             stockOut._id = {
                 productId : prodId,
@@ -239,8 +222,6 @@ const saveStockOut = (compInv, inv) => {
 const saveDeposits = (compInv, inv) => {
     logger.debug('saveDeposits');
     for(venId in compInv.vendorDeposits) {
-        logger.debug(JSON.stringify(venId));
-        logger.debug(compInv.vendorDeposits[venId]);
         deposit = {
             _id : {
                 vendorId : venId
@@ -271,12 +252,11 @@ const addInventory = (completeInventory, refDate) => {
                 saveStockIn(completeInventory, invModel);
                 saveStockOut(completeInventory, invModel);
                 saveDeposits(completeInventory, invModel);
-                logger.debug(JSON.stringify(invModel));
                 invModel.save((err, addedInventory) => {
                     if(err) {
                         reject({
                             status : 500,
-                            error : "S001"
+                            errorCode : "S001"
                         });
                         logger.error('Product not saved :', err);
                     } else {
@@ -306,9 +286,7 @@ const addInventory = (completeInventory, refDate) => {
 const saveStockOpening = (compInvOpen, invOpen) => {
     logger.debug('saveStockOpening');
     if(compInvOpen.rows) {
-        logger.debug(JSON.stringify(compInvOpen.rows));
         for (prodId in compInvOpen.rows) {
-            logger.debug(prodId);
             let stockOpening = {};
             stockOpening._id = {
                 productId : prodId
@@ -339,12 +317,11 @@ const addInventoryOpening = (completeInventoryOpening, refDate) => {
                 const invOpenModel = new InventoryOpeningModel();
                 invOpenModel._id = refDateObj;
                 saveStockOpening(completeInventoryOpening, invOpenModel);
-                logger.debug(JSON.stringify(invOpenModel));
                 invOpenModel.save((err, addedInventoryOpening) => {
                     if(err) {
                         reject({
                             status : 500,
-                            error : "S001"
+                            errorCode : "S001"
                         });
                         logger.error('Opening not saved :', err);
                     } else {
@@ -369,12 +346,39 @@ const addInventoryOpening = (completeInventoryOpening, refDate) => {
             logger.error('Inventory Opening should not be empty');           
         }
     });
-}; 
+};
+
+const isUserAuthenticated = (token) => {
+    logger.info('dao isUserAuthenticated');
+    return new Promise((resolve, reject) => {
+        if(token) {
+            jwt.verify(token, authentication.jwtSecret, (err, decoded) => {
+                if(err || !decoded) {
+                    resolve({
+                        isAuthenticated : false,
+                        status : 200
+                    });
+                } else {
+                    resolve({
+                        isAuthenticated : true,
+                        status : 200
+                    });
+                }
+            });
+        } else {
+            reject({
+                status : 400,
+                errorCode : "B003"
+            });
+        }
+    });
+}
 
 module.exports = {
     getInventory,
     getInventoriesTillDate,
     getInventoryOpening,
     addInventory,
-    addInventoryOpening
+    addInventoryOpening,
+    isUserAuthenticated
 }
