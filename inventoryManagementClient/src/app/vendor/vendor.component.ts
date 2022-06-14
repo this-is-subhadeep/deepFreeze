@@ -14,9 +14,26 @@ import { MatExpansionPanel } from '@angular/material';
 })
 export class VendorComponent implements OnInit {
 
-  @Input() vendor: CompleteVendor;
+  get vendor():CompleteVendor {
+    return this._vendor;
+  }
+  @Input() 
+  set vendor(ven: CompleteVendor) {
+    this._vendor = ven;
+    if(this.venForm) {
+      this.venForm.controls.name.setValue(ven.name);
+      this.venForm.controls.loanAdded.setValue(ven.loanAdded);
+      this.venForm.controls.loanPayed.setValue(ven.loanPayed);
+      this.venForm.controls.openingDp.setValue(ven.openingDp);
+      this.venForm.controls.deposit.setValue(ven.deposit);
+      this.venForm.controls.remarks.setValue(ven.remarks);
+    }
+  }
+
   @Input() editable: boolean;
 
+  private _vendor: CompleteVendor;
+  
   venForm: FormGroup;
   constructor(private service: VendorService,
     private datePipe: DatePipe,
@@ -26,32 +43,32 @@ export class VendorComponent implements OnInit {
   ngOnInit() {
     this.venForm = this.fb.group({
       name: [
-        this.vendor.name, [
+        this._vendor.name, [
           Validators.required
         ]
       ],
       loanAdded: [
-        this.vendor.loanAdded, [
+        this._vendor.loanAdded, [
           priceValidator
         ]
       ],
       loanPayed: [
-        this.vendor.loanPayed, [
+        this._vendor.loanPayed, [
           priceValidator
         ]
       ],
       openingDp: [
-        this.vendor.openingDp, [
+        this._vendor.openingDp, [
           priceValidator
         ]
       ],
       deposit: [
-        this.vendor.deposit, [
+        this._vendor.deposit, [
           priceValidator
         ]
       ],
       remarks: [
-        this.vendor.remarks
+        this._vendor.remarks
       ]
     });
 
@@ -64,17 +81,16 @@ export class VendorComponent implements OnInit {
     return Math.round(ven.totalLoan*100)/100;
   }
 
-
   onUpdate(exPanel: MatExpansionPanel) {
     let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.vendor.name = this.venForm.controls.name.value;
-    this.vendor.loanAdded = this.venForm.controls.loanAdded.value;
-    this.vendor.loanPayed = this.venForm.controls.loanPayed.value;
-    this.vendor.openingDp = this.venForm.controls.openingDp.value;
-    this.vendor.deposit = this.venForm.controls.deposit.value;
-    this.vendor.remarks = this.venForm.controls.remarks.value;
-    this.service.updateCompleteVendor(this.vendor, date).subscribe(resp => {
-      this.vendor.totalLoan = resp.totalLoan;
+    this._vendor.name = this.venForm.controls.name.value;
+    this._vendor.loanAdded = this.venForm.controls.loanAdded.value;
+    this._vendor.loanPayed = this.venForm.controls.loanPayed.value;
+    this._vendor.openingDp = this.venForm.controls.openingDp.value;
+    this._vendor.deposit = this.venForm.controls.deposit.value;
+    this._vendor.remarks = this.venForm.controls.remarks.value;
+    this.service.updateCompleteVendor(this._vendor, date).subscribe(resp => {
+      this._vendor.totalLoan = resp.totalLoan;
       exPanel.close();
     });
   }

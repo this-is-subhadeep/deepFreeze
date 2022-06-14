@@ -27,15 +27,15 @@ export class VendorViewComponent implements OnInit {
     });
   }
 
-  refresh() {
+  private refresh() {
     this.newCompleteVendor = new CompleteVendor();
   }
 
-  addVenButtonPressed() {
+  private addVenButtonPressed() {
     this.refresh();
   }
 
-  addButtonPressed() {
+  private addButtonPressed() {
     let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
     this.newCompleteVendor.id=this.service.nextVendorId;
     this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
@@ -45,9 +45,10 @@ export class VendorViewComponent implements OnInit {
     this.refresh();
   }
 
-  cancelButtonPressed() {
+  private addClosed() {
     this.refresh();
   }
+
   private loadCompleteVendorData() {
     let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
     this.service.findCompleteVendorObservable(date).subscribe(completeVendors => {

@@ -53,6 +53,10 @@ export class ProductViewComponent implements OnInit {
     this.refresh();
   }
 
+  private addClosed() {
+    this.refresh();
+  }
+
   private loadCompleteProductData() {
     let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
     this.service.findCompleteProductObservable(date).subscribe(completeProducts => {

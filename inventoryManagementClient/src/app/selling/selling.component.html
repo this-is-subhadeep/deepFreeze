@@ -30,7 +30,11 @@
       </div>
     </div>
 
-    <table [hidden]='hideProductTable()'>
+    <div class='vendor-details'>
+      <app-vendor [vendor]='selectedVendor' [editable]='false' *ngIf='isVendorSelected()'></app-vendor>
+    </div>
+
+    <table *ngIf='showProductTable()'>
       <tr>
         <td>
           <mat-card>
@@ -87,7 +91,7 @@
         </td>
       </tr>
     </table>
-    <div [hidden]='!isVendorSelected()'>
+    <div *ngIf='isVendorSelected()'>
       <div class="product-action-row">
         <mat-form-field appearance="outline">
           <mat-select required [(value)]="sellingProductId" #productList name="sellingProduct" id="productList"

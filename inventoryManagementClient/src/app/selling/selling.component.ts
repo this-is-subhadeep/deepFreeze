@@ -26,19 +26,16 @@ export class SellingComponent implements OnInit {
   private selectedVendor: CompleteVendor;
 
   constructor(private productService: ProductService,
-    private vendorService: VendorService,
     private inventoryService: InventoryService,
     private datePipe: DatePipe,
     private dateService: DateService) { }
 
   ngOnInit() {
     this.loadCompleteProductData();
-    this.loadCompleteVendorData();
     this.loadCompleteInventoryData();
     this.refresh()
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteProductData();
-      this.loadCompleteVendorData();
       this.loadCompleteInventoryData();
       this.refresh();
     });
@@ -51,19 +48,12 @@ export class SellingComponent implements OnInit {
     });
   }
 
-  private loadCompleteVendorData() {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.vendorService.findCompleteVendorObservable(date).subscribe(completeVendors => {
-      this.completeVendors = completeVendors;
-    });
-  }
-
   private loadCompleteInventoryData() {
     let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
     this.inventoryService.findCompleteInventoryObservable(date).subscribe(completeInventory => {
       this.completeInventory = completeInventory;
+      this.completeVendors = completeInventory.vens;
     });
-    // console.log(this.dataSource);
   }
 
   private refresh() {
@@ -72,7 +62,6 @@ export class SellingComponent implements OnInit {
   }
 
   private get sellingProductId() {
-    // console.log("Here");
     return '';
   }
 
@@ -80,8 +69,22 @@ export class SellingComponent implements OnInit {
     return this.selectedVendor.id;
   }
 
+  private addSellingProduct(id: string, unit: number) {
+    if (this.completeProducts) {
+      let removalindex = -1;
+      for (let i = 0; i < this.completeProducts.length; i++) {
+        if (this.completeProducts[i].id === id) {
+          removalindex = i;
+          this.sellingProductList.push(new SellingData(this.completeProducts[i], unit));
+          break;
+        }
+      }
+      this.completeProducts.splice(removalindex, 1);
+    }
+  }
+
   private set sellingProductId(id: string) {
-    if (this.completeProducts !== undefined) {
+    if (this.completeProducts) {
       let removalindex = -1;
       for (let i = 0; i < this.completeProducts.length; i++) {
         if (this.completeProducts[i].id === id) {
@@ -106,6 +109,14 @@ export class SellingComponent implements OnInit {
         return;
       }
     });
+    this.completeInventory.rows.forEach(row => {
+      if (row.vendorValue[id]) {
+        this.addSellingProduct(row.id, row.vendorValue[id]);
+        // this.sellingProductId = row.id; 
+      }
+    });
+
+    console.log(this.sellingProductList);
   }
 
   private vendorSelected($event) {
@@ -117,8 +128,8 @@ export class SellingComponent implements OnInit {
     return this.selectedVendor.id !== undefined && this.selectedVendor.id !== null && this.selectedVendor.id.startsWith('ven');
   }
 
-  private hideProductTable(): boolean {
-    return !(this.sellingProductList != null && this.sellingProductList.length > 0 && this.isVendorSelected());
+  private showProductTable(): boolean {
+    return this.sellingProductList != null && this.sellingProductList.length > 0 && this.isVendorSelected();
   }
 
   private getStockBalance(productId: string): number {
@@ -153,30 +164,29 @@ export class SellingComponent implements OnInit {
 
   private saveButtonPressed() {
     console.log('Save Button Pressed', this.sellingProductList);
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
     this.completeInventory.rows.forEach(row => {
       this.sellingProductList.forEach(soldRow => {
-        if(row.id === soldRow.product.id) {
+        if (row.id === soldRow.product.id) {
           row.vendorValue[this.selectedVendor.id] = soldRow.soldUnits.valueOf();
         }
       });
     });
     this.completeInventory.vens.forEach(ven => {
-      if(ven.id === this.selectedVendor.id) {
+      if (ven.id === this.selectedVendor.id) {
         ven.deposit = this.selectedVendor.deposit;
       }
     });
-    console.log('Final Inventory :', this.completeInventory);
     this.inventoryService.saveCompleteInventory(this.completeInventory, date).subscribe(resp => {
       this.loadCompleteInventoryData();
+      this.refresh();
     });
-    this.refresh();
   }
 
   private saveAndBillButtonPressed() {
     this.saveButtonPressed();
     console.log('Bill Button Pressed');
-  }  
+  }
 
   private deleteProductFromList(ind: number) {
     console.log('Deleting Product :', ind);
@@ -191,12 +201,13 @@ export class SellingComponent implements OnInit {
     this.sellingProductList.splice(ind, 1);
   }
 
-  private isUnitInvalid(id:number, soldUnitEle:NgModel) {
-    console.log('id :',id,'soldUnitEle :',soldUnitEle);
-    // if(soldUnitEle.value>10) {
-    //   soldUnitEle.invalid = true;
-    // }
+  private isUnitInvalid(id: number, soldUnitEle: NgModel) {
+    console.log('id :', id, 'soldUnitEle :', soldUnitEle);
     return soldUnitEle.invalid;
+  }
+
+  private sellingProductTrackBy(index, sellProd:SellingData) {
+    return sellProd.product.id;
   }
 
   private log(data) {

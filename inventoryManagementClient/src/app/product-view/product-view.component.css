@@ -3,23 +3,9 @@
     margin: 2%;
     width: 96%
 }
-.products-table {
-    background: rgb(230, 201, 148);
-}
 .add-products-row {
-    background: rgb(178, 236, 101);
+    background: rgb(179, 247, 101);
 }
 button.add-product-button {
     background: rgb(101, 193, 247);
-}
-button.update-product-button {
-    background: rgb(203, 247, 101);
-}
-button.cancel-product-button {
-    background: rgb(218, 90, 81);
-    margin: 2%;
-    width: 46%
-}
-.selectedRow {
-    background: rgb(187, 166, 126);
 }

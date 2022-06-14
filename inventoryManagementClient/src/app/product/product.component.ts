@@ -14,10 +14,25 @@ import { sizeValidator, priceValidator } from '../validators';
 })
 export class ProductComponent implements OnInit {
 
-  @Input() product: CompleteProduct;
+  get product():CompleteProduct {
+    return this._product;
+  }
+  @Input()
+  set product(prod:CompleteProduct) {
+    this._product = prod;
+    if(this.prodForm) {
+      this.prodForm.controls.name.setValue(prod.name);
+      this.prodForm.controls.size.setValue(prod.packageSize);
+      this.prodForm.controls.cp.setValue(prod.costPrice);
+      this.prodForm.controls.sp.setValue(prod.sellingPrice);
+    }
+  }
+  
   @Input() editable: boolean;
 
-  prodForm: FormGroup;
+  private _product: CompleteProduct;
+  private prodForm: FormGroup;
+
   constructor(private service: ProductService,
     private datePipe: DatePipe,
     private dateService: DateService,
@@ -27,24 +42,24 @@ export class ProductComponent implements OnInit {
 
     this.prodForm = this.fb.group({
       name: [
-        this.product.name, [
+        this._product.name, [
           Validators.required
         ]
       ],
       size: [
-        this.product.packageSize, [
+        this._product.packageSize, [
           Validators.required,
           sizeValidator
         ]
       ],
       cp: [
-        this.product.costPrice, [
+        this._product.costPrice, [
           Validators.required,
           priceValidator
         ]
       ],
       sp: [
-        this.product.sellingPrice, [
+        this._product.sellingPrice, [
           Validators.required,
           priceValidator
         ]
@@ -58,11 +73,11 @@ export class ProductComponent implements OnInit {
 
   onUpdate(exPanel: MatExpansionPanel) {
     let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.product.name = this.prodForm.controls.name.value;
-    this.product.packageSize = this.prodForm.controls.size.value;
-    this.product.costPrice = this.prodForm.controls.cp.value;
-    this.product.sellingPrice = this.prodForm.controls.sp.value;
-    this.service.updateCompleteProduct(this.product, date).subscribe(resp => {
+    this._product.name = this.prodForm.controls.name.value;
+    this._product.packageSize = this.prodForm.controls.size.value;
+    this._product.costPrice = this.prodForm.controls.cp.value;
+    this._product.sellingPrice = this.prodForm.controls.sp.value;
+    this.service.updateCompleteProduct(this._product, date).subscribe(resp => {
       exPanel.close();
     });
   }
