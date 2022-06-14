@@ -1,10 +1,10 @@
 import { Component, OnInit} from '@angular/core';
 
-import { CompleteProduct } from '../definitions/product-definition';
-import { ProductService } from '../services/product.service';
+import { CompleteProduct } from '../../definitions/product-definition';
+import { ProductService } from '../../shared/services/product.service';
 import { DatePipe } from '@angular/common';
-import { DateService } from '../services/date.service';
-import { fadeInEffect, dropDownEffect } from '../animations';
+import { DateService } from '../../shared/services/date.service';
+import { fadeInEffect, dropDownEffect } from '../../animations';
 
 @Component({
   selector: 'product-view',

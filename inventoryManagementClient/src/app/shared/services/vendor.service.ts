@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { StringResponse } from '../definitions/support-definition';
-import { CompleteVendor } from '../definitions/vendor-definition';
+import { StringResponse } from '../../definitions/support-definition';
+import { CompleteVendor } from '../../definitions/vendor-definition';
 
 @Injectable({
   providedIn: 'root'

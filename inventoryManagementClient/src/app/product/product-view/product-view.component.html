@@ -2,7 +2,7 @@
   <div @fadeIn>
     <div class='products-table-div mat-elevation-z10'>
       <mat-accordion>
-        <app-product [product]='compProd' [editable]='true' *ngFor='let compProd of completeProducts'></app-product>
+        <app-product-detail [product]='compProd' [editable]='true' *ngFor='let compProd of completeProducts'></app-product-detail>
         <mat-expansion-panel class='add-products-row' (closed)='addClosed()'>
           <mat-expansion-panel-header>
             <mat-panel-title>

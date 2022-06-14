@@ -1,7 +1,7 @@
 <div @fadeIn>
   <div class='vendors-table-div mat-elevation-z10'>
     <mat-accordion>
-      <app-vendor [vendor]='compVen' [editable]='true' *ngFor='let compVen of completeVendors'></app-vendor>
+      <app-vendor-detail [vendor]='compVen' [editable]='true' *ngFor='let compVen of completeVendors'></app-vendor-detail>
       <mat-expansion-panel class='add-vendor-row' (closed)='addClosed()'>
         <mat-expansion-panel-header>
           <mat-panel-title>

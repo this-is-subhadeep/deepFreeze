@@ -31,7 +31,7 @@
     </div>
 
     <div class='vendor-details'>
-      <app-vendor [vendor]='selectedVendor' [editable]='false' *ngIf='isVendorSelected()'></app-vendor>
+      <app-vendor-detail [vendor]='selectedVendor' [editable]='false' *ngIf='isVendorSelected()'></app-vendor-detail>
     </div>
 
     <table *ngIf='showProductTable()'>
@@ -59,7 +59,7 @@
       </tr>
       <tr *ngFor="let sellingProduct of sellingProductList; let i = index">
         <td>
-          <app-product [product]='sellingProduct.product' [editable]='false'></app-product>
+          <app-product-detail [product]='sellingProduct.product' [editable]='false'></app-product-detail>
         </td>
         <td>
           <mat-card class='ven-value-card'>

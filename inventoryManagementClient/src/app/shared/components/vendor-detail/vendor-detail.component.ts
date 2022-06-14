@@ -1,18 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CompleteVendor } from '../definitions/vendor-definition';
-import { VendorService } from '../services/vendor.service';
+import { CompleteVendor } from '../../../definitions/vendor-definition';
 import { DatePipe } from '@angular/common';
-import { DateService } from '../services/date.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { sizeValidator, priceValidator } from '../validators';
+import { sizeValidator, priceValidator } from '../../../validators';
 import { MatExpansionPanel } from '@angular/material';
+import { VendorService } from '../../services/vendor.service';
+import { DateService } from '../../services/date.service';
 
 @Component({
-  selector: 'app-vendor',
-  templateUrl: './vendor.component.html',
-  styleUrls: ['./vendor.component.css']
+  selector: 'app-vendor-detail',
+  templateUrl: './vendor-detail.component.html',
+  styleUrls: ['./vendor-detail.component.css']
 })
-export class VendorComponent implements OnInit {
+export class VendorDetailComponent implements OnInit {
 
   get vendor():CompleteVendor {
     return this._vendor;

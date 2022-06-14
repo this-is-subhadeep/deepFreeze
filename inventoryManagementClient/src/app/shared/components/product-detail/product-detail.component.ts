@@ -1,18 +1,18 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CompleteProduct } from '../definitions/product-definition';
+import { CompleteProduct } from '../../../definitions/product-definition';
 import { FormGroup, Validators, AbstractControl, FormBuilder, NgModel } from '@angular/forms';
-import { DateService } from '../services/date.service';
-import { ProductService } from '../services/product.service';
 import { DatePipe } from '@angular/common';
 import { MatExpansionPanel } from '@angular/material';
-import { sizeValidator, priceValidator } from '../validators';
+import { sizeValidator, priceValidator } from '../../../validators';
+import { ProductService } from '../../services/product.service';
+import { DateService } from '../../services/date.service';
 
 @Component({
-  selector: 'app-product',
-  templateUrl: './product.component.html',
-  styleUrls: ['./product.component.css']
+  selector: 'app-product-detail',
+  templateUrl: './product-detail.component.html',
+  styleUrls: ['./product-detail.component.css']
 })
-export class ProductComponent implements OnInit {
+export class ProductDetailComponent implements OnInit {
 
   get product():CompleteProduct {
     return this._product;

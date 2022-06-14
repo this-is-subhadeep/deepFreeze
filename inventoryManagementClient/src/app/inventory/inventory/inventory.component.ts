@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { InventoryService } from '../services/inventory.service';
 import { DatePipe } from '@angular/common';
-import { DateService } from '../services/date.service';
 import { InventoryDataSource } from './inventory-datasource';
-import { fadeInEffect, dropDownEffect } from '../animations';
-import { CompleteInventoryRow, CompleteInventory } from '../definitions/inventory-definition';
-import { VendorService } from '../services/vendor.service';
-import { CompleteVendor } from '../definitions/vendor-definition';
+import { dropDownEffect, fadeInEffect } from 'src/app/animations';
+import { CompleteVendor } from 'src/app/definitions/vendor-definition';
+import { InventoryService } from 'src/app/shared/services/inventory.service';
+import { VendorService } from 'src/app/shared/services/vendor.service';
+import { DateService } from 'src/app/shared/services/date.service';
+import { CompleteInventory, CompleteInventoryRow } from 'src/app/definitions/inventory-definition';
 
 const staticColumnsToDisplay=["productName",
                               "stockOpening",

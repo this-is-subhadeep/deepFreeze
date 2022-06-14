@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DateService } from '../services/date.service';
+import { DateService } from '../shared/services/date.service';
 import { MatSidenav } from '@angular/material';
 
 @Component({

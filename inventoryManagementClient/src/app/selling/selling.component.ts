@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../services/product.service';
-import { VendorService } from '../services/vendor.service';
-import { InventoryService } from '../services/inventory.service';
-import { DateService } from '../services/date.service';
+import { ProductService } from '../shared/services/product.service';
+import { VendorService } from '../shared/services/vendor.service';
+import { InventoryService } from '../shared/services/inventory.service';
+import { DateService } from '../shared/services/date.service';
 import { DatePipe } from '@angular/common';
 import { CompleteVendor } from '../definitions/vendor-definition';
 import { fadeInEffect, dropDownEffect } from '../animations';

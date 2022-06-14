@@ -1,9 +1,9 @@
 import { DataSource } from "@angular/cdk/table";
-import { CompleteInventory, CompleteInventoryRow } from "../definitions/inventory-definition";
+import { CompleteInventoryRow } from "../../definitions/inventory-definition";
 import { Observable, BehaviorSubject } from "rxjs";
-import { InventoryService } from "../services/inventory.service";
+import { InventoryService } from "../../shared/services/inventory.service";
 import { CollectionViewer } from "@angular/cdk/collections";
-import { CompleteVendor } from "../definitions/vendor-definition";
+import { CompleteVendor } from "../../definitions/vendor-definition";
 
 export class InventoryDataSource implements DataSource<CompleteInventoryRow> {
 
