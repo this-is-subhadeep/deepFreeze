@@ -3,3 +3,15 @@
 body {
     margin: 0px;
 }
+
+.row {
+    display: flex
+}
+
+.element {
+    flex-grow: 1;
+}
+
+.remarks {
+    height: 11px;
+}

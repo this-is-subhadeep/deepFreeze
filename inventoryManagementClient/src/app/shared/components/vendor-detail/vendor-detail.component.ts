@@ -33,12 +33,15 @@ export class VendorDetailComponent implements OnInit {
   @Input() editable: boolean;
 
   private _vendor: CompleteVendor;
+  private editComponent: boolean;
   
   venForm: FormGroup;
-  constructor(private service: VendorService,
-    private datePipe: DatePipe,
-    private dateService: DateService,
-    private fb: FormBuilder) { }
+  constructor(
+    private readonly service: VendorService,
+    private readonly datePipe: DatePipe,
+    private readonly dateService: DateService,
+    private readonly fb: FormBuilder
+  ) { }
 
   ngOnInit() {
     this.venForm = this.fb.group({
@@ -72,17 +75,36 @@ export class VendorDetailComponent implements OnInit {
       ]
     });
 
-    if (!this.editable) {
-      this.venForm.disable();
-    }
+    this.venForm.disable();
   }
 
   getFormattedtotalLoan(ven:CompleteVendor) {
     return Math.round(ven.totalLoan*100)/100;
   }
 
+  onEdit() {
+    if (this.editable) {
+      if (!this.editComponent) {
+        this.editComponent = true
+      } else if (!this.isVendorUpdated()) {
+        this.editComponent = false;
+      }
+      // this.editComponent = !this.editComponent;
+      this.editComponent ? this.venForm.enable() : this.venForm.disable();
+    }
+  }
+
+  isVendorUpdated () {
+    return this._vendor.name !== this.venForm.controls.name.value
+      || this._vendor.loanAdded !== this.venForm.controls.loanAdded.value
+      || this._vendor.loanPayed !== this.venForm.controls.loanPayed.value
+      || this._vendor.openingDp !== this.venForm.controls.openingDp.value
+      || this._vendor.deposit !== this.venForm.controls.deposit.value
+      || this._vendor.remarks !== this.venForm.controls.remarks.value
+  }
+
   onUpdate(exPanel: MatExpansionPanel) {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
+    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
     this._vendor.name = this.venForm.controls.name.value;
     this._vendor.loanAdded = this.venForm.controls.loanAdded.value;
     this._vendor.loanPayed = this.venForm.controls.loanPayed.value;
@@ -91,7 +113,9 @@ export class VendorDetailComponent implements OnInit {
     this._vendor.remarks = this.venForm.controls.remarks.value;
     this.service.updateCompleteVendor(this._vendor, date).subscribe(resp => {
       this._vendor.totalLoan = resp.totalLoan;
+      this.editComponent = false;
       exPanel.close();
+      this.venForm.disable();
     });
   }
 

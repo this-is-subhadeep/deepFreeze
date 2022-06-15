@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CompleteProduct } from '../../../definitions/product-definition';
-import { FormGroup, Validators, AbstractControl, FormBuilder, NgModel } from '@angular/forms';
+import { CompleteProduct } from 'src/app/definitions/product-definition';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatExpansionPanel } from '@angular/material';
-import { sizeValidator, priceValidator } from '../../../validators';
-import { ProductService } from '../../services/product.service';
-import { DateService } from '../../services/date.service';
+import { sizeValidator, priceValidator } from 'src/app/validators';
+import { ProductService } from 'src/app/shared/services/product.service';
+import { DateService } from 'src/app/shared//services/date.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -14,29 +14,32 @@ import { DateService } from '../../services/date.service';
 })
 export class ProductDetailComponent implements OnInit {
 
-  get product():CompleteProduct {
+  get product(): CompleteProduct {
     return this._product;
   }
   @Input()
-  set product(prod:CompleteProduct) {
+  set product(prod: CompleteProduct) {
     this._product = prod;
-    if(this.prodForm) {
+    if (this.prodForm) {
       this.prodForm.controls.name.setValue(prod.name);
       this.prodForm.controls.size.setValue(prod.packageSize);
       this.prodForm.controls.cp.setValue(prod.costPrice);
       this.prodForm.controls.sp.setValue(prod.sellingPrice);
     }
   }
-  
+
   @Input() editable: boolean;
 
   private _product: CompleteProduct;
   private prodForm: FormGroup;
+  private editComponent: boolean;
 
-  constructor(private service: ProductService,
-    private datePipe: DatePipe,
-    private dateService: DateService,
-    private fb: FormBuilder) { }
+  constructor(
+    private readonly service: ProductService,
+    private readonly datePipe: DatePipe,
+    private readonly dateService: DateService,
+    private readonly fb: FormBuilder
+  ) { }
 
   ngOnInit() {
 
@@ -66,19 +69,38 @@ export class ProductDetailComponent implements OnInit {
       ]
     });
 
-    if (!this.editable) {
-      this.prodForm.disable();
+    this.prodForm.disable();
+  }
+
+  onEdit() {
+    if (this.editable) {
+      if (!this.editComponent) {
+        this.editComponent = true
+      } else if (!this.isProductUpdated()) {
+        this.editComponent = false;
+      }
+      // this.editComponent = !this.editComponent;
+      this.editComponent ? this.prodForm.enable() : this.prodForm.disable();
     }
   }
 
+  isProductUpdated () {
+    return this._product.name !== this.prodForm.controls.name.value
+      || this._product.packageSize !== this.prodForm.controls.size.value
+      || this._product.costPrice !== this.prodForm.controls.cp.value
+      || this._product.sellingPrice !== this.prodForm.controls.sp.value
+  }
+
   onUpdate(exPanel: MatExpansionPanel) {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
+    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
     this._product.name = this.prodForm.controls.name.value;
     this._product.packageSize = this.prodForm.controls.size.value;
     this._product.costPrice = this.prodForm.controls.cp.value;
     this._product.sellingPrice = this.prodForm.controls.sp.value;
     this.service.updateCompleteProduct(this._product, date).subscribe(resp => {
+      this.editComponent = false;
       exPanel.close();
+      this.prodForm.disable();
     });
   }
 

@@ -1,5 +1,5 @@
-<mat-expansion-panel name='expansionPanel' #expansionPanel>
-  <mat-expansion-panel-header class='product-panel-header'>
+<mat-expansion-panel name="expansionPanel" #expansionPanel>
+  <mat-expansion-panel-header class="product-panel-header">
     <mat-panel-title style="align-items: center">
       <span>
         {{product.name}}
@@ -9,46 +9,66 @@
       {{product.productType.name}}
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <form [formGroup]='prodForm' (ngSubmit)='onUpdate(expansionPanel)'>
-    <mat-form-field *ngIf="editable">
-      <input matInput formControlName='name' name="name" placeholder="Product Name">
-      <mat-error *ngIf='prodForm.get("name").errors && prodForm.get("name").errors.required'>
-        Please enter a product Name !!
-      </mat-error>
-    </mat-form-field>
+  <form [formGroup]="prodForm">
+    <div class="row">
+      <div class="element">
+        <mat-form-field *ngIf="editable">
+          <input matInput formControlName="name" name="name" placeholder="Product Name">
+          <mat-error *ngIf="prodForm.get('name').errors && prodForm.get('name').errors.required">
+            Please enter a product Name !!
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-    <mat-form-field>
-      <input matInput formControlName='size' type='number' name="packageSize" placeholder="Size">
-      <mat-error *ngIf='prodForm.get("size").errors && prodForm.get("size").errors.required'>
-        Please enter a Package Size
-      </mat-error>
-      <mat-error *ngIf='prodForm.get("size").errors && !prodForm.get("size").errors.required'>
-        This must be a no. of max 3 char
-      </mat-error>
-    </mat-form-field>
+      <div class="element">
+        <mat-form-field>
+          <input matInput formControlName="size" type="number" name="packageSize" placeholder="Size">
+          <mat-error *ngIf="prodForm.get('size').errors && prodForm.get('size').errors.required">
+            Please enter a Package Size
+          </mat-error>
+          <mat-error *ngIf="prodForm.get('size').errors && !prodForm.get('size').errors.required">
+            This must be a no. of max 3 char
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-    <mat-form-field>
-      <input matInput formControlName='cp' type='number' name="costPrice" placeholder="Cost">
-      <mat-error *ngIf='prodForm.get("cp").errors && prodForm.get("cp").errors.required'>
-        Please enter a Package Size
-      </mat-error>
-      <mat-error *ngIf='prodForm.get("cp").errors && !prodForm.get("cp").errors.required'>
-        This must be a no. of max 3 char
-      </mat-error>
-    </mat-form-field>
+      <div class="element">
+        <mat-form-field>
+          <input matInput formControlName="cp" type="number" name="costPrice" placeholder="Cost">
+          <mat-error *ngIf="prodForm.get('cp').errors && prodForm.get('cp').errors.required">
+            Please enter a Package Size
+          </mat-error>
+          <mat-error *ngIf="prodForm.get('cp').errors && !prodForm.get('cp').errors.required">
+            This must be a no. of max 3 char
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-    <mat-form-field>
-      <input matInput formControlName='sp' type='number' name="sellingPrice"placeholder="Selling">
-      <mat-error *ngIf='prodForm.get("sp").errors && prodForm.get("sp").errors.required'>
-        Please enter a Package Size
-      </mat-error>
-      <mat-error *ngIf='prodForm.get("sp").errors && !prodForm.get("sp").errors.required'>
-        This must be a no. of max 3 char
-      </mat-error>
-    </mat-form-field>
+      <div class="element">
+        <mat-form-field>
+          <input matInput formControlName="sp" type="number" name="sellingPrice" placeholder="Selling">
+          <mat-error *ngIf="prodForm.get('sp').errors && prodForm.get('sp').errors.required">
+            Please enter a Package Size
+          </mat-error>
+          <mat-error *ngIf="prodForm.get('sp').errors && !prodForm.get('sp').errors.required">
+            This must be a no. of max 3 char
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-    <mat-action-row *ngIf='editable'>
-      <button mat-raised-button type='submit' color='primary' [disabled]="!prodForm.touched || prodForm.invalid">
+      <div class="spacer" *ngIf="editable">
+        <span> </span>
+      </div>
+
+      <div class="element" *ngIf="editable">
+        <button mat-icon-button (click)="onEdit()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <mat-action-row *ngIf="editable">
+      <button mat-raised-button type="submit" color="primary" [disabled]="!this.isProductUpdated() || prodForm.invalid || !editComponent" (click)="onUpdate(expansionPanel)">
         Update
       </button>
     </mat-action-row>

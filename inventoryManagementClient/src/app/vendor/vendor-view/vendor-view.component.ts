@@ -36,7 +36,7 @@ export class VendorViewComponent implements OnInit {
   }
 
   private addButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
     this.newCompleteVendor.id=this.service.nextVendorId;
     this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
       this.loadCompleteVendorData();
@@ -50,7 +50,7 @@ export class VendorViewComponent implements OnInit {
   }
 
   private loadCompleteVendorData() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
+    let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
     this.service.findCompleteVendorObservable(date).subscribe(completeVendors => {
       this.completeVendors=completeVendors;
     })

@@ -1,6 +1,7 @@
+import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatExpansionModule, MatInputModule } from "@angular/material";
+import { MatButtonModule, MatExpansionModule, MatIconModule, MatInputModule } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
 import { ProductDetailComponent } from "./product-detail/product-detail.component";
 import { VendorDetailComponent } from "./vendor-detail/vendor-detail.component";
@@ -10,9 +11,11 @@ import { VendorDetailComponent } from "./vendor-detail/vendor-detail.component";
         ProductDetailComponent,
         VendorDetailComponent],
     imports: [
-        BrowserModule,
+        CommonModule,
         MatInputModule,
+        MatButtonModule,
         MatExpansionModule,
+        MatIconModule,
         FormsModule,
         ReactiveFormsModule
     ],
