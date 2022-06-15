@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../shared/services/product.service';
-import { VendorService } from '../shared/services/vendor.service';
-import { InventoryService } from '../shared/services/inventory.service';
-import { DateService } from '../shared/services/date.service';
 import { DatePipe } from '@angular/common';
-import { CompleteVendor } from '../definitions/vendor-definition';
-import { fadeInEffect, dropDownEffect } from '../animations';
-import { CompleteProduct } from '../definitions/product-definition';
-import { CompleteInventory } from '../definitions/inventory-definition';
-import { SellingData } from '../definitions/selling-definition';
+import { Component, OnInit } from '@angular/core';
 import { NgModel, FormControl } from '@angular/forms';
+import { dropDownEffect, fadeInEffect } from 'src/app/animations';
+import { CompleteInventory } from 'src/app/definitions/inventory-definition';
+import { CompleteProduct } from 'src/app/definitions/product-definition';
+import { SellingData } from 'src/app/definitions/selling-definition';
+import { CompleteVendor } from 'src/app/definitions/vendor-definition';
+import { DateService } from 'src/app/shared/services/date.service';
+import { InventoryService } from 'src/app/shared/services/inventory.service';
+import { ProductService } from 'src/app/shared/services/product.service';
 
 @Component({
   selector: 'app-selling',

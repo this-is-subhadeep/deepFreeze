@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { VendorService } from '../shared/services/vendor.service';
+import { VendorService } from '../../shared/services/vendor.service';
 import { DatePipe } from '@angular/common';
-import { DateService } from '../shared/services/date.service';
-import { CompleteVendor } from '../definitions/vendor-definition';
-import { fadeInEffect, dropDownEffect } from '../animations';
+import { DateService } from '../../shared/services/date.service';
+import { CompleteVendor } from '../../definitions/vendor-definition';
+import { fadeInEffect, dropDownEffect } from '../../animations';
 
 @Component({
   selector: 'vendor-view',

@@ -6,7 +6,7 @@
 }
 .inventory-table {
     background: rgb(192, 230, 218);
-    width: 1500px;
+    width: 100%;
     /* height: 2000px ; */
 }
 .productType {
