@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
 import com.deepFreeze.be.mongoInventoryManagement.support.StringResponse;
 
 @RestController
@@ -81,6 +82,18 @@ public class VendorController {
 			LocalDate date = LocalDate.parse(refDate);
 			service.updateCompleteVendor(completeVendor, date);
 			return service.getCompleteVendor(completeVendor.getId(), date);
+		} catch (DateTimeParseException e) {
+			e.printStackTrace(System.out);
+		}
+		return null;
+	}
+	
+//	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-vendor//{id}/{refDate}")
+	public DeleteResponse isDeleteVendorPossible(@PathVariable String id, @PathVariable String refDate) {
+		try {
+			LocalDate date = LocalDate.parse(refDate);
+			return service.isDeletePossible(id, date);
 		} catch (DateTimeParseException e) {
 			e.printStackTrace(System.out);
 		}

@@ -11,11 +11,19 @@ import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.deepFreeze.be.mongoInventoryManagement.inventory.Inventory;
+import com.deepFreeze.be.mongoInventoryManagement.inventory.InventoryService;
+import com.deepFreeze.be.mongoInventoryManagement.inventory.StockInOut;
+import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
+
 @Service
 public class VendorService {
 
 	@Autowired
 	VendorRepository vendorRepository;
+
+	@Autowired
+	InventoryService inventoryService;
 
 	public List<Vendor> getAllVendors() {
 		List<Vendor> venList = vendorRepository.findAll();
@@ -59,7 +67,7 @@ public class VendorService {
 		}
 		return maxVenId.substring(0, 3) + String.format("%06d", vidNumber + 1);
 	}
-	
+
 	private CompleteVendor getCompleteVendorfromVendor(Vendor ven, LocalDate refDate) {
 		CompleteVendor compVen = new CompleteVendor();
 		compVen.setId(ven.getId());
@@ -81,10 +89,10 @@ public class VendorService {
 		}
 		return compVen;
 	}
-	
+
 	public CompleteVendor getCompleteVendor(String id, LocalDate refDate) {
 		CompleteVendor compVen = new CompleteVendor();
-		if (id!=null && refDate != null) {
+		if (id != null && refDate != null) {
 			compVen = getCompleteVendorfromVendor(getVendor(id), refDate);
 		}
 		return compVen;
@@ -138,16 +146,46 @@ public class VendorService {
 		}
 		updateVendor(ven);
 	}
-	
+
 	public float getTotalLoan(Vendor ven, LocalDate refDate) {
-		float totalLoan=0;
-		if (refDate!=null) {
+		float totalLoan = 0;
+		if (refDate != null) {
 			for (VendorDetail detail : ven.getDetails()) {
 				if (refDate.compareTo(detail.getId()) >= 0) {
 					totalLoan += detail.getLoanAdded() - detail.getLoanPayed();
 				}
-			} 
+			}
 		}
 		return totalLoan;
+	}
+
+	public DeleteResponse isDeletePossible(String venId, LocalDate refDate) {
+		DeleteResponse delResp;
+		Vendor ven = getVendor(venId);
+		if (ven != null && refDate != null) {
+			if (ven.getStartDate().compareTo(refDate) > 0) {
+				delResp = new DeleteResponse(false, "Cannot Delete Vendor before it was Created");
+				return delResp;
+			}
+		} else {
+			delResp = new DeleteResponse(false, "Input Date Incomplete");
+			return delResp;
+		}
+		Inventory inventory = inventoryService.getInventory(refDate);
+		if (inventory != null) {
+			for (StockInOut stockOut : inventory.getStockOut()) {
+				if (stockOut.getId().getActorId().equals(venId)) {
+					delResp = new DeleteResponse(false,
+							"Delete Not Possible as there is Inventory record(s) for the Vendor");
+					return delResp;
+				}
+			}
+		}
+		if (getTotalLoan(ven, refDate) == 0) {
+			delResp = new DeleteResponse(true, "OK");
+		} else {
+			delResp = new DeleteResponse(true, "Delete Possible but Vendor has non zero Loan till this Date");
+		}
+		return delResp;
 	}
 }
