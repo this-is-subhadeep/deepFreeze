@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { ProductType, CompleteProduct } from '../../definitions/product-definition';
 import { environment } from '../../../environments/environment';
-import { StringResponse } from '../../definitions/support-definition';
+import { DeleteResponse, StringResponse } from '../../definitions/support-definition';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +50,10 @@ export class ProductService {
       }
     })
     return prodType;
+  }
+  canProductBeDeleted(prodId: string, refDate: string) {
+    let url = environment.serverBase+'/can-delete-product/'+prodId+'/'+refDate;
+    return this.http.get<DeleteResponse>(url);
   }
   addCompleteProduct(newCompleteProduct:CompleteProduct, refDate:string) {
     let url = this.getCompleteProductUrl+"/"+refDate;

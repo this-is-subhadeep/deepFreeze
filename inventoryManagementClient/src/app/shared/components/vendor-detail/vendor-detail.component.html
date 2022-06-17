@@ -69,9 +69,15 @@
           <mat-icon>edit</mat-icon>
         </button>
       </div>
+
+      <div class="element" *ngIf="editable">
+        <button mat-icon-button [disabled]="!isDeleteAllowed()">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
 
-    <mat-action-row *ngIf="editable">
+    <mat-action-row *ngIf="editComponent">
       <button mat-raised-button type="submit" color="primary"
         [disabled]="!this.isVendorUpdated() || venForm.invalid || !editComponent" (click)="onUpdate(expansionPanel)">
         Update

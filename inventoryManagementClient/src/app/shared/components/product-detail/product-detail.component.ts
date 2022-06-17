@@ -33,6 +33,7 @@ export class ProductDetailComponent implements OnInit {
   private _product: CompleteProduct;
   private prodForm: FormGroup;
   private editComponent: boolean;
+  private deleteAllowed: boolean
 
   constructor(
     private readonly service: ProductService,
@@ -42,7 +43,7 @@ export class ProductDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    this.deleteAllowed = false;
     this.prodForm = this.fb.group({
       name: [
         this._product.name, [
@@ -70,6 +71,14 @@ export class ProductDetailComponent implements OnInit {
     });
 
     this.prodForm.disable();
+    this.service.canProductBeDeleted(
+      this._product.id,
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+    ).subscribe(delResp  => {
+      if(delResp.possible) {
+        this.deleteAllowed = true;
+      }
+    });
   }
 
   onEdit() {
@@ -102,6 +111,10 @@ export class ProductDetailComponent implements OnInit {
       exPanel.close();
       this.prodForm.disable();
     });
+  }
+
+  isDeleteAllowed() {
+    return this.deleteAllowed;
   }
 
 }

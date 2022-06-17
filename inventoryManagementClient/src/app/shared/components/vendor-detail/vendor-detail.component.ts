@@ -34,6 +34,7 @@ export class VendorDetailComponent implements OnInit {
 
   private _vendor: CompleteVendor;
   private editComponent: boolean;
+  private deleteAllowed: boolean
   
   venForm: FormGroup;
   constructor(
@@ -44,6 +45,7 @@ export class VendorDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.deleteAllowed = false;
     this.venForm = this.fb.group({
       name: [
         this._vendor.name, [
@@ -76,6 +78,14 @@ export class VendorDetailComponent implements OnInit {
     });
 
     this.venForm.disable();
+    this.service.canVendorBeDeleted(
+      this._vendor.id,
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+    ).subscribe(delResp  => {
+      if(delResp.possible) {
+        this.deleteAllowed = true;
+      }
+    });
   }
 
   getFormattedtotalLoan(ven:CompleteVendor) {
@@ -119,5 +129,8 @@ export class VendorDetailComponent implements OnInit {
     });
   }
 
+  isDeleteAllowed() {
+    return this.deleteAllowed;
+  }
 
 }

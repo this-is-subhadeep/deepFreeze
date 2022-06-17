@@ -50,6 +50,14 @@ public class InventoryService {
 		return null;
 	}
 
+	public List<Inventory> getInventoryGte(LocalDate refDate) {
+		Optional<List<Inventory>> inventoryContainer = inventoryRepository.findGteId(refDate);
+		if (inventoryContainer.isPresent()) {
+			return inventoryContainer.get();
+		}
+		return null;
+	}
+
 	public InventoryOpening getInventoryOpening(LocalDate refDate) {
 		Optional<InventoryOpening> inventoryOpeningContainer = inventoryOpeningRepository.findById(refDate);
 		if (inventoryOpeningContainer.isPresent()) {

@@ -32,6 +32,12 @@ public class GenericRepository<K, V> {
 		return mongoTemplate.find(q,typeClass);
 	}
 
+	protected List<K> findGteId(String criteriaName, V criteriaValue) {
+		Query q = new Query();
+		q.addCriteria(Criteria.where(criteriaName).gte(criteriaValue));
+		return mongoTemplate.find(q,typeClass);
+	}
+
 	public void save(K doc) {
 		mongoTemplate.save(doc, typeClass.getSimpleName().toLowerCase());
 	}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
 import com.deepFreeze.be.mongoInventoryManagement.support.StringResponse;
 
 @RestController
@@ -88,5 +89,16 @@ public class ProductController {
 		} catch (DateTimeParseException e) {
 			e.printStackTrace(System.out);
 		}
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-product//{id}/{refDate}")
+	public DeleteResponse isDeleteProductPossible(@PathVariable String id, @PathVariable String refDate) {
+		try {
+			LocalDate date = LocalDate.parse(refDate);
+			return productService.isDeletePossible(id, date);
+		} catch (DateTimeParseException e) {
+			e.printStackTrace(System.out);
+		}
+		return null;
 	}
 }

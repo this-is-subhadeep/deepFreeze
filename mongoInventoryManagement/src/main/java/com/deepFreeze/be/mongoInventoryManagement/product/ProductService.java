@@ -11,12 +11,22 @@ import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.deepFreeze.be.mongoInventoryManagement.inventory.Inventory;
+import com.deepFreeze.be.mongoInventoryManagement.inventory.InventoryService;
+import com.deepFreeze.be.mongoInventoryManagement.inventory.StockInOut;
+import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
+import com.deepFreeze.be.mongoInventoryManagement.vendor.Vendor;
+
 @Service
 public class ProductService {
 	@Autowired
 	private ProductTypeRepository productTypeRepository;
+
 	@Autowired
 	private ProductRepository productRepository;
+
+	@Autowired
+	InventoryService inventoryService;
 
 	public List<ProductType> getAllProductTypes() {
 		List<ProductType> prodTypeList = productTypeRepository.findAll();
@@ -185,4 +195,40 @@ public class ProductService {
 		}
 		updateProduct(prod);
 	}
+	
+	public DeleteResponse isDeletePossible(String prodId, LocalDate refDate) {
+		DeleteResponse delResp;
+		Product prod = getProduct(prodId);
+		if (prod != null && refDate != null) {
+			if (prod.getStartDate().compareTo(refDate) > 0) {
+				delResp = new DeleteResponse(false, "Cannot Delete Product before it was Created");
+				return delResp;
+			}
+		} else {
+			delResp = new DeleteResponse(false, "Input Date Incomplete");
+			return delResp;
+		}
+		List<Inventory> inventoryList = inventoryService.getInventoryGte(refDate);
+		if (inventoryList != null) {
+			for (Inventory inventory : inventoryList) {
+				for (StockInOut stockIn : inventory.getStockIn()) {
+					if (stockIn.getId().getProductId().equals(prodId)) {
+						delResp = new DeleteResponse(false,
+								"Delete Not Possible as there is Inventory record(s) for the Product");
+						return delResp;
+					}
+				}
+				for (StockInOut stockOut : inventory.getStockOut()) {
+					if (stockOut.getId().getProductId().equals(prodId)) {
+						delResp = new DeleteResponse(false,
+								"Delete Not Possible as there is Inventory record(s) for the Product");
+						return delResp;
+					}
+				}
+			}
+		}
+		delResp = new DeleteResponse(true, "OK");
+		return delResp;
+	}
+
 }

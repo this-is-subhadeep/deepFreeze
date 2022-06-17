@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { StringResponse } from '../../definitions/support-definition';
-import { CompleteVendor } from '../../definitions/vendor-definition';
+import { DeleteResponse, StringResponse } from 'src/app/definitions/support-definition';
+import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 
 @Injectable({
   providedIn: 'root'
@@ -29,17 +29,22 @@ export class VendorService {
   }
 
   findCompleteVendorObservable (refDate:string) {
-    let url = this.getCompleteVendorUrl+"/"+refDate;
+    let url = this.getCompleteVendorUrl+'/'+refDate;
     return this.http.get<CompleteVendor[]>(url);
   }
 
+  canVendorBeDeleted(venId: string, refDate: string) {
+    let url = environment.serverBase+'/can-delete-vendor/'+venId+'/'+refDate;
+    return this.http.get<DeleteResponse>(url);
+  }
+
   addCompleteVendor(newVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+"/"+refDate;
+    let url = this.getCompleteVendorUrl+'/'+refDate;
     return this.http.post<CompleteVendor>(url,newVendor);
   }
   
   updateCompleteVendor(newVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+"/"+refDate;
+    let url = this.getCompleteVendorUrl+'/'+refDate;
     return this.http.put<CompleteVendor>(url,newVendor);
   }
 

@@ -171,13 +171,15 @@ public class VendorService {
 			delResp = new DeleteResponse(false, "Input Date Incomplete");
 			return delResp;
 		}
-		Inventory inventory = inventoryService.getInventory(refDate);
-		if (inventory != null) {
-			for (StockInOut stockOut : inventory.getStockOut()) {
-				if (stockOut.getId().getActorId().equals(venId)) {
-					delResp = new DeleteResponse(false,
-							"Delete Not Possible as there is Inventory record(s) for the Vendor");
-					return delResp;
+		List<Inventory> inventoryList = inventoryService.getInventoryGte(refDate);
+		if (inventoryList != null) {
+			for (Inventory inventory : inventoryList) {
+				for (StockInOut stockOut : inventory.getStockOut()) {
+					if (stockOut.getId().getActorId().equals(venId)) {
+						delResp = new DeleteResponse(false,
+								"Delete Not Possible as there is Inventory record(s) for the Vendor");
+						return delResp;
+					}
 				}
 			}
 		}
