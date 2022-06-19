@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import { DateService } from '../../shared/services/date.service';
 import { CompleteVendor } from '../../definitions/vendor-definition';
 import { fadeInEffect, dropDownEffect } from '../../animations';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'vendor-view',
@@ -12,10 +13,16 @@ import { fadeInEffect, dropDownEffect } from '../../animations';
   animations: [fadeInEffect, dropDownEffect]
 })
 export class VendorViewComponent implements OnInit {
-  private completeVendors: CompleteVendor[];
+  private completeVendors$: Observable<CompleteVendor[]>;
   private newCompleteVendor:CompleteVendor;
-
-  constructor(private service:VendorService, private datePipe: DatePipe, private dateService:DateService) { }
+  private vendorsClosed: Array<string>;
+  constructor(
+    private service:VendorService,
+    private datePipe: DatePipe,
+    private dateService:DateService
+  ) {
+    this.vendorsClosed = new Array<string>();
+  }
 
   ngOnInit() {
     this.loadCompleteVendorData();
@@ -51,8 +58,14 @@ export class VendorViewComponent implements OnInit {
 
   private loadCompleteVendorData() {
     let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
-    this.service.findCompleteVendorObservable(date).subscribe(completeVendors => {
-      this.completeVendors=completeVendors;
-    })
+    this.completeVendors$ = this.service.findCompleteVendorObservable(date);
+  }
+
+  deleteCompleteVendor(venId: string) {
+    this.vendorsClosed.push(venId);
+  }
+
+  venTracking(index: number, value: CompleteVendor) {
+    return value.id;
   }
 }

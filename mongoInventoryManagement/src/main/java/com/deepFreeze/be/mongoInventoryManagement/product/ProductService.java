@@ -196,6 +196,14 @@ public class ProductService {
 		updateProduct(prod);
 	}
 	
+	public void closeCompleteProduct(CompleteProduct completeProduct, LocalDate endDate) {
+		Product prod = getProduct(completeProduct.getId());
+		if (prod!=null) {
+			prod.setEndDate(endDate);
+			productRepository.save(prod);
+		}
+	}
+
 	public DeleteResponse isDeletePossible(String prodId, LocalDate refDate) {
 		DeleteResponse delResp;
 		Product prod = getProduct(prodId);

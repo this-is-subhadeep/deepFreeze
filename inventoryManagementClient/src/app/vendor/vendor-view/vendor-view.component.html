@@ -1,7 +1,9 @@
 <div @fadeIn>
   <div class="vendors-table-div mat-elevation-z10">
     <mat-accordion>
-      <app-vendor-detail [vendor]="compVen" [editable]="true" *ngFor="let compVen of completeVendors"></app-vendor-detail>
+      <app-vendor-detail [vendor]="compVen" [editable]="true" *ngFor="let compVen of completeVendors$ | async; trackBy: venTracking" (endVendorEvent)="deleteCompleteVendor($event)"
+        [hidden]="vendorsClosed.includes(compVen.id)">
+      </app-vendor-detail>
       <mat-expansion-panel class="add-vendor-row" (closed)="addClosed()">
         <mat-expansion-panel-header>
           <mat-panel-title>

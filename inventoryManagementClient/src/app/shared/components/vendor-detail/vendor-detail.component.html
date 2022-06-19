@@ -71,7 +71,7 @@
       </div>
 
       <div class="element" *ngIf="editable">
-        <button mat-icon-button [disabled]="!isDeleteAllowed()">
+        <button mat-icon-button [disabled]="!isDeleteAllowed()" (click)="closeVendor()">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

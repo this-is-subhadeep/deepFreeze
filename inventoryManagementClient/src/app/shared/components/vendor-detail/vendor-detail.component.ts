@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { CompleteVendor } from '../../../definitions/vendor-definition';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { sizeValidator, priceValidator } from '../../../validators';
-import { MatExpansionPanel } from '@angular/material';
-import { VendorService } from '../../services/vendor.service';
-import { DateService } from '../../services/date.service';
+import { priceValidator } from 'src/app/validators';
+import { MatDialog, MatExpansionPanel } from '@angular/material';
+import { VendorService } from 'src/app/shared/services/vendor.service';
+import { DateService } from 'src/app/shared/services/date.service';
+import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-confirm-dialog/delete-confirm-dialog.component';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -33,15 +34,18 @@ export class VendorDetailComponent implements OnInit {
   @Input() editable: boolean;
 
   private _vendor: CompleteVendor;
+  private venForm: FormGroup;
   private editComponent: boolean;
   private deleteAllowed: boolean
   
-  venForm: FormGroup;
+  @Output() endVendorEvent = new EventEmitter<string>();
+
   constructor(
     private readonly service: VendorService,
     private readonly datePipe: DatePipe,
     private readonly dateService: DateService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -99,7 +103,6 @@ export class VendorDetailComponent implements OnInit {
       } else if (!this.isVendorUpdated()) {
         this.editComponent = false;
       }
-      // this.editComponent = !this.editComponent;
       this.editComponent ? this.venForm.enable() : this.venForm.disable();
     }
   }
@@ -131,6 +134,34 @@ export class VendorDetailComponent implements OnInit {
 
   isDeleteAllowed() {
     return this.deleteAllowed;
+  }
+
+  closeVendor() {
+    this.service.canVendorBeDeleted(
+      this._vendor.id,
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+    ).subscribe(delResp => {
+      if (delResp.possible) {
+        this.openDialog(delResp.message).subscribe(res => {
+          if (res) {
+            this.service.closeCompleteVendor(
+              this._vendor,
+              this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+            ).subscribe(resp => {
+              this.endVendorEvent.emit(this._vendor.id);
+            });
+          }
+        });
+      }
+    });
+  }
+
+  openDialog(message: string) {
+    const dialogRef = this.dialog.open(DeleteConfirmDialogComponent, {
+      data: message
+    });
+
+    return dialogRef.afterClosed();
   }
 
 }

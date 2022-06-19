@@ -91,6 +91,16 @@ public class ProductController {
 		}
 	}
 
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(method = RequestMethod.PUT, value = "/complete-products/close/{refDate}")
+	public void closeCompleteProduct(@PathVariable String refDate, @RequestBody CompleteProduct completeProduct) {
+		try {
+			productService.closeCompleteProduct(completeProduct, LocalDate.parse(refDate));
+		} catch (DateTimeParseException e) {
+			e.printStackTrace(System.out);
+		}
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-product//{id}/{refDate}")
 	public DeleteResponse isDeleteProductPossible(@PathVariable String id, @PathVariable String refDate) {
 		try {

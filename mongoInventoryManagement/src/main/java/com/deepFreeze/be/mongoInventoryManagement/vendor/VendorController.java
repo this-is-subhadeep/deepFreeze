@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.deepFreeze.be.mongoInventoryManagement.product.CompleteProduct;
 import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
 import com.deepFreeze.be.mongoInventoryManagement.support.StringResponse;
 
@@ -53,7 +54,7 @@ public class VendorController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/complete-Vendors/{refDate}")
+	@RequestMapping(method = RequestMethod.GET, value = "/complete-vendors/{refDate}")
 	public List<CompleteVendor> getAllCompleteVendors(@PathVariable String refDate) {
 		try {
 			return service.getAllCompleteVendors(LocalDate.parse(refDate));
@@ -63,7 +64,7 @@ public class VendorController {
 		return null;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/complete-Vendors/{refDate}")
+	@RequestMapping(method = RequestMethod.POST, value = "/complete-vendors/{refDate}")
 	public CompleteVendor addCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
 		try {
 			LocalDate date = LocalDate.parse(refDate);
@@ -76,7 +77,7 @@ public class VendorController {
 	}
 
 	@CrossOrigin(origins = "http://localhost:4200")
-	@RequestMapping(method = RequestMethod.PUT, value = "/complete-Vendors/{refDate}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/complete-vendors/{refDate}")
 	public CompleteVendor updateCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
 		try {
 			LocalDate date = LocalDate.parse(refDate);
@@ -88,7 +89,16 @@ public class VendorController {
 		return null;
 	}
 	
-//	@CrossOrigin(origins = "http://localhost:4200")
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(method = RequestMethod.PUT, value = "/complete-vendors/close/{refDate}")
+	public void closeCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
+		try {
+			service.closeCompleteVendor(completeVendor, LocalDate.parse(refDate));
+		} catch (DateTimeParseException e) {
+			e.printStackTrace(System.out);
+		}
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-vendor//{id}/{refDate}")
 	public DeleteResponse isDeleteVendorPossible(@PathVariable String id, @PathVariable String refDate) {
 		try {

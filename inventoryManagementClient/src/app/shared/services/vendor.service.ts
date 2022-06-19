@@ -8,7 +8,7 @@ import { CompleteVendor } from 'src/app/definitions/vendor-definition';
   providedIn: 'root'
 })
 export class VendorService {
-  private serverAddressCompleteVendors='/complete-Vendors';
+  private serverAddressCompleteVendors='/complete-vendors';
   private serverAddressNextVendorId='/vendor-next-id';
   private _nextVendorId:string;
   private getNextVendorIdUrl=environment.serverBase+this.serverAddressNextVendorId;
@@ -46,6 +46,11 @@ export class VendorService {
   updateCompleteVendor(newVendor:CompleteVendor, refDate:string) {
     let url = this.getCompleteVendorUrl+'/'+refDate;
     return this.http.put<CompleteVendor>(url,newVendor);
+  }
+
+  closeCompleteVendor(completeVendor:CompleteVendor, refDate:string) {
+    let url = this.getCompleteVendorUrl+"/close/"+refDate;
+    return this.http.put(url,completeVendor);
   }
 
 }

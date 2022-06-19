@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import com.deepFreeze.be.mongoInventoryManagement.inventory.Inventory;
 import com.deepFreeze.be.mongoInventoryManagement.inventory.InventoryService;
 import com.deepFreeze.be.mongoInventoryManagement.inventory.StockInOut;
+import com.deepFreeze.be.mongoInventoryManagement.product.CompleteProduct;
+import com.deepFreeze.be.mongoInventoryManagement.product.Product;
 import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
 
 @Service
@@ -157,6 +159,14 @@ public class VendorService {
 			}
 		}
 		return totalLoan;
+	}
+
+	public void closeCompleteVendor(CompleteVendor completeVendor, LocalDate endDate) {
+		Vendor ven = getVendor(completeVendor.getId());
+		if (ven!=null) {
+			ven.setEndDate(endDate);
+			vendorRepository.save(ven);
+		}
 	}
 
 	public DeleteResponse isDeletePossible(String venId, LocalDate refDate) {

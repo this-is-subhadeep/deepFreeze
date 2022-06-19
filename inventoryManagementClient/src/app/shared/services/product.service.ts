@@ -59,8 +59,12 @@ export class ProductService {
     let url = this.getCompleteProductUrl+"/"+refDate;
     return this.http.post(url,newCompleteProduct);
   }
-  updateCompleteProduct(newCompleteProduct:CompleteProduct, refDate:string) {
+  updateCompleteProduct(completeProduct:CompleteProduct, refDate:string) {
     let url = this.getCompleteProductUrl+"/"+refDate;
-    return this.http.put(url,newCompleteProduct);
+    return this.http.put(url,completeProduct);
+  }
+  closeCompleteProduct(completeProduct:CompleteProduct, refDate:string) {
+    let url = this.getCompleteProductUrl+"/close/"+refDate;
+    return this.http.put(url,completeProduct);
   }
 }

@@ -1,10 +1,10 @@
-import { Component, OnInit} from '@angular/core';
-
-import { CompleteProduct } from '../../definitions/product-definition';
-import { ProductService } from '../../shared/services/product.service';
+import { Component, OnInit } from '@angular/core';
+import { CompleteProduct } from 'src/app/definitions/product-definition';
+import { ProductService } from 'src/app/shared/services/product.service';
 import { DatePipe } from '@angular/common';
-import { DateService } from '../../shared/services/date.service';
-import { fadeInEffect, dropDownEffect } from '../../animations';
+import { DateService } from 'src/app/shared/services/date.service';
+import { fadeInEffect, dropDownEffect } from 'src/app/animations';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'product-view',
@@ -13,9 +13,16 @@ import { fadeInEffect, dropDownEffect } from '../../animations';
   animations: [fadeInEffect, dropDownEffect]
 })
 export class ProductViewComponent implements OnInit {
-  private completeProducts: CompleteProduct[];
-  private newCompleteProduct:CompleteProduct;
-  constructor(private service: ProductService, private datePipe: DatePipe, private dateService:DateService) { }
+  private completeProducts$: Observable<CompleteProduct[]>;
+  private newCompleteProduct: CompleteProduct;
+  private productsClosed: Array<string>;
+  constructor(
+    private service: ProductService,
+    private datePipe: DatePipe,
+    private dateService: DateService
+  ) {
+    this.productsClosed = new Array<string>();
+  }
 
   ngOnInit() {
     this.loadCompleteProductData();
@@ -40,13 +47,13 @@ export class ProductViewComponent implements OnInit {
   }
 
   set newProductTypeId(id) {
-    this.newCompleteProduct.productType=this.service.getProductType(id);
+    this.newCompleteProduct.productType = this.service.getProductType(id);
   }
 
   addButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    this.newCompleteProduct.id=this.service.nextProductId;
-    this.service.addCompleteProduct(this.newCompleteProduct,date).subscribe(resp => {
+    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
+    this.newCompleteProduct.id = this.service.nextProductId;
+    this.service.addCompleteProduct(this.newCompleteProduct, date).subscribe(resp => {
       this.loadCompleteProductData();
       this.service.refresh();
     })
@@ -58,9 +65,15 @@ export class ProductViewComponent implements OnInit {
   }
 
   private loadCompleteProductData() {
-    let date=this.datePipe.transform(this.dateService.date,"yyyy-MM-dd");
-    this.service.findCompleteProductObservable(date).subscribe(completeProducts => {
-      this.completeProducts=completeProducts;
-    })
+    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
+    this.completeProducts$ = this.service.findCompleteProductObservable(date);
+  }
+
+  deleteCompleteProduct(prodId: string) {
+    this.productsClosed.push(prodId);
+  }
+
+  prodTracking(index: number, value: CompleteProduct) {
+    return value.id;
   }
 }
