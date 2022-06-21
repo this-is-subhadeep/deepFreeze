@@ -75,6 +75,12 @@
           <mat-icon>delete</mat-icon>
         </button>
       </div>
+
+      <div class="element" *ngIf="editable">
+        <button mat-icon-button>
+          <mat-icon>print</mat-icon>
+        </button>
+      </div>
     </div>
 
     <mat-action-row *ngIf="editComponent">
