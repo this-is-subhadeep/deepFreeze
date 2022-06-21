@@ -13,7 +13,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
 @Component({
   selector: 'app-selling',
   templateUrl: './selling.component.html',
-  styleUrls: ['./selling.component.css'],
+  styleUrls: ['./selling.component.scss'],
   animations: [fadeInEffect, dropDownEffect]
 })
 export class SellingComponent implements OnInit {
