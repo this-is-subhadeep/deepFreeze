@@ -1,6 +1,8 @@
 package com.deepFreeze.be.mongoInventoryManagement.inventory;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +13,8 @@ public class InventoryOpeningRepository extends GenericRepository<InventoryOpeni
 	public InventoryOpeningRepository() {
 		super(InventoryOpening.class);
 	}
-
+	public Optional<List<InventoryOpening>> findGteId(LocalDate refDate) {
+		List<InventoryOpening> inventoryOPeningList = this.findGteId("_id", refDate);
+		return inventoryOPeningList == null ? Optional.empty() : Optional.of(inventoryOPeningList);
+	}
 }

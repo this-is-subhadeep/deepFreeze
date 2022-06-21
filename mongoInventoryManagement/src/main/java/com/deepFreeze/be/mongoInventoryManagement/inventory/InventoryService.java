@@ -20,10 +20,10 @@ public class InventoryService {
 
 	@Autowired
 	InventoryRepository inventoryRepository;
-	
+
 	@Autowired
 	InventoryOpeningRepository inventoryOpeningRepository;
-	
+
 	@Autowired
 	ProductService productService;
 
@@ -58,6 +58,14 @@ public class InventoryService {
 		return null;
 	}
 
+	public List<InventoryOpening> getInventoryOpeningGte(LocalDate refDate) {
+		Optional<List<InventoryOpening>> inventoryOpeningContainer = inventoryOpeningRepository.findGteId(refDate);
+		if (inventoryOpeningContainer.isPresent()) {
+			return inventoryOpeningContainer.get();
+		}
+		return null;
+	}
+
 	public InventoryOpening getInventoryOpening(LocalDate refDate) {
 		Optional<InventoryOpening> inventoryOpeningContainer = inventoryOpeningRepository.findById(refDate);
 		if (inventoryOpeningContainer.isPresent()) {
@@ -75,79 +83,76 @@ public class InventoryService {
 		CompleteInventory compInv = new CompleteInventory(getDefaultInventoryRows(refDate), compVens);
 		List<CompleteProduct> compProds = productService.getAllCompleteProducts(refDate);
 		Inventory inv = getInventory(refDate);
-		LocalDate openingDate = refDate.withDayOfMonth(02);
+		LocalDate openingDate = refDate.withDayOfMonth(01);
 		InventoryOpening invOpn = getInventoryOpening(openingDate);
-		System.out.println(refDate + " - " + openingDate+" - " +invOpn);
 		fillStockIn(inv, compInv, compProds);
 		fillStockOut(inv, compInv, compProds);
-		fillStockOpening(invOpn, compInv, compProds);
+		fillStockOpening(invOpn, compInv, compProds, refDate);
 		compInv.getRows().forEach(invRow -> {
-			int totalStockOpening = invRow.getStockOpening()!=null? invRow.getStockOpening() : 0;
-			int totalIn = invRow.getStockTotalIn()!=null? invRow.getStockTotalIn() : 0;
-			int totalOut = invRow.getStockTotalOut()!=null? invRow.getStockTotalOut() : 0;
+			int totalStockOpening = invRow.getStockOpening() != null ? invRow.getStockOpening() : 0;
+			int totalIn = invRow.getStockTotalIn() != null ? invRow.getStockTotalIn() : 0;
+			int totalOut = invRow.getStockTotalOut() != null ? invRow.getStockTotalOut() : 0;
 			int balance = totalStockOpening + totalIn - totalOut;
-			if(balance!=0) {
+			if (balance != 0) {
 				invRow.setStockBalance(balance);
 			}
 		});
 		return compInv;
 	}
-	
-	public void fillStockOpening(InventoryOpening invOpn, CompleteInventory compInv, List<CompleteProduct> compProds) {
-		if(invOpn!=null) {
-			List<StockInOut> stockOpenings = invOpn.getStockOpeing();
-			if(stockOpenings!=null) {
-				stockOpenings.forEach(stockOpening -> {
-					if(stockOpening.getId()!=null && stockOpening.getId().getProductId() != null) {
-						compInv.getRows().forEach(row -> {
-							if (row.getId().equals(stockOpening.getId().getProductId())) {
-								row.setStockOpening(null);
-								if(stockOpening.getPackages()!=0) {
-									int packageSize = 0;
-									for (CompleteProduct compProd : compProds) {
-										if (compProd.getId().equals(stockOpening.getId().getProductId())) {
-											packageSize = compProd.getPackageSize();
+
+	public void fillStockOpening(InventoryOpening invOpn, CompleteInventory compInv, List<CompleteProduct> compProds, LocalDate refDate) {
+		if (invOpn != null) {
+			if(refDate.getDayOfMonth() == 1) {				
+				List<StockInOut> stockOpenings = invOpn.getStockOpeing();
+				if (stockOpenings != null) {
+					stockOpenings.forEach(stockOpening -> {
+						if (stockOpening.getId() != null && stockOpening.getId().getProductId() != null) {
+							compInv.getRows().forEach(row -> {
+								if (row.getId().equals(stockOpening.getId().getProductId())) {
+									row.setStockOpening(null);
+									if (stockOpening.getPackages() != 0) {
+										int packageSize = 0;
+										for (CompleteProduct compProd : compProds) {
+											if (compProd.getId().equals(stockOpening.getId().getProductId())) {
+												packageSize = compProd.getPackageSize();
+											}
 										}
+										Integer totalStockOpening = row.getStockOpening();
+										if (totalStockOpening == null) {
+											totalStockOpening = new Integer(0);
+										}
+										totalStockOpening = totalStockOpening.intValue()
+												+ stockOpening.getPackages() * packageSize;
+										row.setStockOpening(totalStockOpening);
 									}
-									Integer totalStockOpening = row.getStockOpening();
-									if(totalStockOpening==null) {
-										totalStockOpening = new Integer(0);
+									if (stockOpening.getPieces() != 0) {
+										Integer totalStockOpening = row.getStockOpening();
+										if (totalStockOpening == null) {
+											totalStockOpening = new Integer(0);
+										}
+										totalStockOpening = totalStockOpening.intValue() + stockOpening.getPieces();
+										row.setStockOpening(totalStockOpening);
 									}
-									totalStockOpening = totalStockOpening.intValue() + stockOpening.getPackages()*packageSize;
-									row.setStockOpening(totalStockOpening);		
 								}
-								if (stockOpening.getPieces() != 0) {
-									Integer totalStockOpening = row.getStockOpening();
-									if(totalStockOpening==null) {
-										totalStockOpening = new Integer(0);
-									}
-									totalStockOpening = totalStockOpening.intValue() + stockOpening.getPieces();
-									row.setStockOpening(totalStockOpening);									
-								}
-								if(row.getStockTotalIn()!=null) {
-									Integer totalStockOpening = row.getStockOpening();
-									if(totalStockOpening==null) {
-										totalStockOpening = new Integer(0);
-									}
-									totalStockOpening = totalStockOpening.intValue() + row.getStockTotalIn();
-								}
-								if(row.getStockTotalOut()!=null) {
-									Integer totalStockOpening = row.getStockOpening();
-									if(totalStockOpening==null) {
-										totalStockOpening = new Integer(0);
-									}
-									totalStockOpening = totalStockOpening.intValue() - row.getStockTotalOut();
-								}
-							}
-						});
-					}
+							});
+						}
+					});
+				}
+			} else {
+				CompleteInventory compInvPrevDay = getCompleteInventory(refDate.withDayOfMonth(refDate.getDayOfMonth() - 1));
+				compInv.getRows().forEach(row -> {
+					compInvPrevDay.getRows().forEach(prevRow -> {
+						if(row.getId().equals(prevRow.getId()) && row.getId().startsWith("itm")) {
+							row.setStockOpening(prevRow.getStockBalance());
+						}
+					});
 				});
 			}
 		}
 	}
-	
+
 	private void fillStockIn(Inventory inv, CompleteInventory compInv, List<CompleteProduct> compProds) {
-		if (inv!=null) {
+		if (inv != null) {
 			List<StockInOut> stockIns = inv.getStockIn();
 			if (stockIns != null) {
 				stockIns.forEach(stockIn -> {
@@ -163,22 +168,22 @@ public class InventoryService {
 										}
 									}
 									Integer totalStockIn = row.getStockTotalIn();
-									if(totalStockIn==null) {
+									if (totalStockIn == null) {
 										totalStockIn = new Integer(0);
 									}
-									totalStockIn = totalStockIn.intValue() + stockIn.getPackages()*packageSize;
-									row.setStockTotalIn(totalStockIn);									
+									totalStockIn = totalStockIn.intValue() + stockIn.getPackages() * packageSize;
+									row.setStockTotalIn(totalStockIn);
 								} else {
 									row.setStockSenIn(null);
 								}
 								if (stockIn.getPieces() != 0) {
 									row.setStockOthersIn(stockIn.getPieces());
 									Integer totalStockIn = row.getStockTotalIn();
-									if(totalStockIn==null) {
+									if (totalStockIn == null) {
 										totalStockIn = new Integer(0);
 									}
 									totalStockIn = totalStockIn.intValue() + stockIn.getPieces();
-									row.setStockTotalIn(totalStockIn);									
+									row.setStockTotalIn(totalStockIn);
 								} else {
 									row.setStockOthersIn(null);
 								}
@@ -189,9 +194,9 @@ public class InventoryService {
 			}
 		}
 	}
-	
+
 	private void fillStockOut(Inventory inv, CompleteInventory compInv, List<CompleteProduct> compProds) {
-		if (inv!=null) {
+		if (inv != null) {
 			List<StockInOut> stockOuts = inv.getStockOut();
 			if (stockOuts != null) {
 				stockOuts.forEach(stockOut -> {
@@ -209,9 +214,9 @@ public class InventoryService {
 									soldUnits = stockOut.getPackages() * packageSize + stockOut.getPieces();
 								}
 								row.getVendorValue().put(stockOut.getId().getActorId(), soldUnits);
-								if(soldUnits!=null) {
+								if (soldUnits != null) {
 									Integer totalStockOut = row.getStockTotalOut();
-									if(totalStockOut==null) {
+									if (totalStockOut == null) {
 										totalStockOut = new Integer(0);
 									}
 									totalStockOut = totalStockOut.intValue() + soldUnits.intValue();
@@ -221,10 +226,10 @@ public class InventoryService {
 						});
 					}
 				});
-			} 
+			}
 		}
 	}
-	
+
 	private List<CompleteInventoryRow> getDefaultInventoryRows(LocalDate refDate) {
 		List<CompleteInventoryRow> rows = new ArrayList<>();
 		productService.getAllProductTypes().forEach(type -> {
@@ -234,14 +239,19 @@ public class InventoryService {
 				invRow.setProdDets(product);
 				rows.add(invRow);
 			});
-//			productService.getProductsByType(type).forEach(product -> {
-//				rows.add(new CompleteInventoryRow(product.getId(), product.getName()));
-//			});
+			// productService.getProductsByType(type).forEach(product -> {
+			// rows.add(new CompleteInventoryRow(product.getId(), product.getName()));
+			// });
 		});
 		return rows;
 	}
 
 	public void saveCompleteInventory(CompleteInventory compInv, LocalDate refDate) {
+		if (refDate.getDayOfMonth() == 1) {
+			InventoryOpening invOpen = new InventoryOpening(refDate);
+			saveStockOpening(compInv, invOpen);
+			inventoryOpeningRepository.save(invOpen);
+		}
 		List<CompleteProduct> compProds = productService.getAllCompleteProducts(refDate);
 		Inventory inv = new Inventory(refDate);
 		saveStockIn(compInv, inv, compProds);
@@ -249,21 +259,37 @@ public class InventoryService {
 		inventoryRepository.save(inv);
 		compInv.getVens().forEach(vendor -> {
 			vendorService.updateCompleteVendor(vendor, refDate);
-		}); 
+		});
 	}
-	
+
+	private void saveStockOpening(CompleteInventory compInv, InventoryOpening invOpen) {
+		compInv.getRows().forEach(row -> {
+			if (row.getId().startsWith("itm") && row.getStockOpening() != null) {
+				StockInOut stockOpening = new StockInOut();
+				stockOpening.getId().setProductId(row.getId());
+				stockOpening.getId().setActorId("");
+				if (row.getStockOpening() != null) {
+					stockOpening.setPieces(row.getStockOpening().intValue());
+				} else {
+					stockOpening.setPieces(0);
+				}
+				invOpen.getStockOpeing().add(stockOpening);
+			}
+		});
+	}
+
 	private void saveStockIn(CompleteInventory compInv, Inventory inv, List<CompleteProduct> compProds) {
 		compInv.getRows().forEach(row -> {
-			if(row.getId().startsWith("itm") && (row.getStockSenIn()!=null || row.getStockOthersIn()!=null)) {
+			if (row.getId().startsWith("itm") && (row.getStockSenIn() != null || row.getStockOthersIn() != null)) {
 				StockInOut stockIn = new StockInOut();
 				stockIn.getId().setProductId(row.getId());
 				stockIn.getId().setActorId("whs000001");
-				if(row.getStockSenIn()!=null) {
+				if (row.getStockSenIn() != null) {
 					stockIn.setPackages(row.getStockSenIn().intValue());
 				} else {
 					stockIn.setPackages(0);
 				}
-				if(row.getStockOthersIn()!=null) {
+				if (row.getStockOthersIn() != null) {
 					stockIn.setPieces(row.getStockOthersIn().intValue());
 				} else {
 					stockIn.setPieces(0);
@@ -272,10 +298,10 @@ public class InventoryService {
 			}
 		});
 	}
-	
+
 	private void saveStockOut(CompleteInventory compInv, Inventory inv, List<CompleteProduct> compProds) {
 		compInv.getRows().forEach(row -> {
-			if(row.getId().startsWith("itm") && row.getVendorValue()!=null && !row.getVendorValue().isEmpty()) {
+			if (row.getId().startsWith("itm") && row.getVendorValue() != null && !row.getVendorValue().isEmpty()) {
 				int packageSize = 0;
 				for (CompleteProduct compProd : compProds) {
 					if (compProd.getId().equals(row.getId())) {
@@ -284,17 +310,17 @@ public class InventoryService {
 				}
 				final int finalPackageSize = packageSize;
 				row.getVendorValue().forEach((venId, venVal) -> {
-					if(venVal!=null && venVal.intValue()!=0) {
+					if (venVal != null && venVal.intValue() != 0) {
 						StockInOut stockOut = new StockInOut();
 						stockOut.getId().setProductId(row.getId());
 						stockOut.getId().setActorId(venId);
-						stockOut.setPackages((int)(venVal/finalPackageSize));
-						stockOut.setPieces(venVal%finalPackageSize);
+						stockOut.setPackages((int) (venVal / finalPackageSize));
+						stockOut.setPieces(venVal % finalPackageSize);
 						inv.getStockOut().add(stockOut);
 					}
 				});
 			}
 		});
 	}
-	
+
 }

@@ -39,7 +39,9 @@ public class GenericRepository<K, V> {
 	}
 
 	public void save(K doc) {
-		mongoTemplate.save(doc, typeClass.getSimpleName().toLowerCase());
+		String collectionName = typeClass.getSimpleName();
+		collectionName = collectionName.substring(0, 1).toLowerCase() + collectionName.substring(1);
+		mongoTemplate.save(doc, collectionName);
 	}
 	
 //	public MongoTemplate getTemplate() {

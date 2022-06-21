@@ -1,6 +1,6 @@
 <div>
   <div>
-    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button" (click)="saveButtonPressed()">
+    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button save-button_top" (click)="saveButtonPressed()">
       Save Inventory
     </button>
   </div>
@@ -14,9 +14,7 @@
       </ng-container>
       <ng-container matColumnDef="productName" sticky>
         <mat-header-cell class="inventory-name-colum" *matHeaderCellDef>Product Name</mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <span [matTooltip]="getProdDetails(inventoryRow)">
             {{ inventoryRow.name }}
           </span>
@@ -24,10 +22,17 @@
       </ng-container>
       <ng-container matColumnDef="stockOpening" sticky>
         <mat-header-cell *matHeaderCellDef>Stock<br>Opening</mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)" sticky>
-          {{ inventoryRow.stockOpening }}
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)" sticky>
+          <div *ngIf="isRowProductType(inventoryRow); else stockOpening"></div>
+          <ng-template #stockOpening>
+            <div *ngIf="is1stDayOfMonth; else stockOpeningDisplayOnly">
+              <input type="number" matInput [(ngModel)]="inventoryRow.stockOpening" name="stockOpening"
+                #stockOpening="ngModel" id="stockOpening">
+            </div>
+            <ng-template #stockOpeningDisplayOnly>
+              {{ inventoryRow.stockOpening }}
+            </ng-template>
+          </ng-template>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="stockBalance" sticky>
@@ -36,9 +41,7 @@
             Balance
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           {{ inventoryRow.stockBalance }}
         </mat-cell>
       </ng-container>
@@ -48,9 +51,7 @@
             Total<br>In
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           {{ inventoryRow.stockTotalIn }}
         </mat-cell>
       </ng-container>
@@ -60,19 +61,11 @@
             Sen<br>In
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else stockSenIn"></div>
           <ng-template #stockSenIn>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryRow.stockSenIn"
-              name="stockSenIn"
-              #stockSenIn="ngModel"
-              id="stockSenIn"
-              (blur)="validateSenIn(inventoryRow)">
+            <input type="number" matInput [(ngModel)]="inventoryRow.stockSenIn" name="stockSenIn" #stockSenIn="ngModel"
+              id="stockSenIn" (blur)="validateSenIn(inventoryRow)" (blur)="validateStockOpening(inventoryRow)">
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -82,19 +75,11 @@
             Others<br>In
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else stockOthersIn"></div>
           <ng-template #stockOthersIn>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryRow.stockOthersIn"
-              name="stockOthersIn"
-              #stockOthersIn="ngModel"
-              id="stockOthersIn"
-              (blur)="validateOthersIn(inventoryRow)">
+            <input type="number" matInput [(ngModel)]="inventoryRow.stockOthersIn" name="stockOthersIn"
+              #stockOthersIn="ngModel" id="stockOthersIn" (blur)="validateOthersIn(inventoryRow)">
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -104,45 +89,37 @@
             Total<br>Out
           </span>
         </mat-header-cell>
-        <mat-cell 
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           {{ inventoryRow.stockTotalOut }}
         </mat-cell>
       </ng-container>
-      <ng-container *ngFor="let vendorData of (dataSource.vendorObservable|async); trackBy: vendorTrackBy" [matColumnDef]="vendorData.id">
+      <ng-container *ngFor="let vendorData of (dataSource.vendorObservable|async); trackBy: vendorTrackBy"
+        [matColumnDef]="vendorData.id">
         <mat-header-cell *matHeaderCellDef>
           <span [matTooltip]="getVenDetails(vendorData)" [matTooltipClass]="'vendorTooltip'">
             {{vendorData.name}}
             <br>
             <mat-form-field>
-              <input
-              matInput
-              [(ngModel)] = "vendorData.deposit"
-              name="vendorDeposit"
-              #vendorDeposit="ngModel"
-              id="vendorDeposit">
+              <input matInput [(ngModel)]="vendorData.deposit" name="vendorDeposit" #vendorDeposit="ngModel"
+                id="vendorDeposit">
             </mat-form-field>
           </span>
         </mat-header-cell>
-        <mat-cell
-          *matCellDef="let inventoryRow"
-          [ngClass]="getRowTypeClass(inventoryRow)">
+        <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else productData"></div>
           <ng-template #productData>
-            <input
-              type="number"
-              matInput
-              [(ngModel)] = "inventoryRow.vendorValue[vendorData.id]"
-              name="vendorValue"
-              #vendorValue="ngModel"
-              id="vendorValue"
-              (blur)="validateVendorValue(inventoryRow, vendorData.id)">
+            <input type="number" matInput [(ngModel)]="inventoryRow.vendorValue[vendorData.id]" name="vendorValue"
+              #vendorValue="ngModel" id="vendorValue" (blur)="validateVendorValue(inventoryRow, vendorData.id)">
           </ng-template>
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
       <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
     </mat-table>
+  </div>
+  <div>
+    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button save-button_bottom" (click)="saveButtonPressed()">
+      Save Inventory
+    </button>
   </div>
 </div>

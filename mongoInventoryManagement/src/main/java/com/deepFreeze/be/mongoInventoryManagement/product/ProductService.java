@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.deepFreeze.be.mongoInventoryManagement.inventory.Inventory;
+import com.deepFreeze.be.mongoInventoryManagement.inventory.InventoryOpening;
+import com.deepFreeze.be.mongoInventoryManagement.inventory.InventoryOpeningRepository;
 import com.deepFreeze.be.mongoInventoryManagement.inventory.InventoryService;
 import com.deepFreeze.be.mongoInventoryManagement.inventory.StockInOut;
 import com.deepFreeze.be.mongoInventoryManagement.support.DeleteResponse;
@@ -235,7 +237,34 @@ public class ProductService {
 				}
 			}
 		}
-		delResp = new DeleteResponse(true, "OK");
+		List<InventoryOpening> invOpenList = inventoryService.getInventoryOpeningGte(refDate);
+		Integer totalStockOpening = new Integer(0);
+		List<Product> tempList = new ArrayList<Product>();
+		tempList.add(prod);
+		if(invOpenList !=null ) {			
+			for(InventoryOpening invOpen: invOpenList) {
+				CompleteProduct compProd = getAllCompleteProducts(tempList, invOpen.getId()).get(0);
+				List<StockInOut> stockOpeningList = invOpen.getStockOpeing();
+				if(stockOpeningList != null) {
+					for(StockInOut stockOpening : stockOpeningList) {
+						if(stockOpening.getId().getProductId().equals(prodId)) {							
+							if (stockOpening.getPackages() != 0) {
+								totalStockOpening = totalStockOpening.intValue()
+										+ stockOpening.getPackages() * compProd.getPackageSize();
+							}
+							if (stockOpening.getPieces() != 0) {	
+								totalStockOpening = totalStockOpening.intValue() + stockOpening.getPieces();
+							}
+						}
+					}
+				}
+			}
+		}
+		if(totalStockOpening > 0) {
+			delResp = new DeleteResponse(true, "Delete Possible but Product has non zero Stock on this Date");
+		} else {			
+			delResp = new DeleteResponse(true, "OK");
+		}
 		return delResp;
 	}
 

@@ -1,6 +1,5 @@
 .inventory-table-div {
     overflow: auto;
-    height: 435px;
     width: 96%;
     margin: 2%;
 }
@@ -49,8 +48,13 @@
 
 button.save-button {
     background: rgb(101, 193, 247);
-    margin-top: 2%;
     margin-left: 2%;
     margin-right: 2%;
     width: 96%;
+    &_top {
+        margin-top: 2%;
+    }
+    &_bottom {
+        margin-bottom: 2%;
+    }
 }
