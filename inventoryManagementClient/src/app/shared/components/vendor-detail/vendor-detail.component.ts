@@ -11,7 +11,7 @@ import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-c
 @Component({
   selector: 'app-vendor-detail',
   templateUrl: './vendor-detail.component.html',
-  styleUrls: ['./vendor-detail.component.css']
+  styleUrls: ['./vendor-detail.component.scss']
 })
 export class VendorDetailComponent implements OnInit {
 
