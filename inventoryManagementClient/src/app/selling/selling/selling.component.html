@@ -30,72 +30,6 @@
       </div>
     </div>
 
-    <!-- <table *ngIf='showProductTable()' class="selling-table">
-      <tr>
-        <td colspan="4">
-          <div class='vendor-details'>
-            <app-vendor-detail [vendor]='selectedVendor' [editable]='false' *ngIf='isVendorSelected()'></app-vendor-detail>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-card>
-            <strong>Product</strong>
-          </mat-card>
-        </td>
-        <td>
-          <mat-card>
-            <strong>Units Sold</strong> : {{getTotalUnitsSold()}}
-          </mat-card>
-        </td>
-        <td>
-          <mat-card>
-            <strong>Total Price</strong> : {{getTotalAmountSold()}}
-          </mat-card>
-        </td>
-        <td>
-          <mat-card>
-            <strong>Action</strong>
-          </mat-card>
-        </td>
-      </tr>
-      <tr *ngFor="let sellingProduct of sellingProductList; let i = index">
-        <td>
-          <div class="product-card">
-            <app-product-detail [product]='sellingProduct.product' [editable]='false'></app-product-detail>
-          </div>
-        </td>
-        <td>
-          <mat-card class='ven-value-card'>
-            <mat-form-field>
-              <input matInput required [unitValidator]='getStockBalance(sellingProduct.product.id)' type="number"
-                maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold"
-                (change)='deposit.control.updateValueAndValidity()'>
-              <span matSuffix>/{{getStockBalance(sellingProduct.product.id)}}</span>
-              <mat-error *ngIf="unitsSold.invalid && unitsSold.errors.required && (unitsSold.dirty || unitsSold.touched)">
-                Please provide a Unit Amount
-              </mat-error>
-              <mat-error *ngIf="unitsSold.invalid && unitsSold.errors.unitValidator && (unitsSold.dirty || unitsSold.touched)">
-                Sold Unit exceeds Available amount
-              </mat-error>
-            </mat-form-field>
-          </mat-card>
-        </td>
-        <td>
-          <mat-card class='price-card'>
-            <label>Price : {{sellingProduct.getSoldPrice()}}</label>
-          </mat-card>
-        </td>
-        <td>
-          <mat-card class='action-card'>
-            <button mat-button type='button' (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'>
-              <mat-icon aria-label="Side nav toggle icon">delete</mat-icon>
-            </button>
-          </mat-card>
-        </td>
-      </tr>
-    </table> -->
     <div *ngIf='showProductTable()' class="selling-table">
       <div class="vendor-details">
         <app-vendor-detail [vendor]='selectedVendor' [editable]='false' *ngIf='isVendorSelected()'></app-vendor-detail>
@@ -153,8 +87,8 @@
           </mat-card>
         </div>
       </ng-template>
-      
     </div>
+
     <div *ngIf='isVendorSelected()'>
       <div class="product-action-row">
         <mat-form-field appearance="outline">

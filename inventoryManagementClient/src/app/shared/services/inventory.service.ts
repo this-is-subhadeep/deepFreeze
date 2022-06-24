@@ -8,17 +8,22 @@ import { environment } from '../../../environments/environment';
 })
 export class InventoryService {
 
-  private serverAddressCompleteInventories='/complete-inventory';
-  private getCompleteInventoryUrl=environment.serverBase+this.serverAddressCompleteInventories;
-  constructor(private http:HttpClient) { }
+  private serverAddressCompleteInventories = '/complete-inventory';
+  private getCompleteInventoryUrl = environment.serverBase + this.serverAddressCompleteInventories;
+  constructor(private http: HttpClient) { }
 
-  findCompleteInventoryObservable (refDate:string) {
-    let url = this.getCompleteInventoryUrl+"/"+refDate;
+  findCompleteInventoryObservable(refDate: string) {
+    let url = this.getCompleteInventoryUrl + '/' + refDate;
     return this.http.get<CompleteInventory>(url);
   }
-  
-  saveCompleteInventory(newCompleteInventory:CompleteInventory, refDate:string) {
-    let url = this.getCompleteInventoryUrl+"/"+refDate;
-    return this.http.post(url,newCompleteInventory);
+
+  findCompleteInventoryForVendor(venId: string, refDate: string) {
+    let url = this.getCompleteInventoryUrl + `-vendor/${venId}/${refDate}`;
+    return this.http.get<CompleteInventory>(url);
+  }
+
+  saveCompleteInventory(newCompleteInventory: CompleteInventory, refDate: string) {
+    let url = this.getCompleteInventoryUrl + '/' + refDate;
+    return this.http.post(url, newCompleteInventory);
   }
 }

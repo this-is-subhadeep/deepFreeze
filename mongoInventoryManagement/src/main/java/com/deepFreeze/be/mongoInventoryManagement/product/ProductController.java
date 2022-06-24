@@ -101,7 +101,7 @@ public class ProductController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-product//{id}/{refDate}")
+	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-product/{id}/{refDate}")
 	public DeleteResponse isDeleteProductPossible(@PathVariable String id, @PathVariable String refDate) {
 		try {
 			LocalDate date = LocalDate.parse(refDate);

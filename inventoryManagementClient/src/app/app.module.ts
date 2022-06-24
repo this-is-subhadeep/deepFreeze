@@ -9,11 +9,6 @@ import { DateService } from './shared/services/date.service';
 import { VendorService } from './shared/services/vendor.service';
 import { InventoryService } from './shared/services/inventory.service';
 import { AppRoutingModule } from './app-routing.modules';
-import { SharedModule } from './shared/shared.module';
-import { InventoryModule } from './inventory/inventory.module';
-import { ProductModule } from './product/product.module';
-import { VendorModule } from './vendor/vendor.module';
-import { SellingModule } from './selling/selling.module';
 import { MainNavModule } from './main-nav/main-nav.module';
 @NgModule({
   declarations: [
@@ -24,12 +19,7 @@ import { MainNavModule } from './main-nav/main-nav.module';
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    SharedModule,
-    MainNavModule,
-    InventoryModule,
-    ProductModule,
-    VendorModule,
-    SellingModule
+    MainNavModule
   ],
   providers: [
     ProductService,

@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NgModel, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { dropDownEffect, fadeInEffect } from 'src/app/animations';
 import { CompleteInventory } from 'src/app/definitions/inventory-definition';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
@@ -27,7 +28,8 @@ export class SellingComponent implements OnInit {
   constructor(private productService: ProductService,
     private inventoryService: InventoryService,
     private datePipe: DatePipe,
-    private dateService: DateService) { }
+    private dateService: DateService,
+    private readonly router: Router) { }
 
   ngOnInit() {
     this.loadCompleteProductData();
@@ -184,7 +186,7 @@ export class SellingComponent implements OnInit {
 
   private saveAndBillButtonPressed() {
     this.saveButtonPressed();
-    console.log('Bill Button Pressed');
+    this.generateBill();
   }
 
   private deleteProductFromList(ind: number) {
@@ -211,6 +213,10 @@ export class SellingComponent implements OnInit {
 
   private log(data) {
     console.log('Log :', data);
+  }
+
+  private generateBill() {
+    this.router.navigate(['/billing',this.selectedVendor.id]);
   }
 
 }

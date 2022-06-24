@@ -7,6 +7,7 @@ import { MatDialog, MatExpansionPanel } from '@angular/material';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-confirm-dialog/delete-confirm-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -15,13 +16,13 @@ import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-c
 })
 export class VendorDetailComponent implements OnInit {
 
-  get vendor():CompleteVendor {
+  get vendor(): CompleteVendor {
     return this._vendor;
   }
-  @Input() 
+  @Input()
   set vendor(ven: CompleteVendor) {
     this._vendor = ven;
-    if(this.venForm) {
+    if (this.venForm) {
       this.venForm.controls.name.setValue(ven.name);
       this.venForm.controls.loanAdded.setValue(ven.loanAdded);
       this.venForm.controls.loanPayed.setValue(ven.loanPayed);
@@ -37,7 +38,7 @@ export class VendorDetailComponent implements OnInit {
   private venForm: FormGroup;
   private editComponent: boolean;
   private deleteAllowed: boolean
-  
+
   @Output() endVendorEvent = new EventEmitter<string>();
 
   constructor(
@@ -45,7 +46,8 @@ export class VendorDetailComponent implements OnInit {
     private readonly datePipe: DatePipe,
     private readonly dateService: DateService,
     private readonly fb: FormBuilder,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly router: Router
   ) { }
 
   ngOnInit() {
@@ -85,15 +87,15 @@ export class VendorDetailComponent implements OnInit {
     this.service.canVendorBeDeleted(
       this._vendor.id,
       this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
-    ).subscribe(delResp  => {
-      if(delResp.possible) {
+    ).subscribe(delResp => {
+      if (delResp.possible) {
         this.deleteAllowed = true;
       }
     });
   }
 
-  getFormattedtotalLoan(ven:CompleteVendor) {
-    return Math.round(ven.totalLoan*100)/100;
+  getFormattedtotalLoan(ven: CompleteVendor) {
+    return Math.round(ven.totalLoan * 100) / 100;
   }
 
   onEdit() {
@@ -107,7 +109,7 @@ export class VendorDetailComponent implements OnInit {
     }
   }
 
-  isVendorUpdated () {
+  isVendorUpdated() {
     return this._vendor.name !== this.venForm.controls.name.value
       || this._vendor.loanAdded !== this.venForm.controls.loanAdded.value
       || this._vendor.loanPayed !== this.venForm.controls.loanPayed.value
@@ -162,6 +164,10 @@ export class VendorDetailComponent implements OnInit {
     });
 
     return dialogRef.afterClosed();
+  }
+
+  generateBill() {
+    this.router.navigate(['/billing', this._vendor.id]);
   }
 
 }

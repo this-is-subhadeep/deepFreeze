@@ -1,0 +1,13 @@
+.bill-table {
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;    
+    .row {
+        flex-direction: row;
+    }
+}
+
+
+.border {
+    border: 1px solid black;
+}

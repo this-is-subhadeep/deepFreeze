@@ -1,0 +1,16 @@
+.billing-body {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+
+    .paper {
+        width: 500px;
+        height: 707px;
+        .bill-body {
+            display: flex;
+            justify-content: space-around;
+        }
+    }
+}
+

@@ -33,6 +33,11 @@ export class VendorService {
     return this.http.get<CompleteVendor[]>(url);
   }
 
+  findCompleteVendor (venId: string, refDate:string) {
+    let url = `${environment.serverBase}/complete-vendor/${venId}/${refDate}`;
+    return this.http.get<CompleteVendor>(url);
+  }
+
   canVendorBeDeleted(venId: string, refDate: string) {
     let url = environment.serverBase+'/can-delete-vendor/'+venId+'/'+refDate;
     return this.http.get<DeleteResponse>(url);

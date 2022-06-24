@@ -64,6 +64,16 @@ public class VendorController {
 		return null;
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/complete-vendor/{id}/{refDate}")
+	public CompleteVendor getCompleteVendors(@PathVariable String id, @PathVariable String refDate) {
+		try {
+			return service.getCompleteVendor(id, LocalDate.parse(refDate));
+		} catch (DateTimeParseException e) {
+			e.printStackTrace(System.out);
+		}
+		return null;
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/complete-vendors/{refDate}")
 	public CompleteVendor addCompleteVendor(@PathVariable String refDate, @RequestBody CompleteVendor completeVendor) {
 		try {
@@ -99,7 +109,7 @@ public class VendorController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-vendor//{id}/{refDate}")
+	@RequestMapping(method = RequestMethod.GET, value = "/can-delete-vendor/{id}/{refDate}")
 	public DeleteResponse isDeleteVendorPossible(@PathVariable String id, @PathVariable String refDate) {
 		try {
 			LocalDate date = LocalDate.parse(refDate);

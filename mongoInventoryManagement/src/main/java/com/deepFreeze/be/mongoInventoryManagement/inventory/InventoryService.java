@@ -100,6 +100,29 @@ public class InventoryService {
 		return compInv;
 	}
 
+	public CompleteInventory getCompleteInventoryForVendor(String venId, LocalDate refDate) {
+		List<CompleteVendor> compVens = new ArrayList<CompleteVendor>();
+		compVens.add(vendorService.getCompleteVendor(venId, refDate));
+		CompleteInventory compInv = new CompleteInventory(getDefaultInventoryRows(refDate), compVens);
+		List<CompleteProduct> compProds = productService.getAllCompleteProducts(refDate);
+		Inventory inv = getInventory(refDate);
+		LocalDate openingDate = refDate.withDayOfMonth(01);
+		InventoryOpening invOpn = getInventoryOpening(openingDate);
+		fillStockIn(inv, compInv, compProds);
+		fillStockOut(inv, compInv, compProds);
+		fillStockOpening(invOpn, compInv, compProds, refDate);
+		compInv.getRows().forEach(invRow -> {
+			int totalStockOpening = invRow.getStockOpening() != null ? invRow.getStockOpening() : 0;
+			int totalIn = invRow.getStockTotalIn() != null ? invRow.getStockTotalIn() : 0;
+			int totalOut = invRow.getStockTotalOut() != null ? invRow.getStockTotalOut() : 0;
+			int balance = totalStockOpening + totalIn - totalOut;
+			if (balance != 0) {
+				invRow.setStockBalance(balance);
+			}
+		});
+		return compInv;
+	}
+
 	public void fillStockOpening(InventoryOpening invOpn, CompleteInventory compInv, List<CompleteProduct> compProds, LocalDate refDate) {
 		if (invOpn != null) {
 			if(refDate.getDayOfMonth() == 1) {				

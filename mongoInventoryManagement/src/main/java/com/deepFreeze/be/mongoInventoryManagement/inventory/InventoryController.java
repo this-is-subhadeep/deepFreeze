@@ -63,6 +63,18 @@ public class InventoryController {
 		return null;
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/complete-inventory-vendor/{id}/{refDate}")
+	public CompleteInventory getCompleteInventoryForVendor(@PathVariable String id, @PathVariable String refDate) {
+		LocalDate refLocalDate = null;
+		try {
+			refLocalDate = LocalDate.parse(refDate);
+			return inventoryService.getCompleteInventoryForVendor(id, refLocalDate);
+		} catch (DateTimeParseException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/inventory")
 	public void saveInventory(@RequestBody Inventory inv) {
 		if (inv !=null) {
