@@ -1,11 +1,13 @@
 export class ProductType {
     id:string;
     name:string;
+    discount: Number;
     showOrder:number;
     clone():ProductType {
         let newClone = new ProductType();
         newClone.id = this.id;
         newClone.name = this.name;
+        newClone.discount = this.discount;
         newClone.showOrder = this.showOrder;
         return newClone;
     }
@@ -13,6 +15,7 @@ export class ProductType {
         let newClone = new ProductType();
         newClone.id = prodTyp.id;
         newClone.name = prodTyp.name;
+        newClone.discount = prodTyp.discount;
         newClone.showOrder = prodTyp.showOrder;
         return newClone;
     }

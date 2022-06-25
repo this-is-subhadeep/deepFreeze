@@ -25,6 +25,9 @@ export class BillingComponent implements OnInit {
 
   ngOnInit() {
     this.loadCompleteVendorData();
+    this.dateService.dateChangeListener.subscribe(() => {
+      this.loadCompleteVendorData();
+    });
   }
 
   private loadCompleteInventoryData() {

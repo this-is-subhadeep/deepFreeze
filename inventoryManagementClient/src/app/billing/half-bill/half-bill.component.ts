@@ -14,7 +14,7 @@ export class HalfBillComponent implements OnInit {
   @Input() completeVendor: CompleteVendor;
   @Input() completeInventory: CompleteInventory;
 
-  private selectedDate : string;
+  private selectedDate: string;
 
   constructor(
     private readonly dateService: DateService,
@@ -24,6 +24,31 @@ export class HalfBillComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.completeInventory);
   }
 
+  getGrossTotal(): number {
+    let grossTotal = 0;
+    this.completeInventory.rows.forEach(row => {
+      if (row.id.startsWith('itm') && row.vendorValue[this.completeVendor.id]) {
+        grossTotal += row.vendorValue[this.completeVendor.id] * row.prodDets.sellingPrice.valueOf();
+      }
+    });
+    return grossTotal;
+  }
+
+  getTotalDiscount(): number {
+    let totalDiscount = 0;
+    this.completeInventory.rows.forEach(row => {
+      if (row.id.startsWith('itm') && row.vendorValue[this.completeVendor.id]) {
+        totalDiscount += row.vendorValue[this.completeVendor.id] * row.prodDets.sellingPrice.valueOf() * row.prodDets.productType.discount.valueOf() / 100;
+      }
+    });
+    return totalDiscount;
+  }
+
+  getNetTotal(): number {
+
+    return this.getGrossTotal() - this.getTotalDiscount() - this.completeVendor.deposit;
+  }
 }
