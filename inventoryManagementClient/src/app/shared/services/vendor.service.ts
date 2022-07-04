@@ -43,6 +43,11 @@ export class VendorService {
     return this.http.get<DeleteResponse>(url);
   }
 
+  canVendorBeBilled(venId: string, refDate: string) {
+    let url = environment.serverBase+'/can-bill-vendor/'+venId+'/'+refDate;
+    return this.http.get<DeleteResponse>(url);
+  }
+
   addCompleteVendor(newVendor:CompleteVendor, refDate:string) {
     let url = this.getCompleteVendorUrl+'/'+refDate;
     return this.http.post<CompleteVendor>(url,newVendor);

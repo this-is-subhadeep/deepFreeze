@@ -30,6 +30,11 @@
     display: flex;
     justify-content: flex-end;
     padding-right: 3px;
+    align-items: center;
+}
+
+.price-content::before {
+    content: '\20B9\00a0';
 }
 
 .product-table {

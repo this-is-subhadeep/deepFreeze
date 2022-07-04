@@ -163,7 +163,7 @@ public class VendorService {
 
 	public void closeCompleteVendor(CompleteVendor completeVendor, LocalDate endDate) {
 		Vendor ven = getVendor(completeVendor.getId());
-		if (ven!=null) {
+		if (ven != null) {
 			ven.setEndDate(endDate);
 			vendorRepository.save(ven);
 		}
@@ -198,6 +198,33 @@ public class VendorService {
 		} else {
 			delResp = new DeleteResponse(true, "Delete Possible but Vendor has non zero Loan till this Date");
 		}
+		return delResp;
+	}
+
+	public DeleteResponse isBillPossible(String venId, LocalDate refDate) {
+		DeleteResponse delResp;
+		Vendor ven = getVendor(venId);
+		if (ven != null && refDate != null) {
+			if (ven.getStartDate().compareTo(refDate) > 0) {
+				delResp = new DeleteResponse(false, "Cannot Generate Bill for Vendor before it was Created");
+				return delResp;
+			}
+		} else {
+			delResp = new DeleteResponse(false, "Input Date Incomplete");
+			return delResp;
+		}
+		Inventory inventory = inventoryService.getInventory(refDate);
+		if (inventory != null) {
+			for (StockInOut stockOut : inventory.getStockOut()) {
+				if (stockOut.getId().getActorId().equals(venId)) {
+					delResp = new DeleteResponse(true, "OK");
+					return delResp;
+				}
+			}
+		}
+
+		delResp = new DeleteResponse(false, "No product sold by this vendor on this Date");
+
 		return delResp;
 	}
 }

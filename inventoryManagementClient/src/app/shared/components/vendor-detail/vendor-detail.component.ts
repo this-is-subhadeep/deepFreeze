@@ -38,6 +38,7 @@ export class VendorDetailComponent implements OnInit {
   private venForm: FormGroup;
   private editComponent: boolean;
   private deleteAllowed: boolean
+  private billAllowed: boolean
 
   @Output() endVendorEvent = new EventEmitter<string>();
 
@@ -48,10 +49,12 @@ export class VendorDetailComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly dialog: MatDialog,
     private readonly router: Router
-  ) { }
+  ) {
+    this.deleteAllowed = false;
+    this.billAllowed = false;
+  }
 
   ngOnInit() {
-    this.deleteAllowed = false;
     this.venForm = this.fb.group({
       name: [
         this._vendor.name, [
@@ -90,6 +93,14 @@ export class VendorDetailComponent implements OnInit {
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.deleteAllowed = true;
+      }
+    });
+    this.service.canVendorBeBilled(
+      this._vendor.id,
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+    ).subscribe(bilResp => {
+      if (bilResp.possible) {
+        this.billAllowed = true;
       }
     });
   }

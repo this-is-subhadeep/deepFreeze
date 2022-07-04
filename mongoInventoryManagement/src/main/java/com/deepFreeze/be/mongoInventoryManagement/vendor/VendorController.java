@@ -119,4 +119,15 @@ public class VendorController {
 		}
 		return null;
 	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/can-bill-vendor/{id}/{refDate}")
+	public DeleteResponse isBillVendorPossible(@PathVariable String id, @PathVariable String refDate) {
+		try {
+			LocalDate date = LocalDate.parse(refDate);
+			return service.isBillPossible(id, date);
+		} catch (DateTimeParseException e) {
+			e.printStackTrace(System.out);
+		}
+		return null;
+	}
 }

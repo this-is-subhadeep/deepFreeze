@@ -1,7 +1,7 @@
 <div class="bill-table border">
   <div class="flex-center-content border">
     <p>
-      MUKHERJEE ENTERPRISE
+      <strong>MUKHERJEE ENTERPRISE</strong>
     </p>
   </div>
   <div class="row">
@@ -24,10 +24,10 @@
       <p>{{completeVendor.name}}</p>
     </div>
     <div class="ele-grow-1 price-content border">
-      <p>&#8377; {{completeVendor.totalLoan.toFixed(2)}}</p>
+      {{completeVendor.totalLoan.toFixed(2)}}
     </div>
     <div class="ele-grow-1 price-content border">
-      <p>&#8377; {{completeVendor.openingDp.toFixed(2)}}</p>
+      {{completeVendor.openingDp.toFixed(2)}}
     </div>
   </div>
   <div class="product-table">
@@ -47,28 +47,28 @@
           {{row.vendorValue[completeVendor.id]}}
         </div>
         <div class="price-content border" *ngIf="row.vendorValue[completeVendor.id]">
-          &#8377; {{row.prodDets.sellingPrice.toFixed(2)}}
+          {{row.prodDets.sellingPrice.toFixed(2)}}
         </div>
         <div class="price-content border" *ngIf="row.vendorValue[completeVendor.id]">
-          &#8377; {{(row.vendorValue[completeVendor.id] * row.prodDets.sellingPrice).toFixed(2)}}
+          {{(row.vendorValue[completeVendor.id] * row.prodDets.sellingPrice).toFixed(2)}}
         </div>
       </ng-template>
     </ng-template>
     <div class="flex-center-content border">Gross Total</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">&#8377; {{getGrossTotal().toFixed(2)}}</div>
+    <div class="price-content border">{{getGrossTotal().toFixed(2)}}</div>
     <div class="flex-center-content border">Less Discount</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">&#8377; {{getTotalDiscount().toFixed(2)}}</div>
+    <div class="price-content border">{{getTotalDiscount().toFixed(2)}}</div>
     <div class="flex-center-content border">Deposit</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">&#8377; {{completeVendor.deposit.toFixed(2)}}</div>
+    <div class="price-content border">{{completeVendor.deposit.toFixed(2)}}</div>
     <div class="flex-center-content border">Net Total</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">&#8377; {{getNetTotal().toFixed(2)}}</div>
+    <div class="price-content border">{{getNetTotal().toFixed(2)}}</div>
   </div>
 </div>
