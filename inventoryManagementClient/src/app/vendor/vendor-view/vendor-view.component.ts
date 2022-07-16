@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VendorService } from '../../shared/services/vendor.service';
 import { DatePipe } from '@angular/common';
 import { DateService } from '../../shared/services/date.service';
 import { CompleteVendor } from '../../definitions/vendor-definition';
 import { fadeInEffect, dropDownEffect } from '../../animations';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'vendor-view',
@@ -12,26 +12,30 @@ import { Observable } from 'rxjs';
   styleUrls: ['./vendor-view.component.css'],
   animations: [fadeInEffect, dropDownEffect]
 })
-export class VendorViewComponent implements OnInit {
+export class VendorViewComponent implements OnInit, OnDestroy {
   private completeVendors$: Observable<CompleteVendor[]>;
   private newCompleteVendor:CompleteVendor;
   private vendorsClosed: Array<string>;
+
+  private allSubscriptions: Subscription[];
+
   constructor(
     private service:VendorService,
     private datePipe: DatePipe,
     private dateService:DateService
   ) {
     this.vendorsClosed = new Array<string>();
+    this.allSubscriptions = new Array<Subscription>();
   }
 
   ngOnInit() {
     this.loadCompleteVendorData();
     this.refresh();
-    this.dateService.dateChangeListener.subscribe(() => {
+    this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteVendorData();
       this.service.refresh();
       this.refresh();
-    });
+    }));
   }
 
   private refresh() {
@@ -45,10 +49,10 @@ export class VendorViewComponent implements OnInit {
   private addButtonPressed() {
     let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
     this.newCompleteVendor.id=this.service.nextVendorId;
-    this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
+    this.allSubscriptions.push(this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
       this.loadCompleteVendorData();
       this.service.refresh();
-    })
+    }));
     this.refresh();
   }
 
@@ -68,4 +72,9 @@ export class VendorViewComponent implements OnInit {
   venTracking(index: number, value: CompleteVendor) {
     return value.id;
   }
+
+  ngOnDestroy(): void {
+    this.allSubscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
 }

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { DatePipe } from '@angular/common';
 import { DateService } from 'src/app/shared/services/date.service';
 import { fadeInEffect, dropDownEffect } from 'src/app/animations';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'product-view',
@@ -12,26 +12,30 @@ import { Observable } from 'rxjs';
   styleUrls: ['./product-view.component.css'],
   animations: [fadeInEffect, dropDownEffect]
 })
-export class ProductViewComponent implements OnInit {
+export class ProductViewComponent implements OnInit, OnDestroy {
   private completeProducts$: Observable<CompleteProduct[]>;
   private newCompleteProduct: CompleteProduct;
   private productsClosed: Array<string>;
+
+  private allSubscriptions: Subscription[];
+
   constructor(
     private service: ProductService,
     private datePipe: DatePipe,
     private dateService: DateService
   ) {
     this.productsClosed = new Array<string>();
+    this.allSubscriptions = new Array<Subscription>();
   }
 
   ngOnInit() {
     this.loadCompleteProductData();
     this.refresh();
-    this.dateService.dateChangeListener.subscribe(() => {
+    this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteProductData();
       this.service.refresh();
       this.refresh();
-    });
+    }));
   }
 
   refresh() {
@@ -53,10 +57,10 @@ export class ProductViewComponent implements OnInit {
   addButtonPressed() {
     let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
     this.newCompleteProduct.id = this.service.nextProductId;
-    this.service.addCompleteProduct(this.newCompleteProduct, date).subscribe(resp => {
+    this.allSubscriptions.push(this.service.addCompleteProduct(this.newCompleteProduct, date).subscribe(resp => {
       this.loadCompleteProductData();
       this.service.refresh();
-    })
+    }));
     this.refresh();
   }
 
@@ -75,5 +79,9 @@ export class ProductViewComponent implements OnInit {
 
   prodTracking(index: number, value: CompleteProduct) {
     return value.id;
+  }
+
+  ngOnDestroy(): void {
+    this.allSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
 }

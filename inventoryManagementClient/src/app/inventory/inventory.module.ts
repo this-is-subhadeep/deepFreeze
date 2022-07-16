@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule, MatInputModule, MatTableModule, MatTooltipModule } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
+import { ComponentsModule } from "src/app/shared/components/components.module";
 import { InventoryRoutingModule } from "./inventory-routing.module";
 import { InventoryComponent } from "./inventory/inventory.component";
 
@@ -15,7 +16,8 @@ import { InventoryComponent } from "./inventory/inventory.component";
         MatButtonModule,
         MatInputModule,
         MatTooltipModule,
-        InventoryRoutingModule
+        InventoryRoutingModule,
+        ComponentsModule
     ],
     exports: [InventoryComponent]
 })

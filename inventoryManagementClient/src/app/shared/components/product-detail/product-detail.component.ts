@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -7,13 +7,14 @@ import { sizeValidator, priceValidator } from 'src/app/validators';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { DateService } from 'src/app/shared//services/date.service';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
 
   get product(): CompleteProduct {
     return this._product;
@@ -36,6 +37,8 @@ export class ProductDetailComponent implements OnInit {
   private editComponent: boolean;
   private deleteAllowed: boolean
 
+  private allSubscriptions: Subscription[];
+
   @Output() endProductEvent = new EventEmitter<string>();
 
   constructor(
@@ -44,10 +47,12 @@ export class ProductDetailComponent implements OnInit {
     private readonly dateService: DateService,
     private readonly fb: FormBuilder,
     private readonly dialog: MatDialog
-  ) { }
+  ) {
+    this.deleteAllowed = false;
+    this.allSubscriptions = new Array<Subscription>();
+  }
 
   ngOnInit() {
-    this.deleteAllowed = false;
     this.prodForm = this.fb.group({
       name: [
         this._product.name, [
@@ -75,14 +80,14 @@ export class ProductDetailComponent implements OnInit {
     });
 
     this.prodForm.disable();
-    this.service.canProductBeDeleted(
+    this.allSubscriptions.push(this.service.canProductBeDeleted(
       this._product.id,
       this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.deleteAllowed = true;
       }
-    });
+    }));
   }
 
   onEdit() {
@@ -109,11 +114,11 @@ export class ProductDetailComponent implements OnInit {
     this._product.packageSize = this.prodForm.controls.size.value;
     this._product.costPrice = this.prodForm.controls.cp.value;
     this._product.sellingPrice = this.prodForm.controls.sp.value;
-    this.service.updateCompleteProduct(this._product, date).subscribe(resp => {
+    this.allSubscriptions.push(this.service.updateCompleteProduct(this._product, date).subscribe(resp => {
       this.editComponent = false;
       exPanel.close();
       this.prodForm.disable();
-    });
+    }));
   }
 
   isDeleteAllowed() {
@@ -121,23 +126,23 @@ export class ProductDetailComponent implements OnInit {
   }
 
   closeProduct() {
-    this.service.canProductBeDeleted(
+    this.allSubscriptions.push(this.service.canProductBeDeleted(
       this._product.id,
       this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
     ).subscribe(delResp => {
       if (delResp.possible) {
-        this.openDialog(delResp.message).subscribe(res => {
+        this.allSubscriptions.push(this.openDialog(delResp.message).subscribe(res => {
           if (res) {
-            this.service.closeCompleteProduct(
+            this.allSubscriptions.push(this.service.closeCompleteProduct(
               this._product,
               this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
             ).subscribe(resp => {
               this.endProductEvent.emit(this._product.id);
-            });
+            }));
           }
-        });
+        }));
       }
-    });
+    }));
   }
 
   openDialog(message: string) {
@@ -146,6 +151,10 @@ export class ProductDetailComponent implements OnInit {
     });
 
     return dialogRef.afterClosed();
+  }
+
+  ngOnDestroy(): void {
+    this.allSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 }

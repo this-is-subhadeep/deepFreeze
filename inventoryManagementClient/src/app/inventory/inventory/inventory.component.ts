@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { InventoryDataSource } from './inventory-datasource';
 import { dropDownEffect, fadeInEffect } from 'src/app/animations';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { InventoryService } from 'src/app/shared/services/inventory.service';
-import { VendorService } from 'src/app/shared/services/vendor.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { CompleteInventory, CompleteInventoryRow } from 'src/app/definitions/inventory-definition';
+import { AutoGenOpeningDialogComponent } from 'src/app/shared/components/auto-gen-opening-dialog/auto-gen-opening-dialog.component';
+import { MatDialog } from '@angular/material';
+import { Subscription } from 'rxjs';
 
 const staticColumnsToDisplay = ['productName',
   'stockOpening',
@@ -22,28 +24,34 @@ const staticColumnsToDisplay = ['productName',
   styleUrls: ['./inventory.component.scss'],
   animations: [fadeInEffect, dropDownEffect]
 })
-export class InventoryComponent implements OnInit {
+export class InventoryComponent implements OnInit, OnDestroy {
   private dataSource: InventoryDataSource;
   private columnsToDisplay = [];
   private prodTypeClass = 'productType';
   private compVenList: CompleteVendor[];
   private is1stDayOfMonth: boolean;
+  private isOpeningQuestionAsked: boolean;
+
+  private allSubscriptions: Subscription[];
 
   constructor(
     private readonly service: InventoryService,
-    private readonly vendorService: VendorService,
+    private readonly dialog: MatDialog,
     private readonly datePipe: DatePipe,
     private readonly dateService: DateService
-  ) { }
+  ) {
+    this.isOpeningQuestionAsked = false;
+    this.allSubscriptions = new Array<Subscription>();
+  }
 
   ngOnInit() {
     this.dataSource = new InventoryDataSource(this.service);
     this.loadCompleteInventoryData();
-    this.dateService.dateChangeListener.subscribe(() => {
+    this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteInventoryData();
-    });
+    }));
 
-    this.dataSource.vendorObservable.subscribe(compVendors => {
+    this.allSubscriptions.push(this.dataSource.vendorObservable.subscribe(compVendors => {
       this.compVenList = compVendors;
       this.columnsToDisplay = [];
       staticColumnsToDisplay.forEach(colName => {
@@ -52,14 +60,23 @@ export class InventoryComponent implements OnInit {
       this.compVenList.forEach(compVendor => {
         this.columnsToDisplay.push(compVendor.id);
       });
-    });
+    }));
   }
 
   private loadCompleteInventoryData() {
     let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
     this.is1stDayOfMonth = this.dateService.date.getDate() === 1;
     this.dataSource.loadCompleteInventory(date);
-    // console.log(this.dataSource);
+    this.allSubscriptions.push(this.dataSource.doesStockOpeningExist.subscribe(openingExist => {
+      if (this.isOpeningQuestionAsked === false && openingExist === false && this.is1stDayOfMonth) {
+        this.isOpeningQuestionAsked = true;
+        this.allSubscriptions.push(this.openDialog().subscribe(res => {
+          if (res) {
+            this.dataSource.autoGenerateStockOpening(date);
+          }
+        }));
+      }
+    }));
   }
 
   private isRowProductType(inventoryRow: CompleteInventoryRow) {
@@ -78,44 +95,44 @@ export class InventoryComponent implements OnInit {
 
   private getBalance() {
     let total = 0;
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         total += compInvRow.stockBalance;
       })
-    });
+    }));
 
     return 'Total : ' + total;
   }
 
   private getTotalIn() {
     let total = 0;
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         total += compInvRow.stockTotalIn;
       })
-    });
+    }));
 
     return 'Total : ' + total;
   }
 
   private getTotalSenIn() {
     let total = 0;
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         total += compInvRow.stockSenIn;
       })
-    });
+    }));
 
     return 'Total : ' + total;
   }
 
   private getTotalOthersIn() {
     let total = 0;
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         total += compInvRow.stockOthersIn;
       })
-    });
+    }));
 
     return 'Total : ' + total;
   }
@@ -123,14 +140,14 @@ export class InventoryComponent implements OnInit {
   private getTotalOut() {
     let total = 0;
     let value = 0;
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         total += compInvRow.stockTotalOut;
         if (compInvRow.prodDets != null && compInvRow.prodDets != undefined) {
           value += compInvRow.prodDets.sellingPrice.valueOf() * compInvRow.stockTotalOut
         }
       })
-    });
+    }));
 
     return 'Total : ' + total + ' - Value : ' + value;
   }
@@ -138,13 +155,13 @@ export class InventoryComponent implements OnInit {
   private getVenDetails(ven: CompleteVendor) {
     // console.log(ven.name,' - ',ven.deposit,' - ',ven.totalLoan);
     let totalOut = 0;
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
         if (compInvRow.vendorValue[ven.id] != null && compInvRow.vendorValue[ven.id] != undefined) {
           totalOut += compInvRow.prodDets.sellingPrice.valueOf() * compInvRow.vendorValue[ven.id];
         }
       })
-    });
+    }));
 
     return 'Total Loan : ' + ven.totalLoan + ' - Opening : ' + ven.openingDp + ' - Out : ' + totalOut;
   }
@@ -161,15 +178,15 @@ export class InventoryComponent implements OnInit {
     let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
     let compInv = new CompleteInventory();
     compInv.rows = new Array();
-    this.dataSource.connect().subscribe(compInvRows => {
+    this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInv.rows = compInvRows;
-    });
-    this.dataSource.vendorObservable.subscribe(vendors => {
+    }));
+    this.allSubscriptions.push(this.dataSource.vendorObservable.subscribe(vendors => {
       compInv.vens = vendors;
-    });
-    this.service.saveCompleteInventory(compInv, date).subscribe(resp => {
+    }));
+    this.allSubscriptions.push(this.service.saveCompleteInventory(compInv, date).subscribe(resp => {
       this.loadCompleteInventoryData();
-    });
+    }));
   }
 
   validateVendorValue(invRow: CompleteInventoryRow, venId: string) {
@@ -205,4 +222,17 @@ export class InventoryComponent implements OnInit {
     }
     return true;
   }
+
+  openDialog() {
+    const dialogRef = this.dialog.open(AutoGenOpeningDialogComponent, {
+      data: null
+    });
+
+    return dialogRef.afterClosed();
+  }
+
+  ngOnDestroy(): void {
+    this.allSubscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
 }

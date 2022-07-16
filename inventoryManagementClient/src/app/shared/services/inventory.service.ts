@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CompleteInventory } from '../../definitions/inventory-definition';
+import { CompleteInventory, InventoryOpening } from '../../definitions/inventory-definition';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -20,6 +20,10 @@ export class InventoryService {
   findCompleteInventoryForVendor(venId: string, refDate: string) {
     let url = this.getCompleteInventoryUrl + `-vendor/${venId}/${refDate}`;
     return this.http.get<CompleteInventory>(url);
+  }
+
+  getStockOpeningForMonth(refDate: string) {
+    return this.http.get<InventoryOpening>(`${environment.serverBase}/inventory-opening/${refDate}`);
   }
 
   saveCompleteInventory(newCompleteInventory: CompleteInventory, refDate: string) {

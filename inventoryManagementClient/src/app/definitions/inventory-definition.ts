@@ -61,3 +61,24 @@ export class CompleteInventory {
         return newClone;
     }
 }
+
+export class InventoryOpening {
+    id: string;
+    stockOpeing: {
+        id: {
+            productId : string,
+            actorId: string
+        },
+        packages: number,
+        pieces: number
+    }[];
+}
+
+// export class StockInOut {
+//     id: {
+//         productId : string,
+//         actorId: string
+//     };
+//     packages: number;
+//     pieces: number;
+// }

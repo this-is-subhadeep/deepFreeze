@@ -15,3 +15,11 @@ body {
 .remarks {
     height: 11px;
 }
+
+button.yes {
+    background: rgb(101, 193, 247);
+}
+
+button.no {
+    background: rgb(240, 152, 152);
+}

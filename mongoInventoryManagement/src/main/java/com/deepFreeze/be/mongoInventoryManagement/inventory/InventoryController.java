@@ -16,15 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class InventoryController {
 	@Autowired
 	InventoryService inventoryService;
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/inventory")
 	public List<Inventory> getAllInventory() {
 		return inventoryService.getAllInventory();
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/inventory-opening")
-	public List<InventoryOpening> getAllInventoryOpening() {
-		return inventoryService.getAllInventoryOpening();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/inventory/{refDate}")
@@ -33,18 +28,6 @@ public class InventoryController {
 		try {
 			refLocalDate = LocalDate.parse(refDate);
 			return inventoryService.getInventory(refLocalDate);
-		} catch (DateTimeParseException e) {
-			System.out.println(e);
-		}
-		return null;
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/inventory-opening/{refDate}")
-	public InventoryOpening getInventoryOpening(@PathVariable String refDate) {
-		LocalDate refLocalDate = null;
-		try {
-			refLocalDate = LocalDate.parse(refDate);
-			return inventoryService.getInventoryOpening(refLocalDate);
 		} catch (DateTimeParseException e) {
 			System.out.println(e);
 		}
@@ -75,9 +58,21 @@ public class InventoryController {
 		return null;
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/inventory-opening/{refDate}")
+	public InventoryOpening getOpeningStockOfMonth(@PathVariable String refDate) {
+		LocalDate refLocalDate = null;
+		try {
+			refLocalDate = LocalDate.parse(refDate);
+			return inventoryService.getOpeningStockOfMonth(refLocalDate);
+		} catch (DateTimeParseException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/inventory")
 	public void saveInventory(@RequestBody Inventory inv) {
-		if (inv !=null) {
+		if (inv != null) {
 			inventoryService.saveInventory(inv);
 		}
 	}
@@ -85,7 +80,7 @@ public class InventoryController {
 	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(method = RequestMethod.POST, value = "/complete-inventory/{refDate}")
 	public void saveCompleteInventory(@PathVariable String refDate, @RequestBody CompleteInventory compInv) {
-		if (compInv !=null) {
+		if (compInv != null) {
 			inventoryService.saveCompleteInventory(compInv, LocalDate.parse(refDate));
 		}
 	}

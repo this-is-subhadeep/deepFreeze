@@ -6,12 +6,14 @@ import { BrowserModule } from "@angular/platform-browser";
 import { ProductDetailComponent } from "./product-detail/product-detail.component";
 import { VendorDetailComponent } from "./vendor-detail/vendor-detail.component";
 import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
+import { AutoGenOpeningDialogComponent } from './auto-gen-opening-dialog/auto-gen-opening-dialog.component';
 
 @NgModule({
     declarations: [
         ProductDetailComponent,
         VendorDetailComponent,
-        DeleteConfirmDialogComponent],
+        DeleteConfirmDialogComponent,
+        AutoGenOpeningDialogComponent],
     imports: [
         CommonModule,
         MatInputModule,
@@ -24,10 +26,12 @@ import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-con
     ],
     exports: [
         ProductDetailComponent,
-        VendorDetailComponent
+        VendorDetailComponent,
+        AutoGenOpeningDialogComponent
     ],
     entryComponents: [
-        DeleteConfirmDialogComponent
+        DeleteConfirmDialogComponent,
+        AutoGenOpeningDialogComponent
     ]
 })
 

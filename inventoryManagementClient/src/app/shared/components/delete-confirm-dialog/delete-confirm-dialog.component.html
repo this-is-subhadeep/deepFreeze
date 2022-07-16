@@ -3,6 +3,6 @@
   <p>Are you sure you want to Delete ?</p>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No</button>
-  <button mat-button (click)="onYesClick()">Yes</button>
+  <button @fadeIn mat-raised-button class="yes" (click)="onYesClick()">Yes</button>
+  <button @fadeIn mat-raised-button class="no" (click)="onNoClick()" cdkFocusInitial>No</button>
 </div>

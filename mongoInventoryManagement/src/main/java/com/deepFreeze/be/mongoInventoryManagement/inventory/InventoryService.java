@@ -123,9 +123,35 @@ public class InventoryService {
 		return compInv;
 	}
 
-	public void fillStockOpening(InventoryOpening invOpn, CompleteInventory compInv, List<CompleteProduct> compProds, LocalDate refDate) {
+	public InventoryOpening getOpeningStockOfMonth(LocalDate refDate) {
+		InventoryOpening invOpen = new InventoryOpening(refDate.withDayOfMonth(1));
+		LocalDate workingDate;
+		if (refDate.getMonthValue() == 1) {
+			workingDate = LocalDate.of(refDate.getYear() - 1, 12, 31);
+		} else {
+			workingDate = refDate.withMonth(refDate.getMonthValue() - 1);
+			workingDate = workingDate.withDayOfMonth(workingDate.lengthOfMonth());
+		}
+		CompleteInventory compInv = getCompleteInventory(workingDate);
+		List<StockInOut> stockOpening = new ArrayList<StockInOut>();
+		compInv.getRows().forEach(invRow -> {
+			if (invRow.getId().startsWith("itm")) {
+				StockInOut rowOpening = new StockInOut();
+				rowOpening.getId().setProductId(invRow.getProdDets().getId());
+				if (invRow.getStockBalance() != null) {
+					rowOpening.setPieces(invRow.getStockBalance());
+				}
+				stockOpening.add(rowOpening);
+			}
+		});
+		invOpen.setStockOpeing(stockOpening);
+		return invOpen;
+	}
+
+	private void fillStockOpening(InventoryOpening invOpn, CompleteInventory compInv, List<CompleteProduct> compProds,
+			LocalDate refDate) {
 		if (invOpn != null) {
-			if(refDate.getDayOfMonth() == 1) {				
+			if (refDate.getDayOfMonth() == 1) {
 				List<StockInOut> stockOpenings = invOpn.getStockOpeing();
 				if (stockOpenings != null) {
 					stockOpenings.forEach(stockOpening -> {
@@ -162,10 +188,11 @@ public class InventoryService {
 					});
 				}
 			} else {
-				CompleteInventory compInvPrevDay = getCompleteInventory(refDate.withDayOfMonth(refDate.getDayOfMonth() - 1));
+				CompleteInventory compInvPrevDay = getCompleteInventory(
+						refDate.withDayOfMonth(refDate.getDayOfMonth() - 1));
 				compInv.getRows().forEach(row -> {
 					compInvPrevDay.getRows().forEach(prevRow -> {
-						if(row.getId().equals(prevRow.getId()) && row.getId().startsWith("itm")) {
+						if (row.getId().equals(prevRow.getId()) && row.getId().startsWith("itm")) {
 							row.setStockOpening(prevRow.getStockBalance());
 						}
 					});

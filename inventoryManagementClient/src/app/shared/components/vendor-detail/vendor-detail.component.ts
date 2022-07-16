@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,13 +8,14 @@ import { VendorService } from 'src/app/shared/services/vendor.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-confirm-dialog/delete-confirm-dialog.component';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-vendor-detail',
   templateUrl: './vendor-detail.component.html',
   styleUrls: ['./vendor-detail.component.scss']
 })
-export class VendorDetailComponent implements OnInit {
+export class VendorDetailComponent implements OnInit, OnDestroy {
 
   get vendor(): CompleteVendor {
     return this._vendor;
@@ -40,6 +41,8 @@ export class VendorDetailComponent implements OnInit {
   private deleteAllowed: boolean
   private billAllowed: boolean
 
+  private allSubscriptions: Subscription[];
+
   @Output() endVendorEvent = new EventEmitter<string>();
 
   constructor(
@@ -52,6 +55,7 @@ export class VendorDetailComponent implements OnInit {
   ) {
     this.deleteAllowed = false;
     this.billAllowed = false;
+    this.allSubscriptions = new Array<Subscription>();
   }
 
   ngOnInit() {
@@ -87,22 +91,22 @@ export class VendorDetailComponent implements OnInit {
     });
 
     this.venForm.disable();
-    this.service.canVendorBeDeleted(
+    this.allSubscriptions.push(this.service.canVendorBeDeleted(
       this._vendor.id,
       this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.deleteAllowed = true;
       }
-    });
-    this.service.canVendorBeBilled(
+    }));
+    this.allSubscriptions.push(this.service.canVendorBeBilled(
       this._vendor.id,
       this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
     ).subscribe(bilResp => {
       if (bilResp.possible) {
         this.billAllowed = true;
       }
-    });
+    }));
   }
 
   getFormattedtotalLoan(ven: CompleteVendor) {
@@ -150,7 +154,7 @@ export class VendorDetailComponent implements OnInit {
   }
 
   closeVendor() {
-    this.service.canVendorBeDeleted(
+    this.allSubscriptions.push(this.service.canVendorBeDeleted(
       this._vendor.id,
       this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
     ).subscribe(delResp => {
@@ -166,7 +170,7 @@ export class VendorDetailComponent implements OnInit {
           }
         });
       }
-    });
+    }))  ;
   }
 
   openDialog(message: string) {
@@ -179,6 +183,10 @@ export class VendorDetailComponent implements OnInit {
 
   generateBill() {
     this.router.navigate(['/billing', this._vendor.id]);
+  }
+
+  ngOnDestroy(): void {
+    this.allSubscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
 }
