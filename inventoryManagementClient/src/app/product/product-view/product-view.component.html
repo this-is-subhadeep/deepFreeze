@@ -1,5 +1,5 @@
 <div>
-  <div @fadeIn>
+  <div @fade>
     <div class="products-table-div mat-elevation-z10">
       <mat-accordion>
         <app-product-detail [product]="compProd" [editable]="true" *ngFor="let compProd of completeProducts$ | async; trackBy: prodTracking" (endProductEvent)="deleteCompleteProduct($event)"

@@ -1,4 +1,4 @@
-<div @fadeIn>
+<div @fade>
   <div class="vendors-table-div mat-elevation-z10">
     <mat-accordion>
       <app-vendor-detail [vendor]="compVen" [editable]="true" *ngFor="let compVen of completeVendors$ | async; trackBy: venTracking" (endVendorEvent)="deleteCompleteVendor($event)"

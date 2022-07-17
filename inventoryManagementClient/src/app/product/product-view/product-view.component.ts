@@ -3,14 +3,14 @@ import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { DatePipe } from '@angular/common';
 import { DateService } from 'src/app/shared/services/date.service';
-import { fadeInEffect, dropDownEffect } from 'src/app/animations';
+import { fadeEffect, dropDownEffect } from 'src/app/animations';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'product-view',
   templateUrl: './product-view.component.html',
-  styleUrls: ['./product-view.component.css'],
-  animations: [fadeInEffect, dropDownEffect]
+  styleUrls: ['./product-view.component.scss'],
+  animations: [fadeEffect, dropDownEffect]
 })
 export class ProductViewComponent implements OnInit, OnDestroy {
   private completeProducts$: Observable<CompleteProduct[]>;

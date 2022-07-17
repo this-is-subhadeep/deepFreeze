@@ -1,10 +1,10 @@
 <div>
   <div>
-    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button save-button_top" (click)="saveButtonPressed()">
+    <button @fade @dropDown mat-raised-button type="button" class="save-button save-button_top" (click)="saveButtonPressed()">
       Save Inventory
     </button>
   </div>
-  <div @fadeIn class="inventory-table-div mat-elevation-z10">
+  <div @fade class="inventory-table-div mat-elevation-z10">
     <mat-table [dataSource]="dataSource" class="inventory-table">
       <ng-container matColumnDef="productId">
         <mat-header-cell *matHeaderCellDef>Product Id</mat-header-cell>
@@ -118,7 +118,7 @@
     </mat-table>
   </div>
   <div>
-    <button @fadeIn @dropDown mat-raised-button type="button" class="save-button save-button_bottom" (click)="saveButtonPressed()">
+    <button @fade @dropDown mat-raised-button type="button" class="save-button save-button_bottom" (click)="saveButtonPressed()">
       Save Inventory
     </button>
   </div>

@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { fadeInEffect } from 'src/app/animations';
+import { fadeEffect } from 'src/app/animations';
 import { CompleteInventory } from 'src/app/definitions/inventory-definition';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -12,7 +12,7 @@ import { VendorService } from 'src/app/shared/services/vendor.service';
   selector: 'app-billing',
   templateUrl: './billing.component.html',
   styleUrls: ['./billing.component.scss'],
-  animations: [fadeInEffect]
+  animations: [fadeEffect]
 })
 export class BillingComponent implements OnInit {
 

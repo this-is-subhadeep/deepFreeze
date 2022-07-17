@@ -1,5 +1,7 @@
+@import 'src/styles/variables';
+
 .mat-expansion-panel {
-    background: rgb(255, 240, 152);
+    background: $yellow;
 }
 
 .vendor-panel-header {

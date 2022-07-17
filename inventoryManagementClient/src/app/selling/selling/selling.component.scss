@@ -1,3 +1,5 @@
+@import 'src/styles/variables';
+
 .selling-data-div {
     overflow: auto;
     margin: 2%;
@@ -26,7 +28,7 @@
 .total-price-header,
 .action-header {
     .mat-card {
-        background-color: rgb(139, 252, 117);
+        background-color: $green;
     }
 }
 
@@ -51,7 +53,7 @@
 
 .ven-value-card {
     .mat-card {
-        background: rgb(136, 233, 250);
+        background: $blue;
     }
     margin-top: 10px;
     ::ng-deep .mat-form-field-infix {
@@ -61,7 +63,7 @@
 .price-card,
 .action-card {
     .mat-card {
-        background: rgb(136, 233, 250);
+        background: $blue
     }
     margin-top: 10px;
 }

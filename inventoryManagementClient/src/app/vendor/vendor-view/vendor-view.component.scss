@@ -1,0 +1,22 @@
+@import 'src/styles/variables';
+
+.vendors-table-div {
+    /* height: 360px; */
+    overflow: auto;
+    margin: 2%;
+    width: 96%
+}
+
+.add-vendor-row {
+    background: $blue;
+}
+
+button.add-vendor-button {
+    background: $green;
+    transition: $transition-time;
+}
+
+button.add-vendor-button:hover:not([disabled]) {
+    color: $hover-text-color-light;
+    background: $rackley;
+}

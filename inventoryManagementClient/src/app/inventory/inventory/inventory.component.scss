@@ -1,15 +1,17 @@
+@import 'src/styles/variables';
+
 .inventory-table-div {
     overflow: auto;
     width: 96%;
     margin: 2%;
 }
 .inventory-table {
-    background: rgb(192, 230, 218);
+    background: $teal;
     width: 100%;
     /* height: 2000px ; */
 }
 .productType {
-    background: rgb(98, 128, 156);
+    background: $rackley;
     font-style: italic;
     font-weight: bold; 
 }
@@ -42,12 +44,13 @@
     flex: 0 0 60px;
 }
 
-.vendorTooltip {
-    background: red;
-}
+// .vendorTooltip {
+    // background: red;
+// }
 
 button.save-button {
-    background: rgb(101, 193, 247);
+    color: $hover-text-color-light;
+    background: $blue;
     margin-left: 2%;
     margin-right: 2%;
     width: 96%;
@@ -57,4 +60,10 @@ button.save-button {
     &_bottom {
         margin-bottom: 2%;
     }
+    transition: $transition-time;
+}
+
+button.save-button:hover {
+    color: $hover-text-color-dark;
+    background: $green;
 }

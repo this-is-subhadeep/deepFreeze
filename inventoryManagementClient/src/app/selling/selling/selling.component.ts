@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NgModel, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { dropDownEffect, fadeInEffect } from 'src/app/animations';
+import { dropDownEffect, fadeEffect } from 'src/app/animations';
 import { CompleteInventory } from 'src/app/definitions/inventory-definition';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { SellingData } from 'src/app/definitions/selling-definition';
@@ -15,7 +15,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
   selector: 'app-selling',
   templateUrl: './selling.component.html',
   styleUrls: ['./selling.component.scss'],
-  animations: [fadeInEffect, dropDownEffect]
+  animations: [fadeEffect, dropDownEffect]
 })
 export class SellingComponent implements OnInit {
   private completeProducts: CompleteProduct[];

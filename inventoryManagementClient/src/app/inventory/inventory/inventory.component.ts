@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { InventoryDataSource } from './inventory-datasource';
-import { dropDownEffect, fadeInEffect } from 'src/app/animations';
+import { dropDownEffect, fadeEffect } from 'src/app/animations';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { InventoryService } from 'src/app/shared/services/inventory.service';
 import { DateService } from 'src/app/shared/services/date.service';
@@ -22,7 +22,7 @@ const staticColumnsToDisplay = ['productName',
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss'],
-  animations: [fadeInEffect, dropDownEffect]
+  animations: [fadeEffect, dropDownEffect]
 })
 export class InventoryComponent implements OnInit, OnDestroy {
   private dataSource: InventoryDataSource;

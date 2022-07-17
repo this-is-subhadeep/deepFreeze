@@ -1,5 +1,7 @@
+@import 'src/styles/variables';
+
 .mat-expansion-panel {
-    background: rgb(255, 187, 219);
+    background: $pink;
     height: 100%
 }
 

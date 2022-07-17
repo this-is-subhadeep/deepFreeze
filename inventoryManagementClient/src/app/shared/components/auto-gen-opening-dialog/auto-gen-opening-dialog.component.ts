@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { fadeInEffect } from 'src/app/animations';
+import { fadeEffect } from 'src/app/animations';
 
 @Component({
   selector: 'app-auto-gen-opening-dialog',
   templateUrl: './auto-gen-opening-dialog.component.html',
   styleUrls: ['./auto-gen-opening-dialog.component.css'],
-  animations: [fadeInEffect]
+  animations: [fadeEffect]
 })
 export class AutoGenOpeningDialogComponent implements OnInit {
 

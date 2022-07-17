@@ -3,14 +3,14 @@ import { VendorService } from '../../shared/services/vendor.service';
 import { DatePipe } from '@angular/common';
 import { DateService } from '../../shared/services/date.service';
 import { CompleteVendor } from '../../definitions/vendor-definition';
-import { fadeInEffect, dropDownEffect } from '../../animations';
+import { fadeEffect, dropDownEffect } from '../../animations';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'vendor-view',
   templateUrl: './vendor-view.component.html',
-  styleUrls: ['./vendor-view.component.css'],
-  animations: [fadeInEffect, dropDownEffect]
+  styleUrls: ['./vendor-view.component.scss'],
+  animations: [fadeEffect, dropDownEffect]
 })
 export class VendorViewComponent implements OnInit, OnDestroy {
   private completeVendors$: Observable<CompleteVendor[]>;
