@@ -61,9 +61,9 @@ button.save-button {
         margin-bottom: 2%;
     }
     transition: $transition-time;
-}
-
-button.save-button:hover {
-    color: $hover-text-color-dark;
-    background: $green;
+    
+    &:hover {
+        color: $hover-text-color-dark;
+        background: $green;
+    }
 }

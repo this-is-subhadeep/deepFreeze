@@ -113,11 +113,8 @@ export class SellingComponent implements OnInit {
     this.completeInventory.rows.forEach(row => {
       if (row.vendorValue[id]) {
         this.addSellingProduct(row.id, row.vendorValue[id]);
-        // this.sellingProductId = row.id; 
       }
     });
-
-    console.log(this.sellingProductList);
   }
 
   private vendorSelected($event) {
@@ -207,7 +204,7 @@ export class SellingComponent implements OnInit {
     return soldUnitEle.invalid;
   }
 
-  private sellingProductTrackBy(index, sellProd:SellingData) {
+  private sellingProductTrackBy(index, sellProd: SellingData) {
     return sellProd.product.id;
   }
 
@@ -216,7 +213,7 @@ export class SellingComponent implements OnInit {
   }
 
   private generateBill() {
-    this.router.navigate(['/billing',this.selectedVendor.id]);
+    this.router.navigate(['/billing', this.selectedVendor.id]);
   }
 
 }

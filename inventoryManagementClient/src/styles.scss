@@ -1,0 +1,37 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "material-design-icons/iconfont/material-icons.css";
+@import "src/styles/variables";
+
+body {
+    margin: 0px;
+}
+
+.row {
+    display: flex
+}
+
+.element {
+    flex-grow: 1;
+}
+
+.remarks {
+    height: 11px;
+}
+
+button.yes {
+    background: $blue;
+    transition: $transition-time;
+    &:hover {
+        color: $hover-text-color-light;
+        background: $deep-blue;
+    }
+}
+
+button.no { 
+    background: $pink;
+    transition: $transition-time;
+    &:hover {
+        color: $hover-text-color-light;
+        background: $red;
+    }
+}

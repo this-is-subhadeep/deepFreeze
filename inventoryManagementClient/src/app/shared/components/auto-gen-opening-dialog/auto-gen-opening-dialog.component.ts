@@ -5,7 +5,7 @@ import { fadeEffect } from 'src/app/animations';
 @Component({
   selector: 'app-auto-gen-opening-dialog',
   templateUrl: './auto-gen-opening-dialog.component.html',
-  styleUrls: ['./auto-gen-opening-dialog.component.css'],
+  styleUrls: ['./auto-gen-opening-dialog.component.scss'],
   animations: [fadeEffect]
 })
 export class AutoGenOpeningDialogComponent implements OnInit {

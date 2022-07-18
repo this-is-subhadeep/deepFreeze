@@ -14,9 +14,9 @@
 button.add-vendor-button {
     background: $green;
     transition: $transition-time;
-}
 
-button.add-vendor-button:hover:not([disabled]) {
-    color: $hover-text-color-light;
-    background: $rackley;
+    &:hover:not([disabled]) {
+        color: $hover-text-color-light;
+        background: $rackley;
+    }
 }

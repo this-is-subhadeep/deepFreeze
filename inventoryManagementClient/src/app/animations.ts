@@ -1,15 +1,17 @@
 import { trigger, state, transition, style, animate } from '@angular/animations';
 
+let animationTime = 500;
+
 export let fadeEffect = trigger('fade',[
     state('void',style({opacity : 0})),
     transition(':enter, :leave',[
-        animate(500)
+        animate(animationTime)
     ])
 ])
 
 export let dropDownEffect = trigger('dropDown',[
-    state('void',style({transform : 'translateY(-50px)'})),
-    transition(':enter',[
-        animate(500)
+    state('void',style({transform : 'translateY(-100px)'})),
+    transition(':enter, :leave',[
+        animate(animationTime)
     ])
 ])

@@ -11,9 +11,9 @@
 button.add-product-button {
     background: $blue;
     transition: $transition-time;
-}
 
-button.add-product-button:hover:not([disabled]) {
-    color: $hover-text-color-light;
-    background: $green;
+    &:hover:not([disabled]) {
+        color: $hover-text-color-light;
+        background: $green;
+    }
 }

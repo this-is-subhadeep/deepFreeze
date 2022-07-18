@@ -5,6 +5,7 @@
     margin: 2%;
     width: 96%
 }
+
 .inner-boundary {
     margin: 2%;
 }
@@ -45,6 +46,7 @@
     display: flex;
     align-items: center;
 }
+
 .header-row {
     margin: 2%;
     display: flex;
@@ -55,16 +57,20 @@
     .mat-card {
         background: $blue;
     }
+
     margin-top: 10px;
+
     ::ng-deep .mat-form-field-infix {
         width: 100% !important;
     }
 }
+
 .price-card,
 .action-card {
     .mat-card {
         background: $blue
     }
+
     margin-top: 10px;
 }
 
@@ -76,18 +82,40 @@
 }
 
 .button-group {
-    width: 12vw; 
-    display:flex;
+    width: 12vw;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
 .button-group>button {
-    margin-top: 5vh; 
+    margin-top: 5vh;
     margin-bottom: 5vh;
 }
 
 .product-panel-header {
     padding-top: 1.5vh;
     padding-bottom: 1.5vh;
+}
+
+.save-button {
+    color: $hover-text-color-light;
+    background: $pink;
+    transition: $transition-time;
+
+    &:hover:not([disabled]) {
+        color: $hover-text-color-dark;
+        background: $teal;
+    }
+}
+
+.save-bill-button {
+    color: $hover-text-color-light;
+    background: $blue;
+    transition: $transition-time;
+
+    &:hover:not([disabled]) {
+        color: $hover-text-color-dark;
+        background: $green;
+    }
 }
