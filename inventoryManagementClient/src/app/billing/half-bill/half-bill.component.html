@@ -1,4 +1,4 @@
-<div class="bill-table border">
+<div class="bill-table border" *ngIf="completeInventory">
   <div class="flex-center-content border">
     <p>
       <strong>MUKHERJEE ENTERPRISE</strong>
@@ -35,7 +35,7 @@
     <div class="flex-center-content border">Unit</div>
     <div class="flex-center-content border">MRP</div>
     <div class="flex-center-content border">Amount</div>
-    <ng-template ngFor let-row [ngForOf]="completeInventory.rows">
+    <ng-template ngFor let-row [ngForOf]="completeInventory.rows!">
       <div class="product-type flex-center-content border" *ngIf="row.id.startsWith('pty'); else productRow">
         {{row.name}}
       </div>

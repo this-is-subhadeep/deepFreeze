@@ -13,9 +13,9 @@ import { Observable, Subscription } from 'rxjs';
   animations: [fadeEffect, dropDownEffect]
 })
 export class ProductViewComponent implements OnInit, OnDestroy {
-  private completeProducts$: Observable<CompleteProduct[]>;
-  private newCompleteProduct: CompleteProduct;
-  private productsClosed: Array<string>;
+  completeProducts$: Observable<CompleteProduct[]>;
+  newCompleteProduct: CompleteProduct;
+  productsClosed: Array<string>;
 
   private allSubscriptions: Subscription[];
 
@@ -64,7 +64,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
-  private addClosed() {
+  addClosed() {
     this.refresh();
   }
 

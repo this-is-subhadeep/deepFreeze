@@ -102,15 +102,12 @@
             </mat-option>
           </mat-select>
           <mat-hint>Product to Sell !!</mat-hint>
-          <mat-error *ngIf="productList.invalid && productList.errors.required">
-            Please select a Product to sell !!
-          </mat-error>
         </mat-form-field>
         <div class="button-group">
-          <button mat-raised-button class='save-button' type="button" (click)="saveButtonPressed()">
+          <button mat-raised-button [disabled]="!showProductTable()" class='save-button' type="button" (click)="saveButtonPressed()">
             Save
           </button>
-          <button mat-raised-button class='save-bill-button' type="button" (click)="saveAndBillButtonPressed()">
+          <button mat-raised-button [disabled]="!showProductTable()" class='save-bill-button' type="button" (click)="saveAndBillButtonPressed()">
             Save & Bill
           </button>
         </div>

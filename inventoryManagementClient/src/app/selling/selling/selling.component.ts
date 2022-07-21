@@ -18,12 +18,13 @@ import { ProductService } from 'src/app/shared/services/product.service';
   animations: [fadeEffect, dropDownEffect]
 })
 export class SellingComponent implements OnInit {
-  private completeProducts: CompleteProduct[];
   private savedCompleteProducts: CompleteProduct[];
-  private sellingProductList: SellingData[];
-  private completeVendors: CompleteVendor[];
   private completeInventory: CompleteInventory;
-  private selectedVendor: CompleteVendor;
+  
+  completeProducts: CompleteProduct[];
+  sellingProductList: SellingData[];
+  completeVendors: CompleteVendor[];
+  selectedVendor: CompleteVendor;
 
   constructor(private productService: ProductService,
     private inventoryService: InventoryService,
@@ -62,11 +63,11 @@ export class SellingComponent implements OnInit {
     this.sellingProductList = new Array();
   }
 
-  private get sellingProductId() {
+  get sellingProductId() {
     return '';
   }
 
-  private get selectedVendorId() {
+  get selectedVendorId() {
     return this.selectedVendor.id;
   }
 
@@ -84,7 +85,7 @@ export class SellingComponent implements OnInit {
     }
   }
 
-  private set sellingProductId(id: string) {
+  set sellingProductId(id: string) {
     if (this.completeProducts) {
       let removalindex = -1;
       for (let i = 0; i < this.completeProducts.length; i++) {
@@ -98,7 +99,7 @@ export class SellingComponent implements OnInit {
     }
   }
 
-  private set selectedVendorId(id: string) {
+  set selectedVendorId(id: string) {
     this.completeVendors.forEach(compVen => {
       if (compVen.id === id) {
         this.selectedVendor = compVen;
@@ -122,15 +123,15 @@ export class SellingComponent implements OnInit {
 
   }
 
-  private isVendorSelected(): boolean {
+  isVendorSelected(): boolean {
     return this.selectedVendor.id !== undefined && this.selectedVendor.id !== null && this.selectedVendor.id.startsWith('ven');
   }
 
-  private showProductTable(): boolean {
+  showProductTable(): boolean {
     return this.sellingProductList != null && this.sellingProductList.length > 0 && this.isVendorSelected();
   }
 
-  private getStockBalance(productId: string): number {
+  getStockBalance(productId: string): number {
     let balance = 0;
     this.completeInventory.rows.forEach(invRow => {
       if (invRow.id === productId && invRow.stockBalance != null) {
@@ -140,7 +141,7 @@ export class SellingComponent implements OnInit {
     return balance;
   }
 
-  private getTotalUnitsSold() {
+  getTotalUnitsSold() {
     let totalUnitsSold = 0;
     if (this.sellingProductList != undefined && this.sellingProductList.length > 0) {
       this.sellingProductList.forEach(sellingProduct => {
@@ -150,7 +151,7 @@ export class SellingComponent implements OnInit {
     return totalUnitsSold;
   }
 
-  private getTotalAmountSold() {
+  getTotalAmountSold() {
     let totalAmountSold = 0;
     if (this.sellingProductList != undefined && this.sellingProductList.length > 0) {
       this.sellingProductList.forEach(sellingProduct => {
@@ -160,7 +161,7 @@ export class SellingComponent implements OnInit {
     return Math.round(totalAmountSold * 100) / 100;
   }
 
-  private saveButtonPressed() {
+  saveButtonPressed() {
     console.log('Save Button Pressed', this.sellingProductList);
     let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
     this.completeInventory.rows.forEach(row => {
@@ -181,12 +182,12 @@ export class SellingComponent implements OnInit {
     });
   }
 
-  private saveAndBillButtonPressed() {
+  saveAndBillButtonPressed() {
     this.saveButtonPressed();
     this.generateBill();
   }
 
-  private deleteProductFromList(ind: number) {
+  deleteProductFromList(ind: number) {
     console.log('Deleting Product :', ind);
     this.completeProducts.push(this.sellingProductList[ind].product);
     this.completeProducts = this.completeProducts.sort((ele1, ele2) => {

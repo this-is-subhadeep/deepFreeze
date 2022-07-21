@@ -36,10 +36,11 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
   @Input() editable: boolean;
 
   private _vendor: CompleteVendor;
-  private venForm: FormGroup;
-  private editComponent: boolean;
   private deleteAllowed: boolean
-  private billAllowed: boolean
+  
+  editComponent: boolean;
+  venForm: FormGroup;
+  billAllowed: boolean
 
   private allSubscriptions: Subscription[];
 

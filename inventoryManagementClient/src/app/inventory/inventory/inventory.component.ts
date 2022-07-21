@@ -25,11 +25,12 @@ const staticColumnsToDisplay = ['productName',
   animations: [fadeEffect, dropDownEffect]
 })
 export class InventoryComponent implements OnInit, OnDestroy {
-  private dataSource: InventoryDataSource;
-  private columnsToDisplay = [];
+  dataSource: InventoryDataSource;
+  is1stDayOfMonth: boolean;
+  columnsToDisplay = [];
+  
   private prodTypeClass = 'productType';
   private compVenList: CompleteVendor[];
-  private is1stDayOfMonth: boolean;
   private isOpeningQuestionAsked: boolean;
 
   private allSubscriptions: Subscription[];
@@ -79,21 +80,21 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private isRowProductType(inventoryRow: CompleteInventoryRow) {
+  isRowProductType(inventoryRow: CompleteInventoryRow) {
     return inventoryRow.id.startsWith('pty');
   }
-  private getRowTypeClass(inventoryRow: CompleteInventoryRow) {
+  getRowTypeClass(inventoryRow: CompleteInventoryRow) {
     return this.isRowProductType(inventoryRow) ? this.prodTypeClass : null;
   }
 
-  private getProdDetails(inventoryRow: CompleteInventoryRow) {
+  getProdDetails(inventoryRow: CompleteInventoryRow) {
     if (!this.isRowProductType(inventoryRow) && inventoryRow.prodDets != undefined) {
       return 'Package Size : ' + inventoryRow.prodDets.packageSize + ' - Price : ' + inventoryRow.prodDets.sellingPrice;
     }
     return '';
   }
 
-  private getBalance() {
+  getBalance() {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
@@ -104,7 +105,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return 'Total : ' + total;
   }
 
-  private getTotalIn() {
+  getTotalIn() {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
@@ -115,7 +116,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return 'Total : ' + total;
   }
 
-  private getTotalSenIn() {
+  getTotalSenIn() {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
@@ -126,7 +127,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return 'Total : ' + total;
   }
 
-  private getTotalOthersIn() {
+  getTotalOthersIn() {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
@@ -137,7 +138,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return 'Total : ' + total;
   }
 
-  private getTotalOut() {
+  getTotalOut() {
     let total = 0;
     let value = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
@@ -152,7 +153,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return 'Total : ' + total + ' - Value : ' + value;
   }
 
-  private getVenDetails(ven: CompleteVendor) {
+  getVenDetails(ven: CompleteVendor) {
     // console.log(ven.name,' - ',ven.deposit,' - ',ven.totalLoan);
     let totalOut = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
@@ -174,7 +175,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
     return ven.id;
   }
 
-  private saveButtonPressed() {
+  saveButtonPressed() {
     let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
     let compInv = new CompleteInventory();
     compInv.rows = new Array();

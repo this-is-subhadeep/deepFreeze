@@ -33,7 +33,7 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <!-- <span>{{title}}</span> -->
-      <span *ngIf="(isHandset$ | async)!.matches; else browserText">IMS</span>
+      <span *ngIf="(isHandset$ | async)!; else browserText">IMS</span>
       <ng-template #browserText>
         {{title}}
       </ng-template>

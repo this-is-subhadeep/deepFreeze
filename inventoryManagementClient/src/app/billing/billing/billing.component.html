@@ -1,8 +1,25 @@
+<div hidden>
+  <div class="print-body" id="print-body">
+    <div class="paper"> 
+     <div class="bill-body" *ngIf="completeVendor && completeInventory">
+       <app-half-bill [completeVendor]="completeVendor" [completeInventory]="completeInventory"></app-half-bill>
+       <app-half-bill [completeVendor]="completeVendor" [completeInventory]="completeInventory"></app-half-bill>
+     </div>
+    </div>
+  </div>
+</div> 
+
 <div @fade class="billing-body">
-  <mat-card class="paper">
-   <div class="bill-body" *ngIf="completeVendor && completeInventory">
-     <app-half-bill [completeVendor]="completeVendor" [completeInventory]="completeInventory"></app-half-bill>
-     <app-half-bill [completeVendor]="completeVendor" [completeInventory]="completeInventory"></app-half-bill>
-   </div>
-  </mat-card>
+  <app-half-bill [completeVendor]="completeVendor" [completeInventory]="completeInventory"></app-half-bill>
+  <button 
+    printSectionId="print-body"
+    ngxPrint
+    [useExistingCss]="true"
+    mat-raised-button 
+    class="print-bill-button"
+    type="button">
+    Print
+  </button>
 </div>
+
+

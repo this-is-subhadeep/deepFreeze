@@ -32,9 +32,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   @Input() editable: boolean;
 
+  prodForm: FormGroup;
+  editComponent: boolean;
+  
   private _product: CompleteProduct;
-  private prodForm: FormGroup;
-  private editComponent: boolean;
   private deleteAllowed: boolean
 
   private allSubscriptions: Subscription[];

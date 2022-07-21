@@ -12,16 +12,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent {
-  private title = ' Inventory Management System';
-  private inventoryClass = '';
-  private productClass = '';
-  private vendorClass = '';
-  private sellingClass = '';
-  private datePickerClass = 'datePicker';
+  title = ' Inventory Management System';
+  inventoryClass = '';
+  productClass = '';
+  vendorClass = '';
+  sellingClass = '';
+  datePickerClass = 'datePicker';
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => {
-        console.log(result.matches);
         return result.matches;
       })
     );

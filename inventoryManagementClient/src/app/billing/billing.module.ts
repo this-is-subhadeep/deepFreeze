@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { MatCardModule } from "@angular/material";
+import { MatButtonModule, MatCardModule } from "@angular/material";
+import { NgxPrintModule } from "ngx-print";
 import { BillingComponent } from "src/app/billing/billing/billing.component";
 import { BillingRoutingModule } from "./billing-routing.module";
 import { HalfBillComponent } from './half-bill/half-bill.component';
@@ -10,7 +11,9 @@ import { HalfBillComponent } from './half-bill/half-bill.component';
     imports: [
         CommonModule,
         BillingRoutingModule,
-        MatCardModule
+        MatCardModule,
+        MatButtonModule,
+        NgxPrintModule
     ],
     exports: [BillingComponent]
 })

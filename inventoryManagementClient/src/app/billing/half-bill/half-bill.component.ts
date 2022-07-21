@@ -14,17 +14,18 @@ export class HalfBillComponent implements OnInit {
   @Input() completeVendor: CompleteVendor;
   @Input() completeInventory: CompleteInventory;
 
-  private selectedDate: string;
+  selectedDate: string;
 
   constructor(
     private readonly dateService: DateService,
     private readonly datePipe: DatePipe
-  ) {
-    this.selectedDate = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-  }
+  ) { }
 
   ngOnInit() {
-    console.log(this.completeInventory);
+    this.selectedDate = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    this.dateService.dateChangeListener.subscribe(() => {
+      this.selectedDate = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    });
   }
 
   getGrossTotal(): number {

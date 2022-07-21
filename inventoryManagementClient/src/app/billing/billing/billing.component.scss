@@ -1,16 +1,36 @@
+@import 'src/styles/variables';
+
 .billing-body {
     display: grid;
     justify-content: center;
     align-items: center;
-    height: 90vh;
+    margin-top: 10vh;
+    min-height: 80vh;
+}
 
-    .paper {
-        width: 500px;
-        height: 707px;
-        .bill-body {
-            display: flex;
-            justify-content: space-around;
-        }
+.print-body {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.paper {
+    margin-top: 5vh;
+    width: 874px;
+
+    .bill-body {
+        display: flex;
+        justify-content: space-around;
     }
 }
 
+.print-bill-button {
+    color: $hover-text-color-light;
+    background: $blue;
+    transition: $transition-time;
+
+    &:hover:not([disabled]) {
+        color: $hover-text-color-dark;
+        background: $green;
+    }
+}

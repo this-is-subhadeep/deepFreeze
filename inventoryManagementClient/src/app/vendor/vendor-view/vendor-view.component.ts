@@ -13,9 +13,9 @@ import { Observable, Subscription } from 'rxjs';
   animations: [fadeEffect, dropDownEffect]
 })
 export class VendorViewComponent implements OnInit, OnDestroy {
-  private completeVendors$: Observable<CompleteVendor[]>;
-  private newCompleteVendor:CompleteVendor;
-  private vendorsClosed: Array<string>;
+  completeVendors$: Observable<CompleteVendor[]>;
+  newCompleteVendor:CompleteVendor;
+  vendorsClosed: Array<string>;
 
   private allSubscriptions: Subscription[];
 
@@ -42,11 +42,7 @@ export class VendorViewComponent implements OnInit, OnDestroy {
     this.newCompleteVendor = new CompleteVendor();
   }
 
-  private addVenButtonPressed() {
-    this.refresh();
-  }
-
-  private addButtonPressed() {
+  addButtonPressed() {
     let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
     this.newCompleteVendor.id=this.service.nextVendorId;
     this.allSubscriptions.push(this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
@@ -56,7 +52,7 @@ export class VendorViewComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
-  private addClosed() {
+  addClosed() {
     this.refresh();
   }
 
