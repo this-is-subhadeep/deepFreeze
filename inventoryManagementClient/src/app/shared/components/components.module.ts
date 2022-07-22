@@ -1,10 +1,13 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule, MatDialogModule, MatExpansionModule, MatIconModule, MatInputModule } from "@angular/material";
-import { BrowserModule } from "@angular/platform-browser";
-import { ProductDetailComponent } from "./product-detail/product-detail.component";
-import { VendorDetailComponent } from "./vendor-detail/vendor-detail.component";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
+import { VendorDetailComponent } from './vendor-detail/vendor-detail.component';
 import { DeleteConfirmDialogComponent } from './delete-confirm-dialog/delete-confirm-dialog.component';
 import { AutoGenOpeningDialogComponent } from './auto-gen-opening-dialog/auto-gen-opening-dialog.component';
 
@@ -15,7 +18,7 @@ import { AutoGenOpeningDialogComponent } from './auto-gen-opening-dialog/auto-ge
         DeleteConfirmDialogComponent,
         AutoGenOpeningDialogComponent],
     imports: [
-        CommonModule,
+        CommonModule,   
         MatInputModule,
         MatButtonModule,
         MatExpansionModule,
@@ -35,4 +38,4 @@ import { AutoGenOpeningDialogComponent } from './auto-gen-opening-dialog/auto-ge
     ]
 })
 
-export class ComponentsModule {}
+export class ComponentsModule { }

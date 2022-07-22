@@ -2,15 +2,15 @@ import { CompleteVendor } from "./vendor-definition";
 import { CompleteProduct } from "./product-definition";
 
 export class CompleteInventoryRow {
-    id:string;
-    name:string;
-    prodDets:CompleteProduct;
-    stockOpening:number;
-    stockBalance:number;
-    stockTotalIn:number;
-    stockSenIn:number;
-    stockOthersIn:number;
-    stockTotalOut:number;
+    id:string = "";
+    name:string | undefined;
+    prodDets:CompleteProduct | undefined;
+    stockOpening:number | undefined;
+    stockBalance:number | undefined;
+    stockTotalIn:number | undefined;
+    stockSenIn:number | undefined;
+    stockOthersIn:number | undefined;
+    stockTotalOut:number | undefined;
     vendorValue:{[index:string]:number};
     constructor() {
         this.vendorValue={};
@@ -46,8 +46,8 @@ export class CompleteInventoryRow {
 }
 
 export class CompleteInventory {
-    rows:CompleteInventoryRow[];
-    vens:CompleteVendor[];
+    rows:CompleteInventoryRow[] | undefined;
+    vens:CompleteVendor[] | undefined;
     clone () {
         let newClone = new CompleteInventory();
         newClone.rows = this.rows;
@@ -63,7 +63,7 @@ export class CompleteInventory {
 }
 
 export class InventoryOpening {
-    id: string;
+    id: string = "";
     stockOpeing: {
         id: {
             productId : string,
@@ -71,14 +71,5 @@ export class InventoryOpening {
         },
         packages: number,
         pieces: number
-    }[];
+    }[] | undefined;
 }
-
-// export class StockInOut {
-//     id: {
-//         productId : string,
-//         actorId: string
-//     };
-//     packages: number;
-//     pieces: number;
-// }

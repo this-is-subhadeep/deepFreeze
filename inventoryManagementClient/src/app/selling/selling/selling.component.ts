@@ -18,13 +18,13 @@ import { ProductService } from 'src/app/shared/services/product.service';
   animations: [fadeEffect, dropDownEffect]
 })
 export class SellingComponent implements OnInit {
-  private savedCompleteProducts: CompleteProduct[];
-  private completeInventory: CompleteInventory;
-  
-  completeProducts: CompleteProduct[];
-  sellingProductList: SellingData[];
-  completeVendors: CompleteVendor[];
-  selectedVendor: CompleteVendor;
+  private savedCompleteProducts: CompleteProduct[] = new Array<CompleteProduct>();
+  private completeInventory: CompleteInventory = new CompleteInventory();
+
+  completeProducts: CompleteProduct[] = new Array<CompleteProduct>();
+  sellingProductList: SellingData[] = new Array<SellingData>();
+  completeVendors: CompleteVendor[] = new Array<CompleteVendor>();
+  selectedVendor: CompleteVendor = new CompleteVendor();
 
   constructor(private productService: ProductService,
     private inventoryService: InventoryService,
@@ -35,7 +35,7 @@ export class SellingComponent implements OnInit {
   ngOnInit() {
     this.loadCompleteProductData();
     this.loadCompleteInventoryData();
-    this.refresh()
+    this.refresh();
     this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteProductData();
       this.loadCompleteInventoryData();
@@ -44,18 +44,24 @@ export class SellingComponent implements OnInit {
   }
 
   private loadCompleteProductData() {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.productService.findCompleteProductObservable(date).subscribe(completeProducts => {
-      this.savedCompleteProducts = completeProducts;
-    });
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date) {
+      this.productService.findCompleteProductObservable(date).subscribe(completeProducts => {
+        this.savedCompleteProducts = completeProducts;
+      });
+    }
   }
 
   private loadCompleteInventoryData() {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.inventoryService.findCompleteInventoryObservable(date).subscribe(completeInventory => {
-      this.completeInventory = completeInventory;
-      this.completeVendors = completeInventory.vens;
-    });
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date) {
+      this.inventoryService.findCompleteInventoryObservable(date).subscribe(completeInventory => {
+        this.completeInventory = completeInventory;
+        if (completeInventory.vens) {
+          this.completeVendors = completeInventory.vens;
+        }
+      });
+    }
   }
 
   private refresh() {
@@ -111,16 +117,13 @@ export class SellingComponent implements OnInit {
         return;
       }
     });
-    this.completeInventory.rows.forEach(row => {
-      if (row.vendorValue[id]) {
-        this.addSellingProduct(row.id, row.vendorValue[id]);
-      }
-    });
-  }
-
-  private vendorSelected($event) {
-    console.log('Vendor Selected');
-
+    if (this.completeInventory.rows) {
+      this.completeInventory.rows.forEach(row => {
+        if (row.vendorValue[id]) {
+          this.addSellingProduct(row.id, row.vendorValue[id]);
+        }
+      });
+    }
   }
 
   isVendorSelected(): boolean {
@@ -133,19 +136,23 @@ export class SellingComponent implements OnInit {
 
   getStockBalance(productId: string): number {
     let balance = 0;
-    this.completeInventory.rows.forEach(invRow => {
-      if (invRow.id === productId && invRow.stockBalance != null) {
-        balance = invRow.stockBalance;
-      }
-    });
+    if (this.completeInventory.rows) {
+      this.completeInventory.rows.forEach(invRow => {
+        if (invRow.id === productId && invRow.stockBalance != null) {
+          balance = invRow.stockBalance;
+        }
+      });
+    }
     return balance;
   }
 
   getTotalUnitsSold() {
     let totalUnitsSold = 0;
-    if (this.sellingProductList != undefined && this.sellingProductList.length > 0) {
+    if (this.sellingProductList !== undefined && this.sellingProductList.length > 0) {
       this.sellingProductList.forEach(sellingProduct => {
-        totalUnitsSold += sellingProduct.soldUnits;
+        if (sellingProduct.soldUnits) {
+          totalUnitsSold += sellingProduct.soldUnits;
+        }
       });
     }
     return totalUnitsSold;
@@ -153,33 +160,40 @@ export class SellingComponent implements OnInit {
 
   getTotalAmountSold() {
     let totalAmountSold = 0;
-    if (this.sellingProductList != undefined && this.sellingProductList.length > 0) {
+    if (this.sellingProductList !== undefined && this.sellingProductList.length > 0) {
       this.sellingProductList.forEach(sellingProduct => {
-        totalAmountSold += sellingProduct.soldUnits * sellingProduct.product.sellingPrice.valueOf();
+        if (sellingProduct.soldUnits && sellingProduct.product.sellingPrice) {
+          totalAmountSold += sellingProduct.soldUnits * sellingProduct.product.sellingPrice.valueOf();
+        }
       });
     }
     return Math.round(totalAmountSold * 100) / 100;
   }
 
   saveButtonPressed() {
-    console.log('Save Button Pressed', this.sellingProductList);
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.completeInventory.rows.forEach(row => {
-      this.sellingProductList.forEach(soldRow => {
-        if (row.id === soldRow.product.id) {
-          row.vendorValue[this.selectedVendor.id] = soldRow.soldUnits.valueOf();
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (this.completeInventory.rows) {
+      this.completeInventory.rows.forEach(row => {
+        this.sellingProductList.forEach(soldRow => {
+          if (row.id === soldRow.product.id && soldRow.soldUnits) {
+            row.vendorValue[this.selectedVendor.id] = soldRow.soldUnits.valueOf();
+          }
+        });
+      });
+    }
+    if (this.completeInventory.vens) {
+      this.completeInventory.vens.forEach(ven => {
+        if (ven.id === this.selectedVendor.id) {
+          ven.deposit = this.selectedVendor.deposit;
         }
       });
-    });
-    this.completeInventory.vens.forEach(ven => {
-      if (ven.id === this.selectedVendor.id) {
-        ven.deposit = this.selectedVendor.deposit;
-      }
-    });
-    this.inventoryService.saveCompleteInventory(this.completeInventory, date).subscribe(resp => {
-      this.loadCompleteInventoryData();
-      this.refresh();
-    });
+    }
+    if (date) {
+      this.inventoryService.saveCompleteInventory(this.completeInventory, date).subscribe(resp => {
+        this.loadCompleteInventoryData();
+        this.refresh();
+      });
+    }
   }
 
   saveAndBillButtonPressed() {
@@ -188,29 +202,26 @@ export class SellingComponent implements OnInit {
   }
 
   deleteProductFromList(ind: number) {
-    console.log('Deleting Product :', ind);
     this.completeProducts.push(this.sellingProductList[ind].product);
     this.completeProducts = this.completeProducts.sort((ele1, ele2) => {
-      let compareRes = ele1.productType.showOrder - ele2.productType.showOrder;
-      if (compareRes === 0) {
-        compareRes = ele1.name === ele2.name ? 0 : ele1.name < ele2.name ? -1 : 1;
+      if (ele1.productType.showOrder && ele2.productType.showOrder && ele1.name && ele2.name) {
+        let compareRes = ele1.productType.showOrder - ele2.productType.showOrder;
+        if (compareRes === 0) {
+          compareRes = ele1.name === ele2.name ? 0 : ele1.name < ele2.name ? -1 : 1;
+        }
+        return compareRes;
       }
-      return compareRes;
+      return 0;
     });
     this.sellingProductList.splice(ind, 1);
   }
 
   private isUnitInvalid(id: number, soldUnitEle: NgModel) {
-    console.log('id :', id, 'soldUnitEle :', soldUnitEle);
     return soldUnitEle.invalid;
   }
 
-  private sellingProductTrackBy(index, sellProd: SellingData) {
+  private sellingProductTrackBy(index: number, sellProd: SellingData) {
     return sellProd.product.id;
-  }
-
-  private log(data) {
-    console.log('Log :', data);
   }
 
   private generateBill() {

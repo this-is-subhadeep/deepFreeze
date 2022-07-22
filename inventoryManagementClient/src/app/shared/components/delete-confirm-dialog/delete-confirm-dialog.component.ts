@@ -1,10 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { fadeEffect } from 'src/app/animations';
 
 @Component({
   selector: 'app-delete-confirm-dialog',
   templateUrl: './delete-confirm-dialog.component.html',
-  styleUrls: ['./delete-confirm-dialog.component.scss']
+  styleUrls: ['./delete-confirm-dialog.component.scss'],
+  animations: [fadeEffect]
 })
 export class DeleteConfirmDialogComponent implements OnInit {
 
@@ -17,7 +19,7 @@ export class DeleteConfirmDialogComponent implements OnInit {
   }
 
   onNoClick() {
-    this.dialogRef.close(false)
+    this.dialogRef.close(false);
   }
 
   onYesClick() {

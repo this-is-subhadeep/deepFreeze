@@ -7,12 +7,12 @@
       {{getFormattedtotalLoan(vendor)}}
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <form [formGroup]="venForm">
+  <form [formGroup]="venForm!">
     <div class="row">
       <div class="element">
         <mat-form-field *ngIf="editable">
           <input matInput formControlName="name" name="name" placeholder="Vendor Name">
-          <mat-error *ngIf="venForm.get('name').errors && venForm.get('name').errors.required">
+          <mat-error *ngIf="venForm!.get('name')!.errors && venForm!.get('name')!.errors!['required']">
             Please enter a Vendor Name !!
           </mat-error>
         </mat-form-field>
@@ -21,7 +21,7 @@
       <div class="element">
         <mat-form-field>
           <input matInput type="number" formControlName="loanAdded" name="loanAdded" placeholder="Loan +">
-          <mat-error *ngIf="venForm.get('loanAdded').errors">
+          <mat-error *ngIf="venForm!.get('loanAdded')!.errors">
             Loan Amount is not of currency format
           </mat-error>
         </mat-form-field>
@@ -30,7 +30,7 @@
       <div class="element">
         <mat-form-field>
           <input matInput type="number" formControlName="loanPayed" name="loanPayed" placeholder="Loan -">
-          <mat-error *ngIf="venForm.get('loanPayed').errors">
+          <mat-error *ngIf="venForm!.get('loanPayed')!.errors">
             Payed Amount is not of currency format
           </mat-error>
         </mat-form-field>
@@ -39,7 +39,7 @@
       <div class="element">
         <mat-form-field>
           <input matInput type="number" formControlName="openingDp" name="openingDp" placeholder="Opening DP">
-          <mat-error *ngIf="venForm.get('openingDp').errors">
+          <mat-error *ngIf="venForm!.get('openingDp')!.errors">
             Opening DP is not of currency format
           </mat-error>
         </mat-form-field>
@@ -48,7 +48,7 @@
       <div class="element">
         <mat-form-field>
           <input matInput type="number" formControlName="deposit" name="deposit" placeholder="Deposit">
-          <mat-error *ngIf="venForm.get('openingDp').errors">
+          <mat-error *ngIf="venForm!.get('openingDp')!.errors">
             Deposit is not of currency format
           </mat-error>
         </mat-form-field>
@@ -85,7 +85,7 @@
 
     <mat-action-row *ngIf="editComponent">
       <button mat-raised-button type="submit" color="primary"
-        [disabled]="!this.isVendorUpdated() || venForm.invalid || !editComponent" (click)="onUpdate(expansionPanel)">
+        [disabled]="!this.isVendorUpdated() || venForm!.invalid || !editComponent" (click)="onUpdate(expansionPanel)">
         Update
       </button>
     </mat-action-row>

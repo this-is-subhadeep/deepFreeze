@@ -13,9 +13,9 @@ import { NG_VALIDATORS, ValidatorFn, Validator, FormControl, AbstractControl } f
 })
 export class DepositValidatorDirective implements Validator {
   
-  @Input() depositValidator: number;
+  @Input() depositValidator: number| undefined;
 
-  validate(c: AbstractControl): {[key: string]: boolean} {
-    return c.value <= this.depositValidator ? null : { depositValidator: true };
+  validate(c: AbstractControl): {[key: string]: boolean} | null {
+    return c.value <= this.depositValidator! ? null : { depositValidator: true };
   }
 }

@@ -7,7 +7,7 @@ import { InventoryService } from 'src/app/shared/services/inventory.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { CompleteInventory, CompleteInventoryRow } from 'src/app/definitions/inventory-definition';
 import { AutoGenOpeningDialogComponent } from 'src/app/shared/components/auto-gen-opening-dialog/auto-gen-opening-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 
 const staticColumnsToDisplay = ['productName',
@@ -27,8 +27,8 @@ const staticColumnsToDisplay = ['productName',
 export class InventoryComponent implements OnInit, OnDestroy {
   dataSource: InventoryDataSource;
   is1stDayOfMonth: boolean;
-  columnsToDisplay = [];
-  
+  columnsToDisplay: string[];
+
   private prodTypeClass = 'productType';
   private compVenList: CompleteVendor[];
   private isOpeningQuestionAsked: boolean;
@@ -42,11 +42,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
     private readonly dateService: DateService
   ) {
     this.isOpeningQuestionAsked = false;
+    this.is1stDayOfMonth = false;
     this.allSubscriptions = new Array<Subscription>();
+    this.compVenList = new Array<CompleteVendor>();
+    this.columnsToDisplay = new Array<string>();
+    this.dataSource = new InventoryDataSource(this.service);
   }
 
   ngOnInit() {
-    this.dataSource = new InventoryDataSource(this.service);
     this.loadCompleteInventoryData();
     this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
       this.loadCompleteInventoryData();
@@ -54,7 +57,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
     this.allSubscriptions.push(this.dataSource.vendorObservable.subscribe(compVendors => {
       this.compVenList = compVendors;
-      this.columnsToDisplay = [];
+      this.columnsToDisplay = new Array<string>();
       staticColumnsToDisplay.forEach(colName => {
         this.columnsToDisplay.push(colName);
       });
@@ -65,30 +68,32 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private loadCompleteInventoryData() {
-    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    this.is1stDayOfMonth = this.dateService.date.getDate() === 1;
-    this.dataSource.loadCompleteInventory(date);
-    this.allSubscriptions.push(this.dataSource.doesStockOpeningExist.subscribe(openingExist => {
-      if (this.isOpeningQuestionAsked === false && openingExist === false && this.is1stDayOfMonth) {
-        this.isOpeningQuestionAsked = true;
-        this.allSubscriptions.push(this.openDialog().subscribe(res => {
-          if (res) {
-            this.dataSource.autoGenerateStockOpening(date);
-          }
-        }));
-      }
-    }));
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date) {
+      this.is1stDayOfMonth = this.dateService.date.getDate() === 1;
+      this.dataSource.loadCompleteInventory(date);
+      this.allSubscriptions.push(this.dataSource.doesStockOpeningExist.subscribe(openingExist => {
+        if (this.isOpeningQuestionAsked === false && openingExist === false && this.is1stDayOfMonth) {
+          this.isOpeningQuestionAsked = true;
+          this.allSubscriptions.push(this.openDialog().subscribe(res => {
+            if (res) {
+              this.dataSource.autoGenerateStockOpening(date);
+            }
+          }));
+        }
+      }));
+    }
   }
 
   isRowProductType(inventoryRow: CompleteInventoryRow) {
     return inventoryRow.id.startsWith('pty');
   }
-  getRowTypeClass(inventoryRow: CompleteInventoryRow) {
-    return this.isRowProductType(inventoryRow) ? this.prodTypeClass : null;
+  getRowTypeClass(inventoryRow: CompleteInventoryRow) : string {
+    return this.isRowProductType(inventoryRow) ? this.prodTypeClass : '';
   }
 
   getProdDetails(inventoryRow: CompleteInventoryRow) {
-    if (!this.isRowProductType(inventoryRow) && inventoryRow.prodDets != undefined) {
+    if (!this.isRowProductType(inventoryRow) && inventoryRow.prodDets !== undefined) {
       return 'Package Size : ' + inventoryRow.prodDets.packageSize + ' - Price : ' + inventoryRow.prodDets.sellingPrice;
     }
     return '';
@@ -98,8 +103,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
-        total += compInvRow.stockBalance;
-      })
+        if (compInvRow.stockBalance) {
+          total += compInvRow.stockBalance;
+        }
+      });
     }));
 
     return 'Total : ' + total;
@@ -109,8 +116,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
-        total += compInvRow.stockTotalIn;
-      })
+        if (compInvRow.stockTotalIn) {
+          total += compInvRow.stockTotalIn;
+        }
+      });
     }));
 
     return 'Total : ' + total;
@@ -120,8 +129,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
-        total += compInvRow.stockSenIn;
-      })
+        if (compInvRow.stockSenIn) {
+          total += compInvRow.stockSenIn;
+        }
+      });
     }));
 
     return 'Total : ' + total;
@@ -131,8 +142,10 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let total = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
-        total += compInvRow.stockOthersIn;
-      })
+        if (compInvRow.stockOthersIn) {
+          total += compInvRow.stockOthersIn;
+        }
+      });
     }));
 
     return 'Total : ' + total;
@@ -143,11 +156,13 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let value = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
-        total += compInvRow.stockTotalOut;
-        if (compInvRow.prodDets != null && compInvRow.prodDets != undefined) {
-          value += compInvRow.prodDets.sellingPrice.valueOf() * compInvRow.stockTotalOut
+        if (compInvRow.stockTotalOut) {
+          total += compInvRow.stockTotalOut;
+          if (compInvRow.prodDets && compInvRow.prodDets.sellingPrice) {
+            value += compInvRow.prodDets.sellingPrice.valueOf() * compInvRow.stockTotalOut;
+          }
         }
-      })
+      });
     }));
 
     return 'Total : ' + total + ' - Value : ' + value;
@@ -158,26 +173,22 @@ export class InventoryComponent implements OnInit, OnDestroy {
     let totalOut = 0;
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInvRows.forEach(compInvRow => {
-        if (compInvRow.vendorValue[ven.id] != null && compInvRow.vendorValue[ven.id] != undefined) {
+        if (compInvRow.vendorValue[ven.id] && compInvRow.prodDets && compInvRow.prodDets.sellingPrice) {
           totalOut += compInvRow.prodDets.sellingPrice.valueOf() * compInvRow.vendorValue[ven.id];
         }
-      })
+      });
     }));
 
     return 'Total Loan : ' + ven.totalLoan + ' - Opening : ' + ven.openingDp + ' - Out : ' + totalOut;
   }
 
-  private log(data) {
-    console.log(data);
-  }
-
-  vendorTrackBy(index, ven: CompleteVendor) {
+  vendorTrackBy(index: any, ven: CompleteVendor) {
     return ven.id;
   }
 
   saveButtonPressed() {
-    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    let compInv = new CompleteInventory();
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const compInv = new CompleteInventory();
     compInv.rows = new Array();
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {
       compInv.rows = compInvRows;
@@ -185,14 +196,16 @@ export class InventoryComponent implements OnInit, OnDestroy {
     this.allSubscriptions.push(this.dataSource.vendorObservable.subscribe(vendors => {
       compInv.vens = vendors;
     }));
-    this.allSubscriptions.push(this.service.saveCompleteInventory(compInv, date).subscribe(resp => {
-      this.loadCompleteInventoryData();
-    }));
+    if (date) {
+      this.allSubscriptions.push(this.service.saveCompleteInventory(compInv, date).subscribe(resp => {
+        this.loadCompleteInventoryData();
+      }));
+    }
   }
 
   validateVendorValue(invRow: CompleteInventoryRow, venId: string) {
     if (!this.validateValue(invRow.vendorValue[venId])) {
-      invRow.vendorValue[venId] = undefined;
+      invRow.vendorValue[venId] = 0;
     }
   }
 
@@ -214,14 +227,15 @@ export class InventoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  validateValue(val: number) {
+  validateValue(val: number | undefined) {
     // console.log(`Value 1 : ${val}`);
-    if (val != undefined || val != null) {
-      if (val <= 0 || (val - Math.round(val)) != 0) {
+    if (val !== undefined && val !== null) {
+      if (val <= 0 || (val - Math.round(val)) !== 0) {
         return false;
       }
+      return true
     }
-    return true;
+    return false;
   }
 
   openDialog() {

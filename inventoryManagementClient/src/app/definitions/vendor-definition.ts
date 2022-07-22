@@ -1,12 +1,12 @@
 export class CompleteVendor {
-    id: string;
-    name: string;
-    totalLoan: number;
-    loanAdded: number;
-    loanPayed: number;
-    openingDp: number;
-    deposit: number;
-    remarks: string;
+    id: string = "";
+    name: string | undefined;
+    totalLoan: number | undefined;
+    loanAdded: number | undefined;
+    loanPayed: number | undefined;
+    openingDp: number | undefined;
+    deposit: number | undefined;
+    remarks: string | undefined;
     clone(): CompleteVendor {
         let newClone = new CompleteVendor();
         newClone.id = this.id;

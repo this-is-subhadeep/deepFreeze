@@ -1,8 +1,8 @@
 export class StringResponse {
-    response:string;
+    response:string | undefined;
 }
 
 export class DeleteResponse {
-    possible: boolean;
-    message: string;
+    possible: boolean | undefined;
+    message: string | undefined;
 }

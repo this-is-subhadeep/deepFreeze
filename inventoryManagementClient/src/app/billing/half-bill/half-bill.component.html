@@ -1,33 +1,31 @@
 <div class="bill-table border" *ngIf="completeInventory">
   <div class="flex-center-content border">
-    <p>
-      <strong>MUKHERJEE ENTERPRISE</strong>
-    </p>
+    <strong>MUKHERJEE ENTERPRISE</strong>
   </div>
   <div class="row">
     <div class="flex-center-content ele-grow-1 border">
-      <p>
-        GST: 19ANOPM5423G1ZQ
-      </p>
+      GST: 19ANOPM5423G1ZQ
     </div>
     <div class="flex-center-content ele-grow-1 border">
-      <p>
-        Date: {{selectedDate}}
-      </p>
+      Date: {{selectedDate}}
     </div>
   </div>
   <div class="flex-center-content border">
-    <p>90 C, Selimpur Road, Kolkata - 700031</p>
+    90 C, Selimpur Road, Kolkata - 700031
   </div>
   <div class="row">
     <div class="ele-grow-2 flex-center-content border">
-      <p>{{completeVendor.name}}</p>
+      {{completeVendor.name}}
     </div>
     <div class="ele-grow-1 price-content border">
-      {{completeVendor.totalLoan.toFixed(2)}}
+      <ng-template [ngIf]="completeVendor.totalLoan">
+        {{completeVendor.totalLoan.toFixed(2)}}
+      </ng-template>
     </div>
     <div class="ele-grow-1 price-content border">
-      {{completeVendor.openingDp.toFixed(2)}}
+      <ng-template [ngIf]="completeVendor.openingDp">
+        {{completeVendor.openingDp.toFixed(2)}}
+      </ng-template>
     </div>
   </div>
   <div class="product-table">
@@ -47,10 +45,10 @@
           {{row.vendorValue[completeVendor.id]}}
         </div>
         <div class="price-content border" *ngIf="row.vendorValue[completeVendor.id]">
-          {{row.prodDets.sellingPrice.toFixed(2)}}
+          {{row.prodDets!.sellingPrice!.toFixed(2)}}
         </div>
         <div class="price-content border" *ngIf="row.vendorValue[completeVendor.id]">
-          {{(row.vendorValue[completeVendor.id] * row.prodDets.sellingPrice).toFixed(2)}}
+          {{(row.vendorValue[completeVendor.id] * row.prodDets!.sellingPrice!.valueOf()).toFixed(2)}}
         </div>
       </ng-template>
     </ng-template>
@@ -65,7 +63,11 @@
     <div class="flex-center-content border">Deposit</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">{{completeVendor.deposit.toFixed(2)}}</div>
+    <div class="price-content border">
+      <ng-template [ngIf]="completeVendor.deposit">
+        {{completeVendor.deposit.toFixed(2)}}
+      </ng-template>
+    </div>
     <div class="flex-center-content border">Net Total</div>
     <div class="border"></div>
     <div class="border"></div>

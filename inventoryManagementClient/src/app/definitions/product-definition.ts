@@ -1,8 +1,8 @@
 export class ProductType {
-    id:string;
-    name:string;
-    discount: Number;
-    showOrder:number;
+    id:string = "";
+    name:string | undefined;
+    discount: Number | undefined;
+    showOrder:number | undefined;
     clone():ProductType {
         let newClone = new ProductType();
         newClone.id = this.id;
@@ -21,12 +21,12 @@ export class ProductType {
     }
 }
 export class CompleteProduct {
-    id:string;
-    name:string;
+    id:string = "";
+    name:string | undefined;
     productType:ProductType;
-    packageSize:Number;
-    costPrice:Number;
-    sellingPrice:Number;
+    packageSize:Number | undefined;
+    costPrice:Number | undefined;
+    sellingPrice:Number | undefined;
     constructor() {
         this.productType = new ProductType();
     }

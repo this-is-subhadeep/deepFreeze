@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Router } from '@angular/router';
 
@@ -30,17 +30,13 @@ export class MainNavComponent {
     private readonly breakpointObserver: BreakpointObserver,
     private readonly dateService: DateService) { }
 
-  log(data) {
-    console.log(this.dateSelected);
-    console.log(data);
-  }
   get dateSelected() {
     return this.dateService.date;
   }
 
   set dateSelected(date: Date) {
     this.dateService.date = date;
-    let today = new Date();
+    const today = new Date();
     if (today.getFullYear() === date.getFullYear()
       && today.getMonth() === date.getMonth()
       && today.getDate() === date.getDate()) {
@@ -48,29 +44,24 @@ export class MainNavComponent {
     } else {
       this.datePickerClass = 'datePickerDiff';
     }
-    this.dateService.dateChangeListener.next();
+    this.dateService.dateChangeListener.next(null);
   }
 
   itemClicked(compName: string, drawer: MatSidenav) {
     this.inventoryClass = '';
     this.productClass = '';
     this.vendorClass = '';
-    this.sellingClass = ''
-    if(compName) {
+    this.sellingClass = '';
+    if (compName) {
       switch (compName) {
         case 'products': this.productClass = 'active'; break;
         case 'vendors': this.vendorClass = 'active'; break;
         case 'selling': this.sellingClass = 'active'; break;
-        default : this.inventoryClass = 'active'; break;
+        default: this.inventoryClass = 'active'; break;
       }
       this.router.navigate([`/${compName}`]);
     }
     drawer.close();
   }
-  navigateTo(pageName) {
-    switch (pageName) {
-      case 'products': this.router.navigate(['/products']); break;
-      default: this.router.navigate(['/inventory']);
-    }
-  }
+
 }

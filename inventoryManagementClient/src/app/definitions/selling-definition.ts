@@ -2,7 +2,7 @@ import { CompleteProduct } from "./product-definition";
 
 export class SellingData {
     constructor(public product: CompleteProduct = new CompleteProduct(),
-        public soldUnits: number = null) { }
+        public soldUnits: number | null = null) { }
 
     getSoldPrice(): number {
         let price = 0;

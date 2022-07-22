@@ -8,13 +8,13 @@ import { CompleteVendor } from 'src/app/definitions/vendor-definition';
   providedIn: 'root'
 })
 export class VendorService {
-  private serverAddressCompleteVendors='/complete-vendors';
-  private serverAddressNextVendorId='/vendor-next-id';
-  private _nextVendorId:string;
-  private getNextVendorIdUrl=environment.serverBase+this.serverAddressNextVendorId;
-  private getCompleteVendorUrl=environment.serverBase+this.serverAddressCompleteVendors;
+  private serverAddressCompleteVendors = '/complete-vendors';
+  private serverAddressNextVendorId = '/vendor-next-id';
+  private _nextVendorId: string | undefined;
+  private getNextVendorIdUrl = environment.serverBase + this.serverAddressNextVendorId;
+  private getCompleteVendorUrl = environment.serverBase + this.serverAddressCompleteVendors;
 
-  constructor(private http:HttpClient) {
+  constructor(private http: HttpClient) {
     this.refresh();
   }
 
@@ -28,39 +28,32 @@ export class VendorService {
     return this._nextVendorId;
   }
 
-  findCompleteVendorObservable (refDate:string) {
-    let url = this.getCompleteVendorUrl+'/'+refDate;
-    return this.http.get<CompleteVendor[]>(url);
+  findCompleteVendorObservable(refDate: string) {
+    return this.http.get<CompleteVendor[]>(this.getCompleteVendorUrl + '/' + refDate);
   }
 
-  findCompleteVendor (venId: string, refDate:string) {
-    let url = `${environment.serverBase}/complete-vendor/${venId}/${refDate}`;
-    return this.http.get<CompleteVendor>(url);
+  findCompleteVendor(venId: string, refDate: string) {
+    return this.http.get<CompleteVendor>(`${environment.serverBase}/complete-vendor/${venId}/${refDate}`);
   }
 
   canVendorBeDeleted(venId: string, refDate: string) {
-    let url = environment.serverBase+'/can-delete-vendor/'+venId+'/'+refDate;
-    return this.http.get<DeleteResponse>(url);
+    return this.http.get<DeleteResponse>(environment.serverBase + '/can-delete-vendor/' + venId + '/' + refDate);
   }
 
   canVendorBeBilled(venId: string, refDate: string) {
-    let url = environment.serverBase+'/can-bill-vendor/'+venId+'/'+refDate;
-    return this.http.get<DeleteResponse>(url);
+    return this.http.get<DeleteResponse>(environment.serverBase + '/can-bill-vendor/' + venId + '/' + refDate);
   }
 
-  addCompleteVendor(newVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+'/'+refDate;
-    return this.http.post<CompleteVendor>(url,newVendor);
-  }
-  
-  updateCompleteVendor(newVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+'/'+refDate;
-    return this.http.put<CompleteVendor>(url,newVendor);
+  addCompleteVendor(newVendor: CompleteVendor, refDate: string) {
+    return this.http.post<CompleteVendor>(this.getCompleteVendorUrl + '/' + refDate, newVendor);
   }
 
-  closeCompleteVendor(completeVendor:CompleteVendor, refDate:string) {
-    let url = this.getCompleteVendorUrl+"/close/"+refDate;
-    return this.http.put(url,completeVendor);
+  updateCompleteVendor(newVendor: CompleteVendor, refDate: string) {
+    return this.http.put<CompleteVendor>(this.getCompleteVendorUrl + '/' + refDate, newVendor);
+  }
+
+  closeCompleteVendor(completeVendor: CompleteVendor, refDate: string) {
+    return this.http.put(this.getCompleteVendorUrl + '/close/' + refDate, completeVendor);
   }
 
 }

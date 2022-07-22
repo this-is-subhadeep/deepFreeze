@@ -13,20 +13,17 @@ import { Observable, Subscription } from 'rxjs';
   animations: [fadeEffect, dropDownEffect]
 })
 export class VendorViewComponent implements OnInit, OnDestroy {
-  completeVendors$: Observable<CompleteVendor[]>;
-  newCompleteVendor:CompleteVendor;
-  vendorsClosed: Array<string>;
+  completeVendors$: Observable<CompleteVendor[]> | undefined;
+  newCompleteVendor: CompleteVendor = new CompleteVendor();
+  vendorsClosed: Array<string> = new Array<string>();
 
-  private allSubscriptions: Subscription[];
+  private allSubscriptions: Subscription[] = new Array<Subscription>();
 
   constructor(
-    private service:VendorService,
+    private service: VendorService,
     private datePipe: DatePipe,
-    private dateService:DateService
-  ) {
-    this.vendorsClosed = new Array<string>();
-    this.allSubscriptions = new Array<Subscription>();
-  }
+    private dateService: DateService
+  ) { }
 
   ngOnInit() {
     this.loadCompleteVendorData();
@@ -43,13 +40,15 @@ export class VendorViewComponent implements OnInit, OnDestroy {
   }
 
   addButtonPressed() {
-    let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
-    this.newCompleteVendor.id=this.service.nextVendorId;
-    this.allSubscriptions.push(this.service.addCompleteVendor(this.newCompleteVendor,date).subscribe(resp => {
-      this.loadCompleteVendorData();
-      this.service.refresh();
-    }));
-    this.refresh();
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (this.service.nextVendorId && date) {
+      this.newCompleteVendor.id = this.service.nextVendorId;
+      this.allSubscriptions.push(this.service.addCompleteVendor(this.newCompleteVendor, date).subscribe(resp => {
+        this.loadCompleteVendorData();
+        this.service.refresh();
+      }));
+      this.refresh();
+    }
   }
 
   addClosed() {
@@ -57,8 +56,10 @@ export class VendorViewComponent implements OnInit, OnDestroy {
   }
 
   private loadCompleteVendorData() {
-    let date=this.datePipe.transform(this.dateService.date,'yyyy-MM-dd');
-    this.completeVendors$ = this.service.findCompleteVendorObservable(date);
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date) {
+      this.completeVendors$ = this.service.findCompleteVendorObservable(date);
+    }
   }
 
   deleteCompleteVendor(venId: string) {

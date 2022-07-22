@@ -9,9 +9,11 @@ export class InventoryDataSource implements DataSource<CompleteInventoryRow> {
 
     private comVendorSubject = new BehaviorSubject<CompleteVendor[]>([]);
     private comInventorySubject = new BehaviorSubject<CompleteInventoryRow[]>([]);
-    private openingExistSubject = new BehaviorSubject<boolean>(null);
+    private openingExistSubject = new BehaviorSubject<boolean>(false);
     private comInventory: CompleteInventory;
-    constructor(private service: InventoryService) { }
+    constructor(private service: InventoryService) {
+        this.comInventory = new CompleteInventory();
+    }
     connect(): Observable<CompleteInventoryRow[]> {
         return this.comInventorySubject.asObservable();
     }
@@ -28,10 +30,11 @@ export class InventoryDataSource implements DataSource<CompleteInventoryRow> {
                     if (completeInventory.rows != undefined) {
                         completeInventory.rows.forEach(completeInventoryRow => {
                             compInvList.push(completeInventoryRow);
-                            totalStockOpening += completeInventoryRow.stockOpening;
+                            if (completeInventoryRow.stockOpening) {
+                                totalStockOpening += completeInventoryRow.stockOpening;
+                            }
                         });
                     }
-                    // this._totalNoOfItems=completeInventory.rows.length;
                     this.comInventorySubject.next(compInvList);
                     let compVenList: CompleteVendor[] = new Array();
                     if (completeInventory.vens != null) {
@@ -58,13 +61,15 @@ export class InventoryDataSource implements DataSource<CompleteInventoryRow> {
     autoGenerateStockOpening(refDate: string) {
         this.service.getStockOpeningForMonth(refDate).subscribe(invOpen => {
             console.log({ invOpen });
-            if (this.comInventory !== undefined && this.comInventory !== null) {
+            if (this.comInventory && this.comInventory.rows) {
                 this.comInventory.rows.forEach(invRow => {
-                    invOpen.stockOpeing.forEach(stock => {
-                        if (invRow.id === stock.id.productId) {
-                            invRow.stockOpening = stock.pieces;
-                        }
-                    })
+                    if(invOpen.stockOpeing) {
+                        invOpen.stockOpeing.forEach(stock => {
+                            if (invRow.id === stock.id.productId) {
+                                invRow.stockOpening = stock.pieces;
+                            }
+                        });
+                    }
                 });
                 this.comInventorySubject.next(this.comInventory.rows);
             }

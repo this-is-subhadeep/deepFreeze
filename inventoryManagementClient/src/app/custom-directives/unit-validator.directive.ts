@@ -13,9 +13,9 @@ import { NG_VALIDATORS, ValidatorFn, AbstractControl, Validator, FormControl } f
 })
 export class UnitValidatorDirective implements Validator {
 
-  @Input() unitValidator: number;
+  @Input() unitValidator: number | undefined;
 
-  validate(c: FormControl): {[key: string]: boolean} {
-    return c.value <= this.unitValidator? null : { unitValidator: true };
+  validate(c: FormControl): {[key: string]: boolean} | null {
+    return c.value <= this.unitValidator!? null : { unitValidator: true };
   }
 }

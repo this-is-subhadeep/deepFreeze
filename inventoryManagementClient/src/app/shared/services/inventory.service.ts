@@ -13,13 +13,11 @@ export class InventoryService {
   constructor(private http: HttpClient) { }
 
   findCompleteInventoryObservable(refDate: string) {
-    let url = this.getCompleteInventoryUrl + '/' + refDate;
-    return this.http.get<CompleteInventory>(url);
+    return this.http.get<CompleteInventory>(this.getCompleteInventoryUrl + '/' + refDate);
   }
 
   findCompleteInventoryForVendor(venId: string, refDate: string) {
-    let url = this.getCompleteInventoryUrl + `-vendor/${venId}/${refDate}`;
-    return this.http.get<CompleteInventory>(url);
+    return this.http.get<CompleteInventory>(this.getCompleteInventoryUrl + `-vendor/${venId}/${refDate}`);
   }
 
   getStockOpeningForMonth(refDate: string) {
@@ -27,7 +25,6 @@ export class InventoryService {
   }
 
   saveCompleteInventory(newCompleteInventory: CompleteInventory, refDate: string) {
-    let url = this.getCompleteInventoryUrl + '/' + refDate;
-    return this.http.post(url, newCompleteInventory);
+    return this.http.post(this.getCompleteInventoryUrl + '/' + refDate, newCompleteInventory);
   }
 }

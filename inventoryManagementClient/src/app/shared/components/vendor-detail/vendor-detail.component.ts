@@ -3,7 +3,8 @@ import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { priceValidator } from 'src/app/validators';
-import { MatDialog, MatExpansionPanel } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatExpansionPanel } from '@angular/material/expansion';
 import { VendorService } from 'src/app/shared/services/vendor.service';
 import { DateService } from 'src/app/shared/services/date.service';
 import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-confirm-dialog/delete-confirm-dialog.component';
@@ -24,23 +25,23 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
   set vendor(ven: CompleteVendor) {
     this._vendor = ven;
     if (this.venForm) {
-      this.venForm.controls.name.setValue(ven.name);
-      this.venForm.controls.loanAdded.setValue(ven.loanAdded);
-      this.venForm.controls.loanPayed.setValue(ven.loanPayed);
-      this.venForm.controls.openingDp.setValue(ven.openingDp);
-      this.venForm.controls.deposit.setValue(ven.deposit);
-      this.venForm.controls.remarks.setValue(ven.remarks);
+      this.venForm.get('name')!.setValue(ven.name);
+      this.venForm.get('loanAdded')!.setValue(ven.loanAdded);
+      this.venForm.get('loanPayed')!.setValue(ven.loanPayed);
+      this.venForm.get('openingDp')!.setValue(ven.openingDp);
+      this.venForm.get('deposit')!.setValue(ven.deposit);
+      this.venForm.get('remarks')!.setValue(ven.remarks);
     }
   }
 
   @Input() editable: boolean;
 
   private _vendor: CompleteVendor;
-  private deleteAllowed: boolean
-  
+  private deleteAllowed: boolean;
+
   editComponent: boolean;
-  venForm: FormGroup;
-  billAllowed: boolean
+  venForm: FormGroup | undefined;
+  billAllowed: boolean;
 
   private allSubscriptions: Subscription[];
 
@@ -56,7 +57,10 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
   ) {
     this.deleteAllowed = false;
     this.billAllowed = false;
+    this.editable = false;
+    this.editComponent = false;
     this.allSubscriptions = new Array<Subscription>();
+    this._vendor = new CompleteVendor();
   }
 
   ngOnInit() {
@@ -94,7 +98,7 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
     this.venForm.disable();
     this.allSubscriptions.push(this.service.canVendorBeDeleted(
       this._vendor.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.deleteAllowed = true;
@@ -102,7 +106,7 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
     }));
     this.allSubscriptions.push(this.service.canVendorBeBilled(
       this._vendor.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
     ).subscribe(bilResp => {
       if (bilResp.possible) {
         this.billAllowed = true;
@@ -110,14 +114,17 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
     }));
   }
 
-  getFormattedtotalLoan(ven: CompleteVendor) {
-    return Math.round(ven.totalLoan * 100) / 100;
+  getFormattedtotalLoan(ven: CompleteVendor): number {
+    if (ven.totalLoan) {
+      return Math.round(ven.totalLoan * 100) / 100;
+    }
+    return 0;
   }
 
   onEdit() {
-    if (this.editable) {
+    if (this.editable && this.venForm) {
       if (!this.editComponent) {
-        this.editComponent = true
+        this.editComponent = true;
       } else if (!this.isVendorUpdated()) {
         this.editComponent = false;
       }
@@ -125,29 +132,34 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  isVendorUpdated() {
-    return this._vendor.name !== this.venForm.controls.name.value
-      || this._vendor.loanAdded !== this.venForm.controls.loanAdded.value
-      || this._vendor.loanPayed !== this.venForm.controls.loanPayed.value
-      || this._vendor.openingDp !== this.venForm.controls.openingDp.value
-      || this._vendor.deposit !== this.venForm.controls.deposit.value
-      || this._vendor.remarks !== this.venForm.controls.remarks.value
+  isVendorUpdated(): boolean {
+    if (this.venForm) {
+      return this._vendor.name !== this.venForm.get('name')!.value
+        || this._vendor.loanAdded !== this.venForm.get('loanAdded')!.value
+        || this._vendor.loanPayed !== this.venForm.get('loanPayed')!.value
+        || this._vendor.openingDp !== this.venForm.get('openingDp')!.value
+        || this._vendor.deposit !== this.venForm.get('deposit')!.value
+        || this._vendor.remarks !== this.venForm.get('remarks')!.value;
+    }
+    return false;
   }
 
   onUpdate(exPanel: MatExpansionPanel) {
-    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    this._vendor.name = this.venForm.controls.name.value;
-    this._vendor.loanAdded = this.venForm.controls.loanAdded.value;
-    this._vendor.loanPayed = this.venForm.controls.loanPayed.value;
-    this._vendor.openingDp = this.venForm.controls.openingDp.value;
-    this._vendor.deposit = this.venForm.controls.deposit.value;
-    this._vendor.remarks = this.venForm.controls.remarks.value;
-    this.service.updateCompleteVendor(this._vendor, date).subscribe(resp => {
-      this._vendor.totalLoan = resp.totalLoan;
-      this.editComponent = false;
-      exPanel.close();
-      this.venForm.disable();
-    });
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date && this.venForm) {
+      this._vendor.name = this.venForm.get('name')!.value;
+      this._vendor.loanAdded = this.venForm.get('loanAdded')!.value;
+      this._vendor.loanPayed = this.venForm.get('loanPayed')!.value;
+      this._vendor.openingDp = this.venForm.get('openingDp')!.value;
+      this._vendor.deposit = this.venForm.get('deposit')!.value;
+      this._vendor.remarks = this.venForm.get('remarks')!.value;
+      this.service.updateCompleteVendor(this._vendor, date).subscribe(resp => {
+        this._vendor.totalLoan = resp.totalLoan;
+        this.editComponent = false;
+        exPanel.close();
+        this.venForm!.disable();
+      });
+    }
   }
 
   isDeleteAllowed() {
@@ -157,21 +169,21 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
   closeVendor() {
     this.allSubscriptions.push(this.service.canVendorBeDeleted(
       this._vendor.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
     ).subscribe(delResp => {
       if (delResp.possible) {
-        this.openDialog(delResp.message).subscribe(res => {
+        this.openDialog(delResp.message!).subscribe(res => {
           if (res) {
             this.service.closeCompleteVendor(
               this._vendor,
-              this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')
+              this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
             ).subscribe(resp => {
               this.endVendorEvent.emit(this._vendor.id);
             });
           }
         });
       }
-    }))  ;
+    }));
   }
 
   openDialog(message: string) {

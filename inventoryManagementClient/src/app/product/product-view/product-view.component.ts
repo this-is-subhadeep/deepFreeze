@@ -13,7 +13,7 @@ import { Observable, Subscription } from 'rxjs';
   animations: [fadeEffect, dropDownEffect]
 })
 export class ProductViewComponent implements OnInit, OnDestroy {
-  completeProducts$: Observable<CompleteProduct[]>;
+  completeProducts$: Observable<CompleteProduct[]> | undefined;
   newCompleteProduct: CompleteProduct;
   productsClosed: Array<string>;
 
@@ -26,6 +26,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   ) {
     this.productsClosed = new Array<string>();
     this.allSubscriptions = new Array<Subscription>();
+    this.newCompleteProduct = new CompleteProduct();
   }
 
   ngOnInit() {
@@ -51,17 +52,21 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   }
 
   set newProductTypeId(id) {
-    this.newCompleteProduct.productType = this.service.getProductType(id);
+    if (this.service.getProductType(id)) {
+      this.newCompleteProduct.productType = this.service.getProductType(id)!;
+    }
   }
 
   addButtonPressed() {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.newCompleteProduct.id = this.service.nextProductId;
-    this.allSubscriptions.push(this.service.addCompleteProduct(this.newCompleteProduct, date).subscribe(resp => {
-      this.loadCompleteProductData();
-      this.service.refresh();
-    }));
-    this.refresh();
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date) {
+      this.newCompleteProduct.id = this.service.nextProductId;
+      this.allSubscriptions.push(this.service.addCompleteProduct(this.newCompleteProduct, date).subscribe(resp => {
+        this.loadCompleteProductData();
+        this.service.refresh();
+      }));
+      this.refresh();
+    }
   }
 
   addClosed() {
@@ -69,8 +74,10 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   }
 
   private loadCompleteProductData() {
-    let date = this.datePipe.transform(this.dateService.date, "yyyy-MM-dd");
-    this.completeProducts$ = this.service.findCompleteProductObservable(date);
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (date) {
+      this.completeProducts$ = this.service.findCompleteProductObservable(date);
+    }
   }
 
   deleteCompleteProduct(prodId: string) {

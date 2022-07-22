@@ -23,7 +23,10 @@ export class BillingComponent implements OnInit {
     private readonly activetedRoute: ActivatedRoute,
     private readonly vendorService: VendorService,
     private readonly inventoryService: InventoryService
-  ) { }
+  ) {
+    this.completeVendor = new CompleteVendor();
+    this.completeInventory = new CompleteInventory();
+  }
 
   ngOnInit() {
     this.loadCompleteVendorData();
@@ -33,19 +36,24 @@ export class BillingComponent implements OnInit {
   }
 
   private loadCompleteInventoryData() {
-    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    this.inventoryService.findCompleteInventoryForVendor(this.completeVendor.id, date).subscribe(completeInventory => {
-      this.completeInventory = completeInventory;
-    });
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    if (this.completeVendor.id && date) {
+      this.inventoryService.findCompleteInventoryForVendor(this.completeVendor.id, date).subscribe(completeInventory => {
+        this.completeInventory = completeInventory;
+      });
+    }
   }
 
   private loadCompleteVendorData() {
-    let date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
     this.activetedRoute.paramMap.subscribe(param => {
-      this.vendorService.findCompleteVendor(param.get('venId'),date).subscribe(venResp => {
-        this.completeVendor = venResp;
-        this.loadCompleteInventoryData();
-      });
+      const venID = param.get('venId');
+      if (venID && date) {
+        this.vendorService.findCompleteVendor(venID, date).subscribe(venResp => {
+          this.completeVendor = venResp;
+          this.loadCompleteInventoryData();
+        });
+      }
     });
   }
 

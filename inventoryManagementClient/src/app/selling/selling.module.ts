@@ -1,12 +1,17 @@
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
-import { MatButtonModule, MatCardModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule, MatTooltipModule } from "@angular/material";
-import { CustomDirectivesModule } from "../custom-directives/custom-directives.module";
-import { DepositValidatorDirective } from "../custom-directives/deposit-validator.directive";
-import { SharedModule } from "../shared/shared.module";
-import { SellingRoutingModule } from "./selling-routing.module";
-import { SellingComponent } from "./selling/selling.component";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CustomDirectivesModule } from '../custom-directives/custom-directives.module';
+import { SharedModule } from '../shared/shared.module';
+import { SellingRoutingModule } from './selling-routing.module';
+import { SellingComponent } from './selling/selling.component';
 
 @NgModule({
     declarations: [SellingComponent],
@@ -27,4 +32,4 @@ import { SellingComponent } from "./selling/selling.component";
     exports: [SellingComponent]
 })
 
-export class SellingModule {}
+export class SellingModule { }

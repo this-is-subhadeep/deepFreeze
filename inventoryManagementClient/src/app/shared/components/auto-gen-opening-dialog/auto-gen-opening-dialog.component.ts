@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { fadeEffect } from 'src/app/animations';
 
 @Component({
@@ -19,7 +19,7 @@ export class AutoGenOpeningDialogComponent implements OnInit {
   }
 
   onNoClick() {
-    this.dialogRef.close(false)
+    this.dialogRef.close(false);
   }
 
   onYesClick() {
