@@ -7,7 +7,7 @@
       GST: 19ANOPM5423G1ZQ
     </div>
     <div class="flex-center-content ele-grow-1 border">
-      Date: {{selectedDate}}
+      Date: {{(dateService.dateChange$ | async | customDate)}}
     </div>
   </div>
   <div class="flex-center-content border">
@@ -19,12 +19,12 @@
     </div>
     <div class="ele-grow-1 price-content border">
       <ng-template [ngIf]="completeVendor.totalLoan">
-        {{completeVendor.totalLoan.toFixed(2)}}
+        {{completeVendor.totalLoan | currency}}
       </ng-template>
     </div>
     <div class="ele-grow-1 price-content border">
       <ng-template [ngIf]="completeVendor.openingDp">
-        {{completeVendor.openingDp.toFixed(2)}}
+        {{completeVendor.openingDp | currency}}
       </ng-template>
     </div>
   </div>
@@ -45,21 +45,21 @@
           {{row.vendorValue[completeVendor.id]}}
         </div>
         <div class="price-content border" *ngIf="row.vendorValue[completeVendor.id]">
-          {{row.prodDets!.sellingPrice!.toFixed(2)}}
+          {{row.prodDets!.sellingPrice!.valueOf() | currency}}
         </div>
         <div class="price-content border" *ngIf="row.vendorValue[completeVendor.id]">
-          {{(row.vendorValue[completeVendor.id] * row.prodDets!.sellingPrice!.valueOf()).toFixed(2)}}
+          {{(row.vendorValue[completeVendor.id] * row.prodDets!.sellingPrice!.valueOf()) | currency}}
         </div>
       </ng-template>
     </ng-template>
     <div class="flex-center-content border">Gross Total</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">{{getGrossTotal().toFixed(2)}}</div>
+    <div class="price-content border">{{getGrossTotal() | currency}}</div>
     <div class="flex-center-content border">Less Discount</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">{{getTotalDiscount().toFixed(2)}}</div>
+    <div class="price-content border">{{getTotalDiscount() | currency}}</div>
     <div class="flex-center-content border">Deposit</div>
     <div class="border"></div>
     <div class="border"></div>
@@ -71,6 +71,6 @@
     <div class="flex-center-content border">Net Total</div>
     <div class="border"></div>
     <div class="border"></div>
-    <div class="price-content border">{{getNetTotal().toFixed(2)}}</div>
+    <div class="price-content border">{{getNetTotal() | currency}}</div>
   </div>
 </div>

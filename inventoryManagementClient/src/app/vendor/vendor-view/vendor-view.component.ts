@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { VendorService } from '../../shared/services/vendor.service';
-import { DatePipe } from '@angular/common';
 import { DateService } from '../../shared/services/date.service';
 import { CompleteVendor } from '../../definitions/vendor-definition';
 import { fadeEffect, dropDownEffect } from '../../animations';
 import { Observable, Subscription } from 'rxjs';
+import { CustomDatePipe } from 'src/app/shared/pipes/custom-date.pipe';
 
 @Component({
   selector: 'vendor-view',
@@ -21,15 +21,15 @@ export class VendorViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private service: VendorService,
-    private datePipe: DatePipe,
+    private datePipe: CustomDatePipe,
     private dateService: DateService
   ) { }
 
   ngOnInit() {
-    this.loadCompleteVendorData();
+    this.loadCompleteVendorData(this.datePipe.transform(this.dateService.date));
     this.refresh();
-    this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
-      this.loadCompleteVendorData();
+    this.allSubscriptions.push(this.dateService.dateChange$.subscribe(date => {
+      this.loadCompleteVendorData(this.datePipe.transform(date));
       this.service.refresh();
       this.refresh();
     }));
@@ -40,11 +40,11 @@ export class VendorViewComponent implements OnInit, OnDestroy {
   }
 
   addButtonPressed() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    if (this.service.nextVendorId && date) {
+    const dateStr = this.datePipe.transform(this.dateService.date);
+    if (this.service.nextVendorId && dateStr) {
       this.newCompleteVendor.id = this.service.nextVendorId;
-      this.allSubscriptions.push(this.service.addCompleteVendor(this.newCompleteVendor, date).subscribe(resp => {
-        this.loadCompleteVendorData();
+      this.allSubscriptions.push(this.service.addCompleteVendor(this.newCompleteVendor, dateStr).subscribe(resp => {
+        this.loadCompleteVendorData(dateStr);
         this.service.refresh();
       }));
       this.refresh();
@@ -55,11 +55,8 @@ export class VendorViewComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
-  private loadCompleteVendorData() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    if (date) {
-      this.completeVendors$ = this.service.findCompleteVendorObservable(date);
-    }
+  private loadCompleteVendorData(date: string) {
+    this.completeVendors$ = this.service.findCompleteVendorObservable(date);
   }
 
   deleteCompleteVendor(venId: string) {

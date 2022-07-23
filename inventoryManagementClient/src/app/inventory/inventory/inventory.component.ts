@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { InventoryDataSource } from './inventory-datasource';
 import { dropDownEffect, fadeEffect } from 'src/app/animations';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
@@ -9,6 +8,7 @@ import { CompleteInventory, CompleteInventoryRow } from 'src/app/definitions/inv
 import { AutoGenOpeningDialogComponent } from 'src/app/shared/components/auto-gen-opening-dialog/auto-gen-opening-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { CustomDatePipe } from 'src/app/shared/pipes/custom-date.pipe';
 
 const staticColumnsToDisplay = ['productName',
   'stockOpening',
@@ -38,7 +38,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   constructor(
     private readonly service: InventoryService,
     private readonly dialog: MatDialog,
-    private readonly datePipe: DatePipe,
+    private readonly datePipe: CustomDatePipe,
     private readonly dateService: DateService
   ) {
     this.isOpeningQuestionAsked = false;
@@ -51,7 +51,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadCompleteInventoryData();
-    this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
+    this.allSubscriptions.push(this.dateService.dateChange$.subscribe(() => {
       this.loadCompleteInventoryData();
     }));
 
@@ -68,7 +68,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   private loadCompleteInventoryData() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date);
     if (date) {
       this.is1stDayOfMonth = this.dateService.date.getDate() === 1;
       this.dataSource.loadCompleteInventory(date);
@@ -187,7 +187,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   saveButtonPressed() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date);
     const compInv = new CompleteInventory();
     compInv.rows = new Array();
     this.allSubscriptions.push(this.dataSource.connect().subscribe(compInvRows => {

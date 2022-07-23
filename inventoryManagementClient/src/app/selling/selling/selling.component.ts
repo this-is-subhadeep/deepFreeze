@@ -1,12 +1,12 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NgModel, FormControl } from '@angular/forms';
+import { NgModel } from '@angular/forms';
 import { Router } from '@angular/router';
 import { dropDownEffect, fadeEffect } from 'src/app/animations';
 import { CompleteInventory } from 'src/app/definitions/inventory-definition';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { SellingData } from 'src/app/definitions/selling-definition';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
+import { CustomDatePipe } from 'src/app/shared/pipes/custom-date.pipe';
 import { DateService } from 'src/app/shared/services/date.service';
 import { InventoryService } from 'src/app/shared/services/inventory.service';
 import { ProductService } from 'src/app/shared/services/product.service';
@@ -28,7 +28,7 @@ export class SellingComponent implements OnInit {
 
   constructor(private productService: ProductService,
     private inventoryService: InventoryService,
-    private datePipe: DatePipe,
+    private datePipe: CustomDatePipe,
     private dateService: DateService,
     private readonly router: Router) { }
 
@@ -36,7 +36,7 @@ export class SellingComponent implements OnInit {
     this.loadCompleteProductData();
     this.loadCompleteInventoryData();
     this.refresh();
-    this.dateService.dateChangeListener.subscribe(() => {
+    this.dateService.dateChange$.subscribe(() => {
       this.loadCompleteProductData();
       this.loadCompleteInventoryData();
       this.refresh();
@@ -44,7 +44,7 @@ export class SellingComponent implements OnInit {
   }
 
   private loadCompleteProductData() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date);
     if (date) {
       this.productService.findCompleteProductObservable(date).subscribe(completeProducts => {
         this.savedCompleteProducts = completeProducts;
@@ -53,7 +53,7 @@ export class SellingComponent implements OnInit {
   }
 
   private loadCompleteInventoryData() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date,);
     if (date) {
       this.inventoryService.findCompleteInventoryObservable(date).subscribe(completeInventory => {
         this.completeInventory = completeInventory;
@@ -171,7 +171,7 @@ export class SellingComponent implements OnInit {
   }
 
   saveButtonPressed() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date);
     if (this.completeInventory.rows) {
       this.completeInventory.rows.forEach(row => {
         this.sellingProductList.forEach(soldRow => {

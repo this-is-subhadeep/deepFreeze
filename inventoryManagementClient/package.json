@@ -1,5 +1,5 @@
 {
-  "name": "temp-project",
+  "name": "ims-project",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -17,6 +17,7 @@
     "@angular/core": "~13.0.0-next.0",
     "@angular/forms": "~13.0.0-next.0",
     "@angular/material": "^13.3.9",
+    "@angular/material-moment-adapter": "^13.3.9",
     "@angular/platform-browser": "~13.0.0-next.0",
     "@angular/platform-browser-dynamic": "~13.0.0-next.0",
     "@angular/router": "~13.0.0-next.0",

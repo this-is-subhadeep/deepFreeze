@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { MatSidenav } from '@angular/material/sidenav';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Router } from '@angular/router';
+import { MAT_DATE_FORMATS } from '@angular/material/core';
 
 @Component({
   selector: 'main-nav',
@@ -35,16 +36,16 @@ export class MainNavComponent {
   }
 
   set dateSelected(date: Date) {
-    this.dateService.date = date;
+    this.dateService.date = new Date(date);
     const today = new Date();
-    if (today.getFullYear() === date.getFullYear()
-      && today.getMonth() === date.getMonth()
-      && today.getDate() === date.getDate()) {
+    if (today.getFullYear() === this.dateService.date.getFullYear()
+      && today.getMonth() === this.dateService.date.getMonth()
+      && today.getDate() === this.dateService.date.getDate()) {
       this.datePickerClass = 'datePicker';
     } else {
       this.datePickerClass = 'datePickerDiff';
     }
-    this.dateService.dateChangeListener.next(null);
+    this.dateService.dateChange$.next(this.dateService.date);
   }
 
   itemClicked(compName: string, drawer: MatSidenav) {

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
-import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { priceValidator } from 'src/app/validators';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +9,7 @@ import { DateService } from 'src/app/shared/services/date.service';
 import { DeleteConfirmDialogComponent } from 'src/app/shared/components/delete-confirm-dialog/delete-confirm-dialog.component';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CustomDatePipe } from '../../pipes/custom-date.pipe';
 
 @Component({
   selector: 'app-vendor-detail',
@@ -49,7 +49,7 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly service: VendorService,
-    private readonly datePipe: DatePipe,
+    private readonly datePipe: CustomDatePipe,
     private readonly dateService: DateService,
     private readonly fb: FormBuilder,
     private readonly dialog: MatDialog,
@@ -98,7 +98,7 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
     this.venForm.disable();
     this.allSubscriptions.push(this.service.canVendorBeDeleted(
       this._vendor.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+      this.datePipe.transform(this.dateService.date)!
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.deleteAllowed = true;
@@ -106,7 +106,7 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
     }));
     this.allSubscriptions.push(this.service.canVendorBeBilled(
       this._vendor.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+      this.datePipe.transform(this.dateService.date,)!
     ).subscribe(bilResp => {
       if (bilResp.possible) {
         this.billAllowed = true;
@@ -145,7 +145,7 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
   }
 
   onUpdate(exPanel: MatExpansionPanel) {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date);
     if (date && this.venForm) {
       this._vendor.name = this.venForm.get('name')!.value;
       this._vendor.loanAdded = this.venForm.get('loanAdded')!.value;
@@ -169,14 +169,14 @@ export class VendorDetailComponent implements OnInit, OnDestroy {
   closeVendor() {
     this.allSubscriptions.push(this.service.canVendorBeDeleted(
       this._vendor.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+      this.datePipe.transform(this.dateService.date)!
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.openDialog(delResp.message!).subscribe(res => {
           if (res) {
             this.service.closeCompleteVendor(
               this._vendor,
-              this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+              this.datePipe.transform(this.dateService.date)!
             ).subscribe(resp => {
               this.endVendorEvent.emit(this._vendor.id);
             });

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { sizeValidator, priceValidator } from 'src/app/validators';
@@ -9,6 +8,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { DateService } from 'src/app/shared//services/date.service';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 import { Subscription } from 'rxjs';
+import { CustomDatePipe } from '../../pipes/custom-date.pipe';
 
 @Component({
   selector: 'app-product-detail',
@@ -45,7 +45,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly service: ProductService,
-    private readonly datePipe: DatePipe,
+    private readonly datePipe: CustomDatePipe,
     private readonly dateService: DateService,
     private readonly fb: FormBuilder,
     private readonly dialog: MatDialog
@@ -87,7 +87,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.prodForm.disable();
     this.allSubscriptions.push(this.service.canProductBeDeleted(
       this._product.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+      this.datePipe.transform(this.dateService.date)!
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.deleteAllowed = true;
@@ -117,7 +117,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   }
 
   onUpdate(exPanel: MatExpansionPanel) {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
+    const date = this.datePipe.transform(this.dateService.date);
     if(date && this.prodForm) {
       this._product.name = this.prodForm.get('name')!.value;
       this._product.packageSize = this.prodForm.get('size')!.value;
@@ -138,14 +138,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   closeProduct() {
     this.allSubscriptions.push(this.service.canProductBeDeleted(
       this._product.id,
-      this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+      this.datePipe.transform(this.dateService.date)!
     ).subscribe(delResp => {
       if (delResp.possible) {
         this.allSubscriptions.push(this.openDialog(delResp.message!).subscribe(res => {
           if (res) {
             this.allSubscriptions.push(this.service.closeCompleteProduct(
               this._product,
-              this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd')!
+              this.datePipe.transform(this.dateService.date)!
             ).subscribe(resp => {
               this.endProductEvent.emit(this._product.id);
             }));

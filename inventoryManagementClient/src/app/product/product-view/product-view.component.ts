@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CompleteProduct } from 'src/app/definitions/product-definition';
 import { ProductService } from 'src/app/shared/services/product.service';
-import { DatePipe } from '@angular/common';
 import { DateService } from 'src/app/shared/services/date.service';
 import { fadeEffect, dropDownEffect } from 'src/app/animations';
 import { Observable, Subscription } from 'rxjs';
+import { CustomDatePipe } from 'src/app/shared/pipes/custom-date.pipe';
 
 @Component({
   selector: 'product-view',
@@ -21,7 +21,7 @@ export class ProductViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private service: ProductService,
-    private datePipe: DatePipe,
+    private datePipe: CustomDatePipe,
     private dateService: DateService
   ) {
     this.productsClosed = new Array<string>();
@@ -30,10 +30,10 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loadCompleteProductData();
+    this.loadCompleteProductData(this.datePipe.transform(this.dateService.date));
     this.refresh();
-    this.allSubscriptions.push(this.dateService.dateChangeListener.subscribe(() => {
-      this.loadCompleteProductData();
+    this.allSubscriptions.push(this.dateService.dateChange$.subscribe(date => {
+      this.loadCompleteProductData(this.datePipe.transform(date));
       this.service.refresh();
       this.refresh();
     }));
@@ -58,11 +58,11 @@ export class ProductViewComponent implements OnInit, OnDestroy {
   }
 
   addButtonPressed() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    if (date) {
+    const dateStr = this.datePipe.transform(this.dateService.date);
+    if (dateStr) {
       this.newCompleteProduct.id = this.service.nextProductId;
-      this.allSubscriptions.push(this.service.addCompleteProduct(this.newCompleteProduct, date).subscribe(resp => {
-        this.loadCompleteProductData();
+      this.allSubscriptions.push(this.service.addCompleteProduct(this.newCompleteProduct, dateStr).subscribe(resp => {
+        this.loadCompleteProductData(dateStr);
         this.service.refresh();
       }));
       this.refresh();
@@ -73,11 +73,8 @@ export class ProductViewComponent implements OnInit, OnDestroy {
     this.refresh();
   }
 
-  private loadCompleteProductData() {
-    const date = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    if (date) {
-      this.completeProducts$ = this.service.findCompleteProductObservable(date);
-    }
+  private loadCompleteProductData(date: string) {
+    this.completeProducts$ = this.service.findCompleteProductObservable(date);
   }
 
   deleteCompleteProduct(prodId: string) {

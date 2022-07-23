@@ -6,9 +6,12 @@ import { MatInputModule } from '@angular/material/input';
 import { ComponentsModule } from './components/components.module';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { VendorDetailComponent } from './components/vendor-detail/vendor-detail.component';
+import { CustomDatePipe } from './pipes/custom-date.pipe';
 
 @NgModule({
-    declarations: [],
+    declarations: [
+        CustomDatePipe
+    ],
     imports: [
         CommonModule,
         MatInputModule,
@@ -19,7 +22,8 @@ import { VendorDetailComponent } from './components/vendor-detail/vendor-detail.
     ],
     exports: [
         ProductDetailComponent,
-        VendorDetailComponent
+        VendorDetailComponent,
+        CustomDatePipe
     ]
 })
 

@@ -1,7 +1,7 @@
-import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { CompleteInventory } from 'src/app/definitions/inventory-definition';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
+import { CustomDatePipe } from 'src/app/shared/pipes/custom-date.pipe';
 import { DateService } from 'src/app/shared/services/date.service';
 
 @Component({
@@ -9,28 +9,14 @@ import { DateService } from 'src/app/shared/services/date.service';
   templateUrl: './half-bill.component.html',
   styleUrls: ['./half-bill.component.scss']
 })
-export class HalfBillComponent implements OnInit {
+export class HalfBillComponent {
 
-  @Input() completeVendor: CompleteVendor;
-  @Input() completeInventory: CompleteInventory;
-
-  selectedDate: string | null;
+  @Input() completeVendor = new CompleteVendor()
+  @Input() completeInventory = new CompleteInventory();
 
   constructor(
-    private readonly dateService: DateService,
-    private readonly datePipe: DatePipe
-  ) {
-    this.completeVendor = new CompleteVendor();
-    this.completeInventory = new CompleteInventory();
-    this.selectedDate = '';
-  }
-
-  ngOnInit() {
-    this.selectedDate = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    this.dateService.dateChangeListener.subscribe(() => {
-      this.selectedDate = this.datePipe.transform(this.dateService.date, 'yyyy-MM-dd');
-    });
-  }
+    readonly dateService: DateService,
+  ) { }
 
   getGrossTotal(): number {
     let grossTotal = 0;
@@ -53,7 +39,6 @@ export class HalfBillComponent implements OnInit {
           && row.prodDets && row.prodDets.sellingPrice && row.prodDets.productType.discount) {
           totalDiscount +=
             row.vendorValue[this.completeVendor.id] *
-            row.prodDets.sellingPrice.valueOf() *
             row.prodDets.sellingPrice.valueOf() *
             row.prodDets.productType.discount.valueOf() / 100;
         }
