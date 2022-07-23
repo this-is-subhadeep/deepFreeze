@@ -6,6 +6,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { DateService } from 'src/app/shared/services/date.service';
 import { Router } from '@angular/router';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
+import { Constants } from 'src/app/definitions/constants';
 
 @Component({
   selector: 'main-nav',
@@ -13,7 +14,8 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
   styleUrls: ['./main-nav.component.scss']
 })
 export class MainNavComponent {
-  title = ' Inventory Management System';
+  // title = ' Inventory Management System';
+  CONSTANTS = Constants;
   inventoryClass = '';
   productClass = '';
   vendorClass = '';

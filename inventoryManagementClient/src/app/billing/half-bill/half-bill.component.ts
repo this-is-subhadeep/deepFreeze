@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Constants } from 'src/app/definitions/constants';
 import { CompleteInventory } from 'src/app/definitions/inventory-definition';
 import { CompleteVendor } from 'src/app/definitions/vendor-definition';
 import { CustomDatePipe } from 'src/app/shared/pipes/custom-date.pipe';
@@ -13,6 +14,8 @@ export class HalfBillComponent {
 
   @Input() completeVendor = new CompleteVendor()
   @Input() completeInventory = new CompleteInventory();
+
+  readonly CONSTANTS = Constants;
 
   constructor(
     readonly dateService: DateService,

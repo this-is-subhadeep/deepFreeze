@@ -1,10 +1,10 @@
 <div class="bill-table border" *ngIf="completeInventory">
   <div class="flex-center-content border">
-    <strong>MUKHERJEE ENTERPRISE</strong>
+    <strong>{{CONSTANTS.OWNER}}</strong>
   </div>
   <div class="row">
     <div class="flex-center-content ele-grow-1 border">
-      GST: 19ANOPM5423G1ZQ
+      GST: {{CONSTANTS.GST}}
     </div>
     <div class="flex-center-content ele-grow-1 border">
       Date: {{(dateService.dateChange$ | async | customDate)}}
