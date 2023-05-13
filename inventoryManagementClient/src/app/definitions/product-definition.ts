@@ -1,13 +1,11 @@
 export class ProductType {
     id:string = "";
     name:string | undefined;
-    discount: Number | undefined;
     showOrder:number | undefined;
     clone():ProductType {
         let newClone = new ProductType();
         newClone.id = this.id;
         newClone.name = this.name;
-        newClone.discount = this.discount;
         newClone.showOrder = this.showOrder;
         return newClone;
     }
@@ -15,7 +13,6 @@ export class ProductType {
         let newClone = new ProductType();
         newClone.id = prodTyp.id;
         newClone.name = prodTyp.name;
-        newClone.discount = prodTyp.discount;
         newClone.showOrder = prodTyp.showOrder;
         return newClone;
     }
@@ -27,6 +24,7 @@ export class CompleteProduct {
     packageSize:Number | undefined;
     costPrice:Number | undefined;
     sellingPrice:Number | undefined;
+    mrp:Number | undefined;
     constructor() {
         this.productType = new ProductType();
     }
@@ -38,6 +36,7 @@ export class CompleteProduct {
         newClone.packageSize = this.packageSize;
         newClone.costPrice = this.costPrice;
         newClone.sellingPrice = this.sellingPrice;
+        newClone.mrp = this.mrp;
         return newClone;
     }
     static cloneAnother (compProd:CompleteProduct):CompleteProduct {
@@ -48,6 +47,7 @@ export class CompleteProduct {
         newClone.packageSize = compProd.packageSize;
         newClone.costPrice = compProd.costPrice;
         newClone.sellingPrice = compProd.sellingPrice;
+        newClone.mrp = compProd.mrp;
         return newClone;
 
     }

@@ -39,11 +39,10 @@ export class HalfBillComponent {
     if (this.completeInventory.rows && this.completeVendor.id) {
       this.completeInventory.rows.forEach(row => {
         if (row && row.id && row.id.startsWith('itm') && row.vendorValue[this.completeVendor.id]
-          && row.prodDets && row.prodDets.sellingPrice && row.prodDets.productType.discount) {
+          && row.prodDets && row.prodDets.sellingPrice) {
           totalDiscount +=
             row.vendorValue[this.completeVendor.id] *
-            row.prodDets.sellingPrice.valueOf() *
-            row.prodDets.productType.discount.valueOf() / 100;
+            row.prodDets.sellingPrice.valueOf();
         }
       });
     }

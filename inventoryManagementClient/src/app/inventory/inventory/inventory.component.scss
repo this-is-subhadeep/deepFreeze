@@ -9,7 +9,12 @@
     background: $teal;
     width: 100%;
     /* height: 2000px ; */
+    ::ng-deep .mat-mdc-form-field > * {
+        background-color: $teal;
+    }
+
 }
+
 .productType {
     background: $rackley;
     font-style: italic;

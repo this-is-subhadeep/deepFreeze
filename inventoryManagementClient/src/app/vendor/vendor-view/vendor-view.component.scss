@@ -9,6 +9,9 @@
 
 .add-vendor-row {
     background: $blue;
+    ::ng-deep .mat-mdc-form-field > * {
+        background: $blue;
+    }
 }
 
 button.add-vendor-button {

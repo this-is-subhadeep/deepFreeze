@@ -64,8 +64,10 @@
         <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else stockSenIn"></div>
           <ng-template #stockSenIn>
-            <input type="number" matInput [(ngModel)]="inventoryRow.stockSenIn" name="stockSenIn" #stockSenIn="ngModel"
-              id="stockSenIn" (blur)="validateSenIn(inventoryRow)" (blur)="validateStockOpening(inventoryRow)">
+            <mat-form-field>
+              <input type="number" matInput [(ngModel)]="inventoryRow.stockSenIn" name="stockSenIn" #stockSenIn="ngModel"
+                id="stockSenIn" (blur)="validateSenIn(inventoryRow)" (blur)="validateStockOpening(inventoryRow)">
+            </mat-form-field>
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -78,8 +80,10 @@
         <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else stockOthersIn"></div>
           <ng-template #stockOthersIn>
-            <input type="number" matInput [(ngModel)]="inventoryRow.stockOthersIn" name="stockOthersIn"
-              #stockOthersIn="ngModel" id="stockOthersIn" (blur)="validateOthersIn(inventoryRow)">
+            <mat-form-field>
+              <input type="number" matInput [(ngModel)]="inventoryRow.stockOthersIn" name="stockOthersIn"
+                #stockOthersIn="ngModel" id="stockOthersIn" (blur)="validateOthersIn(inventoryRow)">
+            </mat-form-field>
           </ng-template>
         </mat-cell>
       </ng-container>
@@ -108,8 +112,10 @@
         <mat-cell *matCellDef="let inventoryRow" [ngClass]="getRowTypeClass(inventoryRow)">
           <div *ngIf="isRowProductType(inventoryRow); else productData"></div>
           <ng-template #productData>
-            <input type="number" matInput [(ngModel)]="inventoryRow.vendorValue[vendorData.id]" name="vendorValue"
-              #vendorValue="ngModel" id="vendorValue" (blur)="validateVendorValue(inventoryRow, vendorData.id)">
+            <mat-form-field>
+              <input type="number" matInput [(ngModel)]="inventoryRow.vendorValue[vendorData.id]" name="vendorValue"
+                #vendorValue="ngModel" id="vendorValue" (blur)="validateVendorValue(inventoryRow, vendorData.id)">
+            </mat-form-field>
           </ng-template>
         </mat-cell>
       </ng-container>

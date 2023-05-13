@@ -28,6 +28,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       this.prodForm.get('size')!.setValue(prod.packageSize);
       this.prodForm.get('cp')!.setValue(prod.costPrice);
       this.prodForm.get('sp')!.setValue(prod.sellingPrice);
+      this.prodForm.get('mrp')!.setValue(prod.mrp);
     }
   }
 
@@ -72,12 +73,17 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       ],
       cp: [
         this._product.costPrice, [
-          Validators.required,
           priceValidator
         ]
       ],
       sp: [
         this._product.sellingPrice, [
+          Validators.required,
+          priceValidator
+        ]
+      ],
+      mrp: [
+        this._product.mrp, [
           Validators.required,
           priceValidator
         ]
@@ -99,8 +105,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     if (this.editable && this.prodForm) {
       if (!this.editComponent) {
         this.editComponent = true;
-      } else if (!this.isProductUpdated()) {
+      } else {
         this.editComponent = false;
+        if (this.isProductUpdated()) {
+          this.prodForm.get('name')?.setValue(this._product.name);
+          this.prodForm.get('size')?.setValue(this._product.packageSize);
+          this.prodForm.get('cp')?.setValue(this._product.costPrice);
+          this.prodForm.get('sp')?.setValue(this._product.sellingPrice);
+          this.prodForm.get('mrp')?.setValue(this._product.mrp);
+        }
       }
       this.editComponent ? this.prodForm.enable() : this.prodForm.disable();
     }
@@ -111,7 +124,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       return this._product.name !== this.prodForm.get('name')!.value
         || this._product.packageSize !== this.prodForm.get('size')!.value
         || this._product.costPrice !== this.prodForm.get('cp')!.value
-        || this._product.sellingPrice !== this.prodForm.get('sp')!.value;
+        || this._product.sellingPrice !== this.prodForm.get('sp')!.value
+        || this._product.mrp !== this.prodForm.get('mrp')!.value;
     }
     return false;
   }
@@ -123,6 +137,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
       this._product.packageSize = this.prodForm.get('size')!.value;
       this._product.costPrice = this.prodForm.get('cp')!.value;
       this._product.sellingPrice = this.prodForm.get('sp')!.value;
+      this._product.mrp = this.prodForm.get('mrp')!.value;
       this.allSubscriptions.push(this.service.updateCompleteProduct(this._product, date).subscribe(resp => {
         this.editComponent = false;
         exPanel.close();

@@ -93,7 +93,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
   }
 
   getProdDetails(inventoryRow: CompleteInventoryRow) {
-    if (!this.isRowProductType(inventoryRow) && inventoryRow.prodDets !== undefined) {
+    if (!this.isRowProductType(inventoryRow) && inventoryRow.prodDets && inventoryRow.prodDets.packageSize && inventoryRow.prodDets.sellingPrice) {
       return 'Package Size : ' + inventoryRow.prodDets.packageSize + ' - Price : ' + inventoryRow.prodDets.sellingPrice;
     }
     return '';

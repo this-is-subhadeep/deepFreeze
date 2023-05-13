@@ -10,6 +10,7 @@ public class ProductDetail implements Comparable<ProductDetail> {
 	private Integer packageSize;
 	private Float costPrice;
 	private Float sellingPrice;
+	private Float mrp;
 
 	public ProductDetail() {
 		id = LocalDate.now();
@@ -51,6 +52,14 @@ public class ProductDetail implements Comparable<ProductDetail> {
 		this.sellingPrice = sellingPrice;
 	}
 
+	public Float getMrp() {
+		return mrp;
+	}
+
+	public void setMrp(Float mrp) {
+		this.mrp = mrp;
+	}
+
 	@Override
 	public int compareTo(ProductDetail o) {
 		return 0 - this.id.compareTo(o.id);
@@ -61,11 +70,12 @@ public class ProductDetail implements Comparable<ProductDetail> {
 		this.packageSize = prodDet.packageSize.intValue();
 		this.costPrice = prodDet.costPrice.floatValue();
 		this.sellingPrice = prodDet.sellingPrice.floatValue();
+		this.mrp = prodDet.mrp;
 	}
 
 	@Override
 	public String toString() {
 		return "ProductDetails [id=" + id + ", packageSize=" + packageSize + ", costPrice=" + costPrice
-				+ ", sellingPrice=" + sellingPrice + "]";
+				+ ", sellingPrice=" + sellingPrice + ", mrp=" + mrp + "]";
 	}
 }

@@ -6,7 +6,6 @@ public class ProductType implements Comparable<ProductType> {
 	@Id
 	private String id;
 	private String name;
-	private Float discount;
 	private Integer showOrder;
 
 	public ProductType() {
@@ -34,14 +33,6 @@ public class ProductType implements Comparable<ProductType> {
 		this.name = name;
 	}
 
-	public Float getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(Float discount) {
-		this.discount = discount;
-	}
-
 	public Integer getShowOrder() {
 		return showOrder;
 	}
@@ -67,7 +58,6 @@ public class ProductType implements Comparable<ProductType> {
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((discount == null) ? 0 : discount.hashCode());
 		result = prime * result + ((showOrder == null) ? 0 : showOrder.hashCode());
 		return result;
 	}
@@ -91,11 +81,6 @@ public class ProductType implements Comparable<ProductType> {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (discount == null) {
-			if (other.discount != null)
-				return false;
-		} else if (!discount.equals(other.discount))
-			return false;
 		if (showOrder == null) {
 			if (other.showOrder != null)
 				return false;
@@ -106,6 +91,6 @@ public class ProductType implements Comparable<ProductType> {
 
 	@Override
 	public String toString() {
-		return "ProductType [id=" + id + ", name=" + name + ", discount=" + discount + ", showOrder=" + showOrder + "]";
+		return "ProductType [id=" + id + ", name=" + name + ", showOrder=" + showOrder + "]";
 	}
 }

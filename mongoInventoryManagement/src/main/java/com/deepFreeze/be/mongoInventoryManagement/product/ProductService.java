@@ -129,6 +129,7 @@ public class ProductService {
 							compProd.setPackageSize(detail.getPackageSize());
 							compProd.setCostPrice(detail.getCostPrice());
 							compProd.setSellingPrice(detail.getSellingPrice());
+							compProd.setMrp(detail.getMrp());
 							break;
 						}
 					}
@@ -153,6 +154,7 @@ public class ProductService {
 							compProd.setPackageSize(detail.getPackageSize());
 							compProd.setCostPrice(detail.getCostPrice());
 							compProd.setSellingPrice(detail.getSellingPrice());
+							compProd.setMrp(detail.getMrp());
 							break;
 						}
 					}
@@ -174,6 +176,7 @@ public class ProductService {
 		detail.setPackageSize(completeProduct.getPackageSize());
 		detail.setCostPrice(completeProduct.getCostPrice());
 		detail.setSellingPrice(completeProduct.getSellingPrice());
+		detail.setMrp(completeProduct.getMrp());
 		SortedSet<ProductDetail> detSet = new TreeSet<>();
 		detSet.add(detail);
 		prod.setDetails(detSet);
@@ -193,6 +196,7 @@ public class ProductService {
 			detail.setPackageSize(completeProduct.getPackageSize());
 			detail.setCostPrice(completeProduct.getCostPrice());
 			detail.setSellingPrice(completeProduct.getSellingPrice());
+			detail.setMrp(completeProduct.getMrp());
 			prod.getDetails().add(detail);
 		}
 		updateProduct(prod);
@@ -238,7 +242,7 @@ public class ProductService {
 			}
 		}
 		List<InventoryOpening> invOpenList = inventoryService.getInventoryOpeningGte(refDate);
-		Integer totalStockOpening = new Integer(0);
+		Integer totalStockOpening = 0;
 		List<Product> tempList = new ArrayList<Product>();
 		tempList.add(prod);
 		if(invOpenList !=null ) {			

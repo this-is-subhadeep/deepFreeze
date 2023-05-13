@@ -1,0 +1,7 @@
+
+
+GET http://localhost:8090/product-types
+
+###
+
+GET http://localhost:8090/products

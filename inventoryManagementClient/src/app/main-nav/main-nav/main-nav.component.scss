@@ -1,3 +1,5 @@
+@import 'src/styles/variables';
+
 .sidenav-container {
   height: 100%;
   position: absolute;
@@ -28,6 +30,9 @@
 
 mat-form-field.datePicker {
   width: 130px;
+  ::ng-deep .mdc-text-field {
+    background-color: $toolbar-color;
+  }
 }
 
 input.datePicker {

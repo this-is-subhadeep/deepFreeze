@@ -46,11 +46,8 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field>
-            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newCompleteProduct.costPrice" name="costPrice"
+            <input matInput pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newCompleteProduct.costPrice" name="costPrice"
               #costPrice="ngModel" id="costPrice" type="number" placeholder="Cost Price">
-            <mat-error *ngIf="costPrice.invalid && costPrice.errors!['required']">
-              Cost Price is Required
-            </mat-error>
             <mat-error *ngIf="costPrice.invalid && costPrice.errors!['pattern']">
               Cost Price is not of currency format
             </mat-error>
@@ -65,13 +62,24 @@
               Selling Price is not of currency format
             </mat-error>
           </mat-form-field>
+          <mat-form-field>
+            <input matInput required pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="newCompleteProduct.mrp" name="mrp"
+              #mrp="ngModel" id="mrp" type="number" placeholder="MRP">
+            <mat-error *ngIf="mrp.invalid && mrp.errors!['required']">
+              MRP is Required
+            </mat-error>
+            <mat-error *ngIf="mrp.invalid && mrp.errors!['pattern']">
+              MRP is not of currency format
+            </mat-error>
+          </mat-form-field>
 
           <mat-action-row>
             <button mat-raised-button type="button" class="add-product-button" (click)="addButtonPressed()" [disabled]="productName.invalid ||
                           productTypeList.invalid ||
                           packageSize.invalid ||
                           costPrice.invalid ||
-                          sellingPrice.invalid">
+                          sellingPrice.invalid ||
+                          mrp.invalid">
               Add
             </button>
           </mat-action-row>

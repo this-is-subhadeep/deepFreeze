@@ -7,6 +7,7 @@ public class CompleteProduct {
 	private Integer packageSize;
 	private Float costPrice;
 	private Float sellingPrice;
+	private Float mrp;
 
 	public CompleteProduct() {
 	}
@@ -57,6 +58,14 @@ public class CompleteProduct {
 
 	public void setSellingPrice(Float sellingPrice) {
 		this.sellingPrice = sellingPrice;
+	}
+
+	public Float getMrp() {
+		return mrp;
+	}
+
+	public void setMrp(Float mrp) {
+		this.mrp = mrp;
 	}
 
 	@Override
