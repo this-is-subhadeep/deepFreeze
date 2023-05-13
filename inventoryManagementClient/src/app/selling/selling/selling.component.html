@@ -15,8 +15,9 @@
       </mat-form-field>
       <div [hidden]='!isVendorSelected()'>
         <mat-form-field>
-          <input matInput required [depositValidator]='getTotalAmountSold()' type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="selectedVendor.deposit"
-            name="deposit" #deposit="ngModel" id="deposit" placeholder="Deposit">
+          <input matInput required [depositValidator]='getTotalAmountSold()' type="number"
+            pattern="^[0-9]+(\.[0-9]{1,2})?$" [(ngModel)]="selectedVendor.deposit" name="deposit" #deposit="ngModel"
+            id="deposit" placeholder="Deposit">
           <mat-error *ngIf="deposit.invalid && deposit.errors!['required']">
             Please enter a Deposit amount
           </mat-error>
@@ -42,12 +43,18 @@
         </div>
         <div @fade class="unit-sold-header">
           <mat-card>
-            <strong>Units Sold</strong> : {{getTotalUnitsSold()}}
+            <strong>Units Sold</strong>
+            <p>
+              {{getTotalUnitsSold()}}
+            </p>
           </mat-card>
         </div>
         <div @fade class="total-price-header">
           <mat-card>
-            <strong>Total Price</strong> : {{getTotalAmountSold()}}
+            <strong>Total Price</strong>
+            <p>
+              {{getTotalAmountSold()}}
+            </p>
           </mat-card>
         </div>
         <div @fade class="action-header">
@@ -66,11 +73,13 @@
                   maxlength="5" [(ngModel)]="sellingProduct.soldUnits" #unitsSold="ngModel" name="unitsSold"
                   (change)='deposit.control.updateValueAndValidity()'>
                 <span matSuffix>/{{getStockBalance(sellingProduct.product.id)}}</span>
-                <mat-error *ngIf="unitsSold.invalid && unitsSold.errors!['required'] && (unitsSold.dirty || unitsSold.touched)">
+                <mat-error
+                  *ngIf="unitsSold.invalid && unitsSold.errors!['required'] && (unitsSold.dirty || unitsSold.touched)">
                   Please provide a Unit Amount
                 </mat-error>
-                <mat-error *ngIf="unitsSold.invalid && unitsSold.errors!['unitValidator'] && (unitsSold.dirty || unitsSold.touched)">
-                  Sold Unit exceeds Available amount
+                <mat-error
+                  *ngIf="unitsSold.invalid && unitsSold.errors!['unitValidator'] && (unitsSold.dirty || unitsSold.touched)">
+                  Unit exceeds Available amount
                 </mat-error>
               </mat-form-field>
             </mat-card>
@@ -82,7 +91,8 @@
           </div>
           <div @fade @dropDown class='action-card'>
             <mat-card>
-              <button mat-button type='button' (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'>
+              <button mat-button type='button'
+                (click)='deleteProductFromList(i); deposit.control.updateValueAndValidity()'>
                 <mat-icon aria-label="Side nav toggle icon">delete</mat-icon>
               </button>
             </mat-card>
@@ -104,10 +114,12 @@
           <mat-hint>Product to Sell !!</mat-hint>
         </mat-form-field>
         <div class="button-group">
-          <button mat-raised-button [disabled]="!showProductTable()" class='save-button' type="button" (click)="saveButtonPressed()">
+          <button mat-raised-button [disabled]="!showProductTable()" class='save-button' type="button"
+            (click)="saveButtonPressed()">
             Save
           </button>
-          <button mat-raised-button [disabled]="!showProductTable()" class='save-bill-button' type="button" (click)="saveAndBillButtonPressed()">
+          <button mat-raised-button [disabled]="!showProductTable()" class='save-bill-button' type="button"
+            (click)="saveAndBillButtonPressed()">
             Save & Bill
           </button>
         </div>
